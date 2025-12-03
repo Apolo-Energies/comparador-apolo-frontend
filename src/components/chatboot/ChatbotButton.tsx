@@ -1,43 +1,43 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 import { Button } from "@/components/buttons/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { enviarMensajeChatbot } from "@/app/services/ChatBotService/Chatbot.Service";
-import { useAlertStore } from "@/app/store/ui/alert.store";
+// import { enviarMensajeChatbot } from "@/app/services/ChatBotService/Chatbot.Service";
+// import { useAlertStore } from "@/app/store/ui/alert.store";
+import { Card } from "../ui/Card";
 
-interface Message {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
-}
+// interface Message {
+//   id: string;
+//   text: string;
+//   isUser: boolean;
+//   timestamp: Date;
+// }
 
-const PREDEFINED_SUGGESTIONS = [
-  "¿Cómo puedo reducir mi consumo energético?",
-  "¿Qué significan las métricas del dashboard?",
-  "¿Cómo interpretar la facturación?",
-  "¿Cómo agregar una nueva delegación?",
-  "¿Qué son los periodos tarifarios?",
-  "¿Cómo funciona el ranking de consumo?"
-];
+// const PREDEFINED_SUGGESTIONS = [
+//   "¿Cómo puedo reducir mi consumo energético?",
+//   "¿Qué significan las métricas del dashboard?",
+//   "¿Cómo interpretar la facturación?",
+//   "¿Cómo agregar una nueva delegación?",
+//   "¿Qué son los periodos tarifarios?",
+//   "¿Cómo funciona el ranking de consumo?"
+// ];
 
 export const ChatbotButton = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: "¡Hola! Soy EnergIA, tu asistente inteligente especializado en análisis energético. Estoy aquí para ayudarte a entender tu consumo, optimizar tu facturación y gestionar tus delegaciones de manera eficiente. ¿En qué puedo asistirte hoy?",
-      isUser: false,
-      timestamp: new Date()
-    }
-  ]);
-  const [inputMessage, setInputMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(true);
+  // const [messages, setMessages] = useState<Message[]>([
+  //   {
+  //     id: "1",
+  //     text: "¡Hola! Soy EnergIA, tu asistente inteligente especializado en análisis energético. Estoy aquí para ayudarte a entender tu consumo, optimizar tu facturación y gestionar tus delegaciones de manera eficiente. ¿En qué puedo asistirte hoy?",
+  //     isUser: false,
+  //     timestamp: new Date()
+  //   }
+  // ]);
+  // const [inputMessage, setInputMessage] = useState("");
+  const [isLoading, /*setIsLoading*/] = useState(false);
+  // const [showSuggestions, setShowSuggestions] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const showAlert = useAlertStore((state) => state.showAlert);
+  // const showAlert = useAlertStore((state) => state.showAlert);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -47,60 +47,60 @@ export const ChatbotButton = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isLoading]);
+  }, [/*messages */, isLoading]);
 
-  const handleSendMessage = async (messageText?: string) => {
-    const textToSend = messageText || inputMessage;
-    if (!textToSend.trim()) return;
+  // const handleSendMessage = async (messageText?: string) => {
+  //   const textToSend = messageText || inputMessage;
+  //   if (!textToSend.trim()) return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      text: textToSend,
-      isUser: true,
-      timestamp: new Date()
-    };
+  //   const newMessage: Message = {
+  //     id: Date.now().toString(),
+  //     text: textToSend,
+  //     isUser: true,
+  //     timestamp: new Date()
+  //   };
 
-    setMessages(prev => [...prev, newMessage]);
-    setInputMessage("");
-    setIsLoading(true);
-    setShowSuggestions(false);
+  //   setMessages(prev => [...prev, newMessage]);
+  //   setInputMessage("");
+  //   setIsLoading(true);
+  //   // setShowSuggestions(false);
 
-    try {
-      const data = await enviarMensajeChatbot(textToSend);
+  //   try {
+  //     const data = await enviarMensajeChatbot(textToSend);
       
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: data.result || "Sin respuesta",
-        isUser: false,
-        timestamp: new Date()
-      };
+  //     const botResponse: Message = {
+  //       id: (Date.now() + 1).toString(),
+  //       text: data.result || "Sin respuesta",
+  //       isUser: false,
+  //       timestamp: new Date()
+  //     };
       
-      setMessages(prev => [...prev, botResponse]);
-      showAlert("Mensaje enviado correctamente.", "success");
-    } catch (error) {
-      console.error("Error al enviar mensaje:", error);
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "❌ Error al conectar con el chatbot. Por favor, inténtalo de nuevo.",
-        isUser: false,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-      showAlert("Error al enviar mensaje al chatbot.", "error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     setMessages(prev => [...prev, botResponse]);
+  //     showAlert("Mensaje enviado correctamente.", "success");
+  //   } catch (error) {
+  //     console.error("Error al enviar mensaje:", error);
+  //     const errorMessage: Message = {
+  //       id: (Date.now() + 1).toString(),
+  //       text: "Error al conectar con el chatbot. Por favor, inténtalo de nuevo.",
+  //       isUser: false,
+  //       timestamp: new Date()
+  //     };
+  //     setMessages(prev => [...prev, errorMessage]);
+  //     showAlert("Error al enviar mensaje al chatbot.", "error");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSendMessage();
-    }
-  };
+  // const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === 'Enter') {
+  //     handleSendMessage();
+  //   }
+  // };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    handleSendMessage(suggestion);
-  };
+  // const handleSuggestionClick = (suggestion: string) => {
+  //   handleSendMessage(suggestion);
+  // };
 
   return (
     <>
@@ -128,7 +128,7 @@ export const ChatbotButton = () => {
         <div className="fixed bottom-28 right-14 z-40 w-96 h-[500px]">
           <Card className="h-full shadow-2xl border-0 bg-background/98 backdrop-blur-md flex flex-col">
             {/* Header */}
-            <CardHeader className="pb-2 pt-2 bg-gradient-to-r from-[#4784e6] to-[#67a0fb] text-white rounded-t-lg flex-shrink-0">
+            {/* <CardHeader className="pb-2 pt-2 bg-gradient-to-r from-[#4784e6] to-[#67a0fb] text-white rounded-t-lg flex-shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
@@ -152,13 +152,12 @@ export const ChatbotButton = () => {
                   <X className="h-5 w-5" />
                 </Button>
               </div>
-            </CardHeader>
+            </CardHeader> */}
 
-            {/* Messages Area */}
-            <CardContent className="p-0 flex-1 flex flex-col min-h-0">
+            {/* <CardContent className="p-0 flex-1 flex flex-col min-h-0">
               <div className="flex-1 p-4 overflow-y-auto">
                 <div className="space-y-4">
-                  {/* Predefined Suggestions */}
+
                   {showSuggestions && messages.length === 1 && (
                     <div className="space-y-3">
                       <p className="text-sm text-muted-foreground font-semibold">
@@ -180,7 +179,6 @@ export const ChatbotButton = () => {
                     </div>
                   )}
 
-                  {/* Messages */}
                   {messages.map((message) => (
                     <div
                       key={message.id}
@@ -206,7 +204,6 @@ export const ChatbotButton = () => {
                     </div>
                   ))}
 
-                  {/* Loading Indicator */}
                   {isLoading && (
                     <div className="flex justify-start">
                       <div className="bg-muted p-4 rounded-2xl rounded-bl-md border border-border">
@@ -224,12 +221,10 @@ export const ChatbotButton = () => {
                     </div>
                   )}
 
-                  {/* Invisible element to scroll to */}
                   <div ref={messagesEndRef} />
                 </div>
               </div>
 
-              {/* Input Area */}
               <div className="p-4 border-t border-border bg-background/50 flex-shrink-0">
                 <div className="flex gap-3 items-end">
                   <input
@@ -249,7 +244,7 @@ export const ChatbotButton = () => {
                   </Button>
                 </div>
               </div>
-            </CardContent>
+            </CardContent> */}
           </Card>
         </div>
       )}

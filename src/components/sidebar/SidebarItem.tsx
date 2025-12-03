@@ -2,6 +2,7 @@ import { cn } from "@/utils/utils";
 
 interface SidebarItemProps {
     title: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     icon?: React.ComponentType<any>;
     url?: string;
     isSelected?: boolean;

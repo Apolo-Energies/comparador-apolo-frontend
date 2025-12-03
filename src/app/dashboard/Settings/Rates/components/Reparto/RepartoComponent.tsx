@@ -63,12 +63,14 @@ export const RepartoComponent = ({ token }: Props) => {
           setTarifas(
             tarifas.map((tarifa) => ({
               ...tarifa,
-              repartosOmie: tarifa.repartosOmie.map((r) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              repartosOmie: tarifa.repartosOmie.map((r: any) =>
                 r.id === periodo.repartoOmieId
                   ? {
                       ...r,
                       periodos: [
-                        ...r.periodos.filter((p) => p.periodo !== periodo.periodo),
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        ...r.periodos.filter((p: any) => p.periodo !== periodo.periodo),
                         { ...periodo, id: response.result.id, factor: valor },
                       ],
                     }
@@ -89,11 +91,13 @@ export const RepartoComponent = ({ token }: Props) => {
           setTarifas(
             tarifas.map((tarifa) => ({
               ...tarifa,
-              repartosOmie: tarifa.repartosOmie.map((r) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              repartosOmie: tarifa.repartosOmie.map((r: any) =>
                 r.id === periodo.repartoOmieId
                   ? {
                       ...r,
-                      periodos: r.periodos.map((p) =>
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      periodos: r.periodos.map((p: any) =>
                         p.id === periodo.id ? { ...p, factor: valor } : p
                       ),
                     }
@@ -126,11 +130,13 @@ export const RepartoComponent = ({ token }: Props) => {
         setTarifas(
           tarifas.map((tarifa) => ({
             ...tarifa,
-            repartosOmie: tarifa.repartosOmie.map((r) =>
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            repartosOmie: tarifa.repartosOmie.map((r: any) =>
               r.id === periodo.repartoOmieId
                 ? {
                     ...r,
-                    periodos: r.periodos.filter((p) => p.id !== periodo.id),
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    periodos: r.periodos.filter((p: any) => p.id !== periodo.id),
                   }
                 : r
             ),

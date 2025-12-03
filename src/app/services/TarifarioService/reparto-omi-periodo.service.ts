@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
-import { RepartosOmiePeriodo } from "@/app/dashboard/Tarifas/interfaces/proveedor";
+import { RepartosOmiePeriodo } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
 const baseUrl = "/repartoperiodoomie";
 

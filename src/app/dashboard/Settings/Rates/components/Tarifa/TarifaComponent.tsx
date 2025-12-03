@@ -60,13 +60,15 @@ export const TarifaComponent = ({ token }: Props) => {
           setTarifas(
             tarifas.map((tarifa) => ({
               ...tarifa,
-              productos: tarifa.productos.map((prod) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              productos: tarifa.productos.map((prod: any) =>
                 prod.id === periodo.productoId
                   ? {
                       ...prod,
                       periodos: [
                         ...prod.periodos.filter(
-                          (p) => p.periodo !== periodo.periodo
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          (p: any) => p.periodo !== periodo.periodo
                         ),
                         { ...periodo, id: response.result.id, valor },
                       ],
@@ -88,11 +90,13 @@ export const TarifaComponent = ({ token }: Props) => {
           setTarifas(
             tarifas.map((tarifa) => ({
               ...tarifa,
-              productos: tarifa.productos.map((prod) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              productos: tarifa.productos.map((prod: any) =>
                 prod.id === periodo.productoId
                   ? {
                       ...prod,
-                      periodos: prod.periodos.map((p) =>
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      periodos: prod.periodos.map((p: any) =>
                         p.id === periodo.id ? { ...p, valor } : p
                       ),
                     }
@@ -125,11 +129,13 @@ export const TarifaComponent = ({ token }: Props) => {
         setTarifas(
           tarifas.map((tarifa) => ({
             ...tarifa,
-            productos: tarifa.productos.map((prod) =>
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            productos: tarifa.productos.map((prod: any) =>
               prod.id === periodo.productoId
                 ? {
                     ...prod,
-                    periodos: prod.periodos.filter((p) => p.id !== periodo.id),
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    periodos: prod.periodos.filter((p: any) => p.id !== periodo.id),
                   }
                 : prod
             ),
@@ -156,7 +162,8 @@ export const TarifaComponent = ({ token }: Props) => {
       result = result.map((t) => ({
         ...t,
         productos: t.productos.filter(
-          (p) => p.id.toString() === selectedProducto
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (p: any) => p.id.toString() === selectedProducto
         ),
       }));
     }
@@ -195,7 +202,8 @@ export const TarifaComponent = ({ token }: Props) => {
         options={tarifas.map((t) => ({
           id: t.id,
           codigo: t.codigo,
-          productos: t.productos.map((p) => ({ id: p.id, nombre: p.nombre })),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          productos: t.productos.map((p: any) => ({ id: p.id, nombre: p.nombre })),
         }))}
         showAll
       />

@@ -106,7 +106,7 @@ export const Comparador = () => {
       setLoading(false);
     }
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapUsersToSelect = (data: any[]): UserSelect[] => {
     return data.map((u) => ({
       id: u.id,

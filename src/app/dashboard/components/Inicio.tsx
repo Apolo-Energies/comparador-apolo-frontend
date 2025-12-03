@@ -57,14 +57,14 @@ export const Inicio = () => {
         <MetricCard
           title="TOTAL CUPS"
           value="1,726"
-          change="+5.2%"
-          changeType="positive"
+          // change="+5.2%"
+          // changeType="positive"
         />
         <MetricCard
           title="TOTAL CARTERA"
           value="2,950 GB"
-          change="-8.7%"
-          changeType="negative"
+          // change="-8.7%"
+          // changeType="negative"
         />
       </div>
 

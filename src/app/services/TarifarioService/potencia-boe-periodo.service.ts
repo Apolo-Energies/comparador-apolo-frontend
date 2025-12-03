@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
-import { PotenciasBoePeriodo } from "@/app/dashboard/Tarifas/interfaces/proveedor";
+import { PotenciasBoePeriodo } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
 const baseUrl = "/potenciaboeperiodo";
 

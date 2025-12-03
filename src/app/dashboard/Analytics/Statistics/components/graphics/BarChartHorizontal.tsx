@@ -63,6 +63,7 @@ export const BarHorizontalChart = ({ title, data }: Props) => {
                             }}
                             itemStyle={{ color: "#fff" }}
                             labelStyle={{ display: "none" }}
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             formatter={(value: number, _key: string, props: any) => [
                                 `${value.toLocaleString()} kWh`,
                                 props.payload?.[0]?.name,

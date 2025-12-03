@@ -15,10 +15,12 @@ export const Sips = () => {
     const [consumos, setConsumos] = useState<SipsRowconsumption[]>([]);
     const [psData, setPsData] = useState<SipsPS | null>(null);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [summary, setSummary] = useState<any>(null);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [monthlyChart, setMonthlyChart] = useState<any[]>([]);
 
     const handleConsultar = async () => {

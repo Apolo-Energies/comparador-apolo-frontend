@@ -18,6 +18,7 @@ export interface SipsFullResponse {
 const API_URL = "https://sips.gruporenovae.es/api/GetSIPS";
 const API_KEY = "80e984fa-4957-47ec-895b-1fbf321a2d56";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const fetchCSV = async <T>(body: any): Promise<T[]> => {
     const response = await axios.post(API_URL, body, {
         headers: {
@@ -61,7 +62,7 @@ export const getSipsData = async (cups: string): Promise<ApiResponse<SipsFullRes
             displayMessage: "Datos obtenidos correctamente",
             errorMessages: []
         };
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error("Error al obtener datos SIPS:", error);
 

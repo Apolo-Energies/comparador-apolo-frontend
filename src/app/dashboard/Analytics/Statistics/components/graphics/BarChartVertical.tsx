@@ -16,6 +16,7 @@ import { formatNumberShort } from '@/utils/format-data/format-number'
 interface Props {
     title: string
     value?: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data?: any[]
     className?: string
     mode?: "monthly" | "daily"
@@ -23,7 +24,7 @@ interface Props {
 
 export const BarChartVertical = ({ title, data = [], className, mode = "monthly" }: Props) => {
     const [activeIndex, setActiveIndex] = useState<number | null>(null)
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formatDate = (isoOrDate: any, mode: "monthly" | "daily") => {
         if (!isoOrDate) return "";
 

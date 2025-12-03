@@ -1,4 +1,4 @@
-import { Proveedor, Tarifa } from "@/app/dashboard/Tarifas/interfaces/proveedor";
+import { Proveedor, Tarifa } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 import { create } from "zustand";
 
 interface TarifaStore {

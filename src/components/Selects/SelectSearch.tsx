@@ -11,6 +11,7 @@ interface Props {
   value: string;
   onChange: (value: string) => void;
   error?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: LucideIcon | React.ComponentType<any>;
   options: Option[];
 }

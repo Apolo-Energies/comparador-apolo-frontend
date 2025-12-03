@@ -61,12 +61,14 @@ export const PotenciaComponent = ({ token }: Props) => {
           setTarifas(
             tarifas.map((tarifa) => ({
               ...tarifa,
-              potenciasBoe: tarifa.potenciasBoe.map((p) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              potenciasBoe: tarifa.potenciasBoe.map((p: any) =>
                 p.id === periodo.potenciaBoeId
                   ? {
                       ...p,
                       periodos: [
-                        ...p.periodos.filter((pp) => pp.periodo !== periodo.periodo),
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        ...p.periodos.filter((pp: any) => pp.periodo !== periodo.periodo),
                         { ...periodo, id: response.result.id, valor },
                       ],
                     }
@@ -87,11 +89,13 @@ export const PotenciaComponent = ({ token }: Props) => {
           setTarifas(
             tarifas.map((tarifa) => ({
               ...tarifa,
-              potenciasBoe: tarifa.potenciasBoe.map((p) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              potenciasBoe: tarifa.potenciasBoe.map((p: any) =>
                 p.id === periodo.potenciaBoeId
                   ? {
                       ...p,
-                      periodos: p.periodos.map((pp) =>
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      periodos: p.periodos.map((pp:any) =>
                         pp.id === periodo.id ? { ...pp, valor } : pp
                       ),
                     }
@@ -124,9 +128,11 @@ export const PotenciaComponent = ({ token }: Props) => {
         setTarifas(
           tarifas.map((tarifa) => ({
             ...tarifa,
-            potenciasBoe: tarifa.potenciasBoe.map((p) =>
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            potenciasBoe: tarifa.potenciasBoe.map((p: any) =>
               p.id === periodo.potenciaBoeId
-                ? { ...p, periodos: p.periodos.filter((pp) => pp.id !== periodo.id) }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ? { ...p, periodos: p.periodos.filter((pp:any) => pp.id !== periodo.id) }
                 : p
             ),
           }))

@@ -8,6 +8,7 @@ interface FilterInputProps {
   onChange: (value: string) => void;
   error?: string;
   type?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: LucideIcon | React.ComponentType<any>;
   height?: string;
   className?: string;

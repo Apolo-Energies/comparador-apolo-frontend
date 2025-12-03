@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
-import { Proveedor } from "@/app/dashboard/Tarifas/interfaces/proveedor";
+import { Proveedor } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
 export const getProveedores = async (
   token: string

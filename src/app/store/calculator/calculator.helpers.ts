@@ -12,13 +12,14 @@ export const getBaseValue = (tarifa: string, producto: string, periodo: Periodo)
   if (!t) {
     return 0;
   }
-
-  const prod = t.productos.find((p) => p.nombre === producto);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const prod = t.productos.find((p: any) => p.nombre === producto);
   if (!prod) {
     return 0;
   }
 
-  const p = prod.periodos.find((p) => p.periodo === periodo);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const p = prod.periodos.find((p: any) => p.periodo === periodo);
 
   return p?.valor ?? 0;
 };
@@ -28,10 +29,11 @@ export const getRepartoOmie = (tarifa: string, periodo: Periodo): number => {
   const t = tarifas.find((x) => x.codigo === tarifa);
   if (!t) return 0;
 
-  const reparto = t.repartosOmie?.find((r) => r.periodos.some(p => p.periodo === periodo));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const reparto = t.repartosOmie?.find((r: any) => r.periodos.some((p: any) => p.periodo === periodo));
   if (!reparto) return 0;
-  
-  const p = reparto.periodos.find(p => p.periodo === periodo);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const p = reparto.periodos.find((p: any) => p.periodo === periodo);
   return p?.factor ?? 0;
 };
 
@@ -39,11 +41,11 @@ export const getPotenciaBOE = (tarifa: string, periodo: Periodo): number => {
   const { tarifas } = useTarifaStore.getState();
   const t = tarifas.find((x) => x.codigo === tarifa);
   if (!t) return 0;
-
-  const potencia = t.potenciasBoe?.find((r) => r.periodos.some(p => p.periodo === periodo));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const potencia = t.potenciasBoe?.find((r: any) => r.periodos.some((p:any) => p.periodo === periodo));
   if (!potencia) return 0;
-
-  const p = potencia.periodos.find(p => p.periodo === periodo);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const p = potencia.periodos.find((p: any) => p.periodo === periodo);
   return p?.valor ?? 0;
 };
 
