@@ -118,7 +118,7 @@ export const Comparador = () => {
 
   return (
     <div className="h-auto flex flex-col items-center">
-      <Card className="w-full max-w-full rounded-[8px] px-8 py-8 space-y-6">
+      <Card className="w-full max-w-full rounded-lg px-8 py-8 space-y-6">
         {
           session?.user?.role === "Master" &&
           <ComboboxSelect

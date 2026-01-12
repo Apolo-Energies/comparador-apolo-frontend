@@ -131,21 +131,21 @@ export const TableUsers = ({ filters }: Props) => {
       users.map((user) =>
         user.id === userId
           ? {
-              ...user,
-              commissionId: selected.id,
-              commissions: selected.percentage,
-              userCommissions: [
-                {
-                  id: user.userCommissions?.[0]?.id ?? "",
-                  commissionType: {
-                    ...selected,
-                    id: selected.id ?? "",
-                    name: selected.name ?? "",
-                    percentage: selected.percentage ?? 0,
-                  },
+            ...user,
+            commissionId: selected.id,
+            commissions: selected.percentage,
+            userCommissions: [
+              {
+                id: user.userCommissions?.[0]?.id ?? "",
+                commissionType: {
+                  ...selected,
+                  id: selected.id ?? "",
+                  name: selected.name ?? "",
+                  percentage: selected.percentage ?? 0,
                 },
-              ] as UserCommission[],
-            }
+              },
+            ] as UserCommission[],
+          }
           : user
       )
     );
@@ -160,10 +160,10 @@ export const TableUsers = ({ filters }: Props) => {
       users.map((user) =>
         user.id === userId
           ? {
-              ...user,
-              proveedorId: selected.id,
-              commissionId: selected.id,
-            }
+            ...user,
+            proveedorId: selected.id,
+            commissionId: selected.id,
+          }
           : user
       )
     );
@@ -229,12 +229,12 @@ export const TableUsers = ({ filters }: Props) => {
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
         <div className="flex items-center">
-          <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
+          {/* <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
             {user.nombreCompleto
               .split(" ")
               .map((n) => n[0])
               .join("")}
-          </div>
+          </div> */}
           <div className="ml-4 text-sm font-medium text-accent-foreground">
             {user.nombreCompleto}
           </div>
@@ -248,23 +248,16 @@ export const TableUsers = ({ filters }: Props) => {
       align: "center",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
-        <select
+        <SelectOptions
           value={user.role.toString()}
-          onChange={(e) =>
-            updateUserRole(
-              user.id as string,
-              parseInt(e.target.value) as number
-            )
+          options={[
+            { id: "1", name: "Master" },
+            { id: "2", name: "Colaborador" },
+          ]}
+          onChange={(val) =>
+            updateUserRole(user.id as string, Number(val))
           }
-          className={`text-xs font-medium rounded-full px-3 py-1 border-0 ${
-            user.role === 1
-              ? "bg-purple-100 text-purple-800"
-              : "bg-blue-100 text-blue-800"
-          }`}
-        >
-          <option value={1}>Master</option>
-          <option value={2}>Colaborador</option>
-        </select>
+        />
       ),
     },
     {
@@ -273,20 +266,16 @@ export const TableUsers = ({ filters }: Props) => {
       align: "center",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
-        <select
-          value={user.estadoActivo.toString()}
-          onChange={(e) =>
-            updateUserStatus(user.id as string, e.target.value === "true")
+        <SelectOptions
+          value={String(user.estadoActivo)}
+          options={[
+            { id: "true", name: "Activo" },
+            { id: "false", name: "Inactivo" },
+          ]}
+          onChange={(val) =>
+            updateUserStatus(user.id as string, val === "true")
           }
-          className={`text-xs font-medium rounded-full px-3 py-1 border-0 ${
-            user.estadoActivo
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-          }`}
-        >
-          <option value="true">Activo</option>
-          <option value="false">Inactivo</option>
-        </select>
+        />
       ),
     },
     {
@@ -298,13 +287,13 @@ export const TableUsers = ({ filters }: Props) => {
         <SelectOptions
           value={user.userCommissions?.[0]?.commissionType?.id ?? ""}
           options={commissionOptions.map((c) => ({
-            id: c.id ?? "", 
+            id: c.id ?? "",
             name: c.name
           }))}
           onChange={(val) => handleCommissionChange(user.id as string, val)}
         />
       ),
-    },    
+    },
     {
       key: "providers",
       label: "Proveedor",

@@ -3,7 +3,7 @@
 import React from "react"
 
 interface ProgressProps {
-  value: number // del 0 al 100
+  value: number
   className?: string
 }
 

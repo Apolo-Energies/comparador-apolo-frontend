@@ -9,6 +9,8 @@ import { useSession } from "next-auth/react";
 import { getCommissionUser } from "@/app/services/UserCommissionService/user-commission.service";
 import { useCommissionUserStore } from "@/app/store/commission-user/commission-user.store";
 import { InfoIcon } from "@/incons/InfoIcon";
+import { StarIcon } from "@/incons/StartIcon";
+import Link from "next/link";
 
 export const Header = () => {
   const { data: session } = useSession();
@@ -67,7 +69,12 @@ export const Header = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <ModeToggle />
+          <Link href="https://ee.apoloenergies.es/App/">
+            <Button>
+              <StarIcon /> Alta Rapida
+            </Button>
+          </Link>
+          {/* <ModeToggle /> */}
           <UserMenu />
         </div>
       </div>

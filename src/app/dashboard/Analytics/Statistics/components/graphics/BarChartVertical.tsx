@@ -45,7 +45,7 @@ export const BarChartVertical = ({ title, data = [], className, mode = "monthly"
         mode === "daily"
             ? data.map((item) => ({
                 name: formatDate(item.date, "daily"),
-                consumption: item.totalConsumption /100000,
+                consumption: item.totalConsumption,
                 cups: item.totalCUPS,
             }))
             : data
@@ -56,7 +56,7 @@ export const BarChartVertical = ({ title, data = [], className, mode = "monthly"
                 )
                 .map((item) => ({
                     name: formatDate(new Date(item.year, item.month - 1), "monthly"),
-                    consumption: item.totalConsumption/100000,
+                    consumption: item.totalConsumption,
                     cups: item.totalCUPS,
                 }));
 
@@ -114,7 +114,7 @@ export const BarChartVertical = ({ title, data = [], className, mode = "monthly"
                                 dataKey="consumption"
                                 stackId="a"
                                 barSize={30}
-                                radius={[0, 0, 0, 0]}
+                                radius={[6, 6, 0, 0]}
                                 onClick={(_, index) => setActiveIndex(index)}
                             >
                                 {chartData.map((_, index) => (
@@ -128,7 +128,7 @@ export const BarChartVertical = ({ title, data = [], className, mode = "monthly"
                                 dataKey="cups"
                                 stackId="a"
                                 barSize={30}
-                                radius={[6, 6, 0, 0]}
+                                radius={[0, 0, 0, 0]}
                                 onClick={(_, index) => setActiveIndex(index)}
                             >
                                 {chartData.map((_, index) => (

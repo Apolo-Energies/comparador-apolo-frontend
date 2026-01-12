@@ -14,9 +14,10 @@ interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: LucideIcon | React.ComponentType<any>;
   options: Option[];
+  height?: string;
 }
 
-export const SelectSearch = ({ label, value, onChange, error, icon: Icon, options }: Props) => {
+export const SelectSearch = ({ label, value, onChange, error, icon: Icon, options, height = "h-10", }: Props) => {
   return (
     <div className="space-y-1">
       {label && (
@@ -33,13 +34,13 @@ export const SelectSearch = ({ label, value, onChange, error, icon: Icon, option
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`w-full ${
-            Icon ? "pl-10" : "pl-3"
-          } pr-4 py-1.5 text-sm rounded border focus:outline-none focus:ring ${
-            error
+          className={`w-full ${Icon ? "pl-10" : "pl-3"} 
+          pr-4 py-1.5 text-sm rounded border focus:outline-none focus:ring 
+          ${height} 
+          ${error
               ? "border-red-500 ring-red-500"
               : "border-border ring-blue-500"
-          } appearance-none bg-input`}
+            } appearance-none bg-input`}
         >
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>

@@ -62,7 +62,7 @@ export const HeaderUser = ({
   return (
     <div className={wrapperClasses}>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-2 items-end">
         <InputSearch
           type="text"
           placeholder="Buscar por nombre..."
@@ -89,14 +89,21 @@ export const HeaderUser = ({
             { value: "2", label: "Colaborador" },
           ]}
         />
+
+        <div className="flex md:justify-end">
+          <Button variant="default" size="md" onClick={openModalFunction}>
+            <StarIcon size={18} />
+            Agregar Usuario
+          </Button>
+        </div>
       </div>
 
-      <div className="flex justify-between items-center mb-6">
+      {/* <div className="flex justify-between items-center mb-6">
         <Button variant="default" size="md" onClick={openModalFunction} className="mr-auto">
           <StarIcon size={18} />
           Agregar Usuario
         </Button>
-      </div>
+      </div> */}
 
       <ModalUser open={open} onClose={() => setOpen(false)} />
     </div>

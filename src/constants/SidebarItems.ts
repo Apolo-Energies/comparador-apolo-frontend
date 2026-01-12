@@ -2,6 +2,7 @@
 import { ArrowDownBoxIcon } from "@/incons/ArrowDownBoxIcon";
 import { CircleIcon } from "@/incons/CicleIcon";
 import { CompassIcon } from "@/incons/CompassIcon";
+import { ListIcon } from "@/incons/ListIcon";
 import { PieIcon } from "@/incons/PieIcon";
 import { SettingsIcon } from "@/incons/SettingsIcon";
 import { SupportIcon } from "@/incons/SupportIcon";
@@ -31,6 +32,12 @@ export const sidebarItems: SidebarSection[] = [
   {
     section: "General",
     items: [
+      {
+        title: "Contratos",
+        icon: ListIcon,
+        roles: ["Master", "SoporteComercial"],
+        url: "https://ee.apoloenergies.es/App/ContratosServicios/Wizard?q=68fHKAqZKDEuSApYdhV5pw%3D%3D",
+      },
       {
         title: "Analítica",
         icon: PieIcon,
@@ -79,6 +86,12 @@ export const sidebarItems: SidebarSection[] = [
             icon: CircleIcon,
             roles: ["Master"],
           },
+          // {
+          //   title: "Contratos Colab",
+          //   url: "/dashboard/Settings/ContractCollaborators",
+          //   icon: CircleIcon,
+          //   roles: ["Master"],
+          // },
           {
             title: "Comisión",
             url: "/dashboard/Settings/Comision",

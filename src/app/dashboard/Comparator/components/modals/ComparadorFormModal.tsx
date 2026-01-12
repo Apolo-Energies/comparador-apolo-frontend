@@ -19,6 +19,7 @@ import { downloadExcel } from "@/app/services/FileService/excel.service";
 import { PRODUCTS_BY_TARIFF } from "@/utils/tarifario/tarifas";
 import { OcrData } from "@/app/dashboard/Analytics/interfaces/matilData";
 import { PeriodPrice } from "../utilComparador/PeriodPrice";
+import { getIndexEnergiaByProducto, getSnapEnergiaByTarifa, isSnapProduct } from "@/utils/commission/commissions";
 
 interface Props {
   open: boolean;
@@ -38,7 +39,7 @@ type FormData = {
 export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }: Props) => {
 
   const options =
-    PRODUCTS_BY_TARIFF[matilData?.tarifa ?? ""]?.map((producto) => ({
+    PRODUCTS_BY_TARIFF[matilData?.contrato?.tarifa ?? ""]?.map((producto) => ({
       label: producto,
       value: producto,
     })) ?? [];
@@ -61,11 +62,17 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
 
   const productoSeleccionado = watch("producto");
 
-  const comisionEnergia = commission ? commission / 100 : 0;
+  // const comisionEnergia = commission ? commission / 100 : 0;
   const precioMedioOmieInput = Number(watch("precioMedio")) || 20;
 
   const { comision, calcular } = useCommissionStore();
   const calcularStore = useCalculatorStore();
+
+  const isSnap = isSnapProduct(productoSeleccionado);
+
+  const comisionEnergia = isSnap
+    ? getSnapEnergiaByTarifa(productoSeleccionado)
+    : getIndexEnergiaByProducto(productoSeleccionado) ?? (commission ?? 0) / 100;
 
   useEffect(() => {
     calcular({
@@ -75,6 +82,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       comisionEnergia,
       feePotencia,
       productoSeleccionado,
+      commissionType: isSnap ? "SNAP" : "VARIABLE",
     });
   }, [
     matilData,
@@ -87,7 +95,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
 
   useEffect(() => {
     if (!matilData) return;
-    const tarifa = matilData?.tarifa;
+    const tarifa = matilData?.contrato?.tarifa;
     calcularStore.setTarifa(tarifa);
 
     calcularStore.setProducto(
@@ -98,13 +106,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     );
     calcularStore.setPotencia(tarifa, feePotencia[0], productoSeleccionado);
 
-    const resultadoFactua = calcularStore.calcularFactura({
-      fecha_inicio: matilData.fecha_inicio,
-      fecha_fin: matilData?.fecha_fin,
-      energia: matilData?.energia,
-      potencia: matilData?.potencia,
-      detalle: matilData?.detalle,
-    });
+    const resultadoFactua = calcularStore.calcularFactura(matilData);
     setResultadoFactura(resultadoFactua ?? undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matilData, productoSeleccionado, precioMedioOmieInput, feeEnergia, feePotencia]);
@@ -112,7 +114,9 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   const handleDownloadFile = async (type: ExportType) => {
     try {
       const periodos = resultadoFactura?.periodos || [];
-      const { nombreEmpresa, razonSocial } = parseTitular(matilData?.titular);
+      const { nombreEmpresa, razonSocial } = parseTitular(matilData?.cliente?.titular);
+      console.log("peiodos...", periodos);
+      console.log("matil data: ", matilData?.potencia);
       const lineas = [
         // Energía
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -122,11 +126,13 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           return {
             termino: `ENERGÍA P${e.p}`,
             unidad: Unidad.KWh,
-            valor: e.kwh,
-            precioActual: periodo ? periodo.precioEnergia : 0,
-            costeActual: e.activa_eur,
-            precioOferta: periodo ? periodo.precioEnergiaOferta : 0,
-            costeOferta: periodo ? periodo.costeEnergia : 0,
+
+            valor: e.activa?.kwh ?? 0,
+            precioActual: e.activa?.tarifa ?? 0,
+            costeActual: e.activa?.importe ?? 0,
+
+            precioOferta: periodo?.precioEnergiaOferta ?? 0,
+            costeOferta: periodo?.costeEnergia ?? 0,
           };
         }),
 
@@ -140,11 +146,13 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           return {
             termino: `POTENCIA P${p.p}`,
             unidad: Unidad.KW,
-            valor: p.kw,
-            precioActual: periodo ? periodo.precioPotencia : 0,
-            costeActual: p.potencia_eur,
-            precioOferta: periodo ? periodo.precioPotenciaOferta : 0,
-            costeOferta: periodo ? periodo.costePotencia : 0,
+
+            valor: p.contratada?.kw ?? 0,
+            precioActual: p.contratada?.tarifa ?? 0,
+            costeActual: p.contratada?.importe ?? 0,
+
+            precioOferta: periodo?.precioPotenciaOferta ?? 0,
+            costeOferta: periodo?.costePotencia ?? 0,
           };
         }),
       ];
@@ -154,12 +162,12 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
         archivoId: fileId,
         proveedorId: 1,
         // usuario: "usuario_ejemplo",
-        cups: matilData?.cups || "-",
+        cups: matilData?.cliente?.cups || "-",
         datos: {
           titulo: "Comparativa de oferta",
-          tarifa: matilData?.tarifa || "-",
+          tarifa: matilData?.contrato?.tarifa || "-",
           modalidad: productoSeleccionado,
-          periodo: matilData?.fecha_fin || "-",
+          periodo: matilData?.periodo_facturacion?.fecha_fin || "-",
           diasFactura: resultadoFactura!.dias,
           ahorro: resultadoFactura?.ahorroEstudio || 0,
           ahorroPorcentaje: resultadoFactura?.ahorro_porcent || 0,
@@ -170,25 +178,25 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           feePotencia: feePotencia[0],
         },
         cliente: {
-          cif: matilData?.nif || "-",
+          cif: matilData?.cliente?.nif || "-",
           nombreCliente: nombreEmpresa,
           razonSocial: razonSocial || "-",
-          provincia: matilData?.direccion.provincia || "-",
-          cp: matilData?.direccion.cp || "-",
+          provincia: matilData?.cliente?.direccion.provincia || "-",
+          cp: matilData?.cliente?.direccion.cp || "-",
           direccion:
-            `${matilData?.direccion?.tipo_via?.slice(0, 2).toUpperCase()} ${matilData?.direccion?.nombre_via
-            }, ${matilData?.direccion?.numero} ${matilData?.direccion?.detalles
+            `${matilData?.cliente?.direccion?.tipo_via?.slice(0, 2).toUpperCase()} ${matilData?.cliente?.direccion?.nombre_via
+            }, ${matilData?.cliente?.direccion?.numero} ${matilData?.cliente?.direccion?.detalles
             }` || "-",
         },
         totales: {
-          baseActual: matilData?.detalle?.subtotal || 0,
+          baseActual: matilData?.iva.base || 0,
           baseOferta: resultadoFactura?.subTotal || 0,
-          impuestoElectricoActual: matilData?.detalle?.ie || 0,
+          impuestoElectricoActual: matilData?.ie?.importe || 0,
           impuestoElectricoOferta: resultadoFactura?.impuestoElectrico || 0,
-          alquilerEquipo: matilData?.detalle?.equipos || 0,
-          ivaActual: matilData?.detalle?.iva_igic?.valor || 0,
+          alquilerEquipo: matilData?.equipos?.importe || 0,
+          ivaActual: matilData?.iva?.importe || 0,
           ivaOferta: resultadoFactura?.iva || 0,
-          totalActual: matilData?.detalle?.total || 0,
+          totalActual: matilData?.total || 0,
           totalOferta: resultadoFactura?.total || 0,
 
 
@@ -197,7 +205,8 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           // datos un iniciertos
           otrosComunesSinIeActual: 0,
           otrosComunesSinIeOferta: 0,
-          otrosNoComunesActual: matilData?.detalle?.otros || 0,
+          otrosNoComunesActual: (matilData?.otros_servicios ?? [])
+            .reduce((total, s) => total + (s.importe ?? 0), 0),
           otrosNoComunesOferta: 0,
         },
       };
@@ -368,13 +377,13 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
             </p>
           </div>
         </div>
-        
+
         <PeriodPrice periodos={resultadoFactura?.periodos ?? []} />
 
         {/* Botones */}
         <div className="flex gap-4 pt-2 border-t border-gray-200">
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() => handleDownloadFile("excel")}
             className="flex-1"
           >

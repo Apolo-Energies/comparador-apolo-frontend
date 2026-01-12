@@ -11,6 +11,7 @@ interface CommissionState {
     comision: 0,
   
     calcular: (params) => {
+      console.log("Calculando comisión con params:", params);
       const result = calculateComisionFunction(params);
       set({ comision: result });
     },

@@ -6,18 +6,22 @@ export const calculateComisionFunction = ({
     feeEnergia,
     comisionEnergia,
     feePotencia,
+    commissionType
   }: CalcularComisionParams): number => {
-    
     if (!matilData?.energia || !matilData?.potencia) return 0;
 
+    if (commissionType === "SNAP") {
+    return comisionEnergia;
+  }
+
     const consumoPeriodo =
-      matilData.energia.reduce((acc, item) => acc + (item.kwh ?? 0), 0) ?? 0;
+      matilData.energia.reduce((acc, item) => acc + (item?.activa?.kwh ?? 0), 0) ?? 0;
       
       const coeficienteEnergia = 10 * consumoPeriodo;
       const energia = (feeEnergia[0] * comisionEnergia * coeficienteEnergia) / 1000;
       
       const potenciaContratada = matilData.potencia.reduce(
-        (acc, item) => acc + (item.kw ?? 0),
+        (acc, item) => acc + (item?.contratada?.kw ?? 0),
         0
       );
       
