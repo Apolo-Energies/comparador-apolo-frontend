@@ -33,4 +33,5 @@ export const SNAP_PRODUCTS = [
 ] as const;
 
 export const isSnapProduct = (producto?: string): boolean =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     SNAP_PRODUCTS.includes(producto as any);

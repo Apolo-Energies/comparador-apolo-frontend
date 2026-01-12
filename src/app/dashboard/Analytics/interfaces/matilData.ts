@@ -104,6 +104,7 @@ export interface Reactiva {
 }
 
 export interface EnergiaVertida {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     excedentes:                       any[];
     descuento_energia_vertida:        number;
     tiene_bateria_virtual:            boolean;
