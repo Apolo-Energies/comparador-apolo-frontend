@@ -56,9 +56,9 @@ export const DonutChart = ({ title, trend, value, data = [], className }: Props)
             </div>
 
 
-            <div className="flex items-center h-[320px]">
+            <div className="flex items-center h-80">
 
-                <div className="flex flex-col gap-4 min-w-[100px]">
+                <div className="flex flex-col gap-4 min-w-25">
                     {styledData.map((item, index) => (
                         <div key={index} className="flex items-center gap-2">
                             <span
@@ -133,9 +133,9 @@ export const DonutChart = ({ title, trend, value, data = [], className }: Props)
                                 labelStyle={{
                                     color: "var(--color-foreground)",
                                 }}
-                                formatter={(value: number, name: string) => [
-                                    `${value.toLocaleString()} kWh`,
-                                    name,
+                                formatter={(value: number | undefined, name: string | undefined) => [
+                                    value !== undefined ? `${value.toLocaleString()} kWh` : 'N/A',
+                                    name ?? 'Unknown',
                                 ]}
                             />
 

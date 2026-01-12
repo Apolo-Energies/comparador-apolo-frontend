@@ -28,7 +28,7 @@ export const DonutChart = ({ title, data, className }: Props) => {
                 <p className="text-md font-medium text-foreground">{title}</p>
             </div>
 
-            <div className="h-[250px] flex items-center justify-center">
+            <div className="h-62.5 flex items-center justify-center">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                         <Pie
@@ -62,9 +62,9 @@ export const DonutChart = ({ title, data, className }: Props) => {
                             labelStyle={{ color: "#fff" }}
                             itemStyle={{ color: "#fff" }}
 
-                            formatter={(value: number, name: string) => [
-                                `${value.toLocaleString()} kWh`,
-                                name,
+                            formatter={(value: number | undefined, name: string | undefined) => [
+                                `${(value ?? 0).toLocaleString()} kWh`,
+                                name ?? 'Unknown',
                             ]}
                         />
                     </PieChart>

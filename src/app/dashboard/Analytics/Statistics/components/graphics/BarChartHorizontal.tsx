@@ -29,7 +29,7 @@ export const BarHorizontalChart = ({ title, data }: Props) => {
                 {title}
             </p>
 
-            <div className="h-[300px]">
+            <div className="h-75">
                 <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                         layout="vertical"
@@ -64,9 +64,9 @@ export const BarHorizontalChart = ({ title, data }: Props) => {
                             itemStyle={{ color: "#fff" }}
                             labelStyle={{ display: "none" }}
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            formatter={(value: number, _key: string, props: any) => [
-                                `${value.toLocaleString()} kWh`,
-                                props.payload?.[0]?.name,
+                            formatter={(value: number | undefined, name: string | undefined, props: any) => [
+                                value !== undefined ? `${value.toLocaleString()} kWh` : 'N/A',
+                                props.payload?.name || '',
                             ]}
                         />
 

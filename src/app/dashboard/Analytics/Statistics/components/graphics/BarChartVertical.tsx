@@ -67,7 +67,7 @@ export const BarChartVertical = ({ title, data = [], className, mode = "monthly"
             </div>
 
             <div className="flex gap-4">
-                <div className="flex-1 h-[400px]">
+                <div className="flex-1 h-100">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             data={chartData}
@@ -104,9 +104,9 @@ export const BarChartVertical = ({ title, data = [], className, mode = "monthly"
                                 }}
                                 itemStyle={{ color: "#fff" }}
                                 labelStyle={{ display: "none" }}
-                                formatter={(value: number, key: string) => [
-                                    `${value.toLocaleString()}`,
-                                    key === "consumption" ? "Consumo Anual" : "CUPS",
+                                formatter={(value: number | undefined, name: string | undefined) => [
+                                    value !== undefined ? `${value.toLocaleString()}` : "N/A",
+                                    name === "consumption" ? "Consumo Anual" : "CUPS",
                                 ]}
                             />
 

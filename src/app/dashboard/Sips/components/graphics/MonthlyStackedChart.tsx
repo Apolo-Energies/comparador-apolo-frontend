@@ -72,7 +72,7 @@ export const MonthlyStackedChart = ({ title, data }: Props) => {
             </div>
 
 
-            <div className="h-[350px]">
+            <div className="h-87.5">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={data}
@@ -97,8 +97,8 @@ export const MonthlyStackedChart = ({ title, data }: Props) => {
 
                         <Tooltip
                             cursor={{ fill: "rgba(255,255,255,0.05)" }}
-                            formatter={(value: number, name: string) =>
-                                [`${value.toLocaleString("es-ES")} kWh`, name]
+                            formatter={(value: number | undefined, name: string | undefined) =>
+                                [`${value != null ? value.toLocaleString("es-ES") : 'N/A'} kWh`, name || 'Unknown']
                             }
                             contentStyle={{
                                 backgroundColor: "var(--color-card)",
