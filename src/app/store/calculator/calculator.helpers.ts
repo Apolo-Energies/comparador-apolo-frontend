@@ -12,13 +12,13 @@ export const getBaseValue = (tarifa: string, producto: string, periodo: Periodo)
     return 0;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const prod = t.products.find((p: any) => p.nombre === producto);
+  const prod = t.products.find((p: any) => p.name === producto);
   if (!prod) {
     return 0;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const p = prod.periods.find((p: any) => p.periodo === periodo);
+  const p = prod.periods.find((p: any) => p.period === periodo);
   return p?.value ?? 0;
 };
 
@@ -28,10 +28,10 @@ export const getRepartoOmie = (tarifa: string, periodo: Periodo): number => {
   if (!t) return 0;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const reparto = t.omieDistributions?.find((r: any) => r.periodos.some((p: any) => p.periodo === periodo));
+  const reparto = t.omieDistributions?.find((r: any) => r.periods.some((p: any) => p.period === periodo));
   if (!reparto) return 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const p = reparto.periods.find((p: any) => p.periodo === periodo);
+  const p = reparto.periods.find((p: any) => p.period === periodo);
   return p?.factor ?? 0;
 };
 
@@ -40,10 +40,10 @@ export const getPotenciaBOE = (tarifa: string, periodo: Periodo): number => {
   const t = tariffs.find((x) => x.code === tarifa);
   if (!t) return 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const potencia = t.boePowers?.find((r: any) => r.periodos.some((p:any) => p.periodo === periodo));
+  const potencia = t.boePowers?.find((r: any) => r.periods.some((p:any) => p.period === periodo));
   if (!potencia) return 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const p = potencia.periods.find((p: any) => p.periodo === periodo);
+  const p = potencia.periods.find((p: any) => p.period === periodo);
   return p?.value ?? 0;
 };
 

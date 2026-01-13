@@ -68,11 +68,22 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   const { comision, calcular } = useCommissionStore();
   const calcularStore = useCalculatorStore();
 
+  const isSnapTariff = ["Fijo Snap Mini", "Fijo Snap", "Fijo Snap Max"].includes(
+    productoSeleccionado ?? ""
+  );
+
   const isSnap = isSnapProduct(productoSeleccionado);
 
   const comisionEnergia = isSnap
     ? getSnapEnergiaByTarifa(productoSeleccionado)
     : getIndexEnergiaByProducto(productoSeleccionado) ?? (commission ?? 0) / 100;
+
+  useEffect(() => {
+    if (isSnapTariff) {
+      setFeeEnergia([0]);
+      setFeePotencia([0]);
+    }
+  }, [isSnapTariff]);
 
   useEffect(() => {
     calcular({
@@ -285,7 +296,14 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
               max={50}
               min={0}
               step={1}
+              disabled={isSnapTariff}
             />
+
+            {isSnapTariff && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Fee de energía fijo por tarifa SNAP. No se puede modificar.
+              </p>
+            )}
             <div className="flex justify-end">
               <span
                 className={`text-sm font-semibold transition-colors ${feeEnergia[0] === 50 ? "text-green-600" : "text-foreground"
@@ -330,7 +348,15 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
               max={25}
               min={0}
               step={1}
+              disabled={isSnapTariff}
             />
+
+            {isSnapTariff && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Fee de potencia fijo por tarifa SNAP. No se puede modificar.
+              </p>
+            )}
+
           </div>
           <div className="flex justify-end">
             <span

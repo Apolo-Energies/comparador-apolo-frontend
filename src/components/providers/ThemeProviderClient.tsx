@@ -17,7 +17,7 @@ export const ThemeProviderClient = ({
     return <div className="h-screen bg-white dark:bg-gray-900" />;
   }
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem={false} themes={["light", "dark", "neutral"]}>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={["light", "dark", "neutral"]}>
       {children}
     </ThemeProvider>
   );

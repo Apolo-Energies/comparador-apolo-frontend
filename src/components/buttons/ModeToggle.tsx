@@ -17,7 +17,7 @@ export function ModeToggle() {
 
   const themes = ["light", "dark", "neutral"]
   const nextTheme = (() => {
-    const index = themes.indexOf(theme ?? "light")
+    const index = themes.indexOf(theme ?? "dark")
     return themes[(index + 1) % themes.length]
   })()
 
