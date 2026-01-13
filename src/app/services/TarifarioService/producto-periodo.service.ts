@@ -1,16 +1,16 @@
 import axios from "axios";
 import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
-import { ProductoPeriodo } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
+import { ProductPeriod } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
 const baseUrl = "/productoperiodo";
 
-type ProductoPeriodoCreate = Omit<ProductoPeriodo, "id">;
+type ProductoPeriodoCreate = Omit<ProductPeriod, "id">;
 // Crear
 export const createProductoPeriodo = async (
   token: string,
   payload: ProductoPeriodoCreate
-): Promise<ApiResponse<ProductoPeriodo>> => {
+): Promise<ApiResponse<ProductPeriod>> => {
   try {
     const response = await ApiManager.post(baseUrl, payload, {
       headers: { Authorization: `Bearer ${token}` },
@@ -27,7 +27,7 @@ export const createProductoPeriodo = async (
     console.error("Create ProductoPeriodo error:", error);
     if (axios.isAxiosError(error)) {
       return {
-        result: {} as ProductoPeriodo,
+        result: {} as ProductPeriod,
         status: error.response?.status ?? 500,
         isSuccess: false,
         displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
@@ -35,7 +35,7 @@ export const createProductoPeriodo = async (
       };
     }
     return {
-      result: {} as ProductoPeriodo,
+      result: {} as ProductPeriod,
       status: 500,
       isSuccess: false,
       displayMessage: "Unknown error",
@@ -48,8 +48,8 @@ export const createProductoPeriodo = async (
 export const updateProductoPeriodo = async (
   token: string,
   id: number,
-  payload: ProductoPeriodo
-): Promise<ApiResponse<ProductoPeriodo>> => {
+  payload: ProductPeriod
+): Promise<ApiResponse<ProductPeriod>> => {
   try {
     const response = await ApiManager.put(`${baseUrl}/${id}`, payload, {
       headers: { Authorization: `Bearer ${token}` },
@@ -66,7 +66,7 @@ export const updateProductoPeriodo = async (
     console.error("Update ProductoPeriodo error:", error);
     if (axios.isAxiosError(error)) {
       return {
-        result: {} as ProductoPeriodo,
+        result: {} as ProductPeriod,
         status: error.response?.status ?? 500,
         isSuccess: false,
         displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
@@ -74,7 +74,7 @@ export const updateProductoPeriodo = async (
       };
     }
     return {
-      result: {} as ProductoPeriodo,
+      result: {} as ProductPeriod,
       status: 500,
       isSuccess: false,
       displayMessage: "Unknown error",

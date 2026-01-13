@@ -1,17 +1,16 @@
 import axios from "axios";
 import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
-import { PotenciasBoePeriodo } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
+import { BoePowerPeriod } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
 const baseUrl = "/potenciaboeperiodo";
 
-type PotenciaBoePeriodoCreate = Omit<PotenciasBoePeriodo, "id">;
-
+type PotenciaBoePeriodoCreate = Omit<BoePowerPeriod, "id">;
 // Crear
 export const createPotenciaBoePeriodo = async (
   token: string,
   payload: PotenciaBoePeriodoCreate
-): Promise<ApiResponse<PotenciasBoePeriodo>> => {
+): Promise<ApiResponse<BoePowerPeriod>> => {
   try {
     const response = await ApiManager.post(baseUrl, payload, {
       headers: { Authorization: `Bearer ${token}` },
@@ -28,7 +27,7 @@ export const createPotenciaBoePeriodo = async (
     console.error("Create PotenciaBoePeriodo error:", error);
     if (axios.isAxiosError(error)) {
       return {
-        result: {} as PotenciasBoePeriodo,
+        result: {} as BoePowerPeriod,
         status: error.response?.status ?? 500,
         isSuccess: false,
         displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
@@ -36,7 +35,7 @@ export const createPotenciaBoePeriodo = async (
       };
     }
     return {
-      result: {} as PotenciasBoePeriodo,
+      result: {} as BoePowerPeriod,
       status: 500,
       isSuccess: false,
       displayMessage: "Unknown error",
@@ -49,8 +48,8 @@ export const createPotenciaBoePeriodo = async (
 export const updatePotenciaBoePeriodo = async (
   token: string,
   id: number,
-  payload: PotenciasBoePeriodo
-): Promise<ApiResponse<PotenciasBoePeriodo>> => {
+  payload: BoePowerPeriod
+): Promise<ApiResponse<BoePowerPeriod>> => {
   try {
     const response = await ApiManager.put(`${baseUrl}/${id}`, payload, {
       headers: { Authorization: `Bearer ${token}` },
@@ -67,7 +66,7 @@ export const updatePotenciaBoePeriodo = async (
     console.error("Update PotenciaBoePeriodo error:", error);
     if (axios.isAxiosError(error)) {
       return {
-        result: {} as PotenciasBoePeriodo,
+        result: {} as BoePowerPeriod,
         status: error.response?.status ?? 500,
         isSuccess: false,
         displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
@@ -75,7 +74,7 @@ export const updatePotenciaBoePeriodo = async (
       };
     }
     return {
-      result: {} as PotenciasBoePeriodo,
+      result: {} as BoePowerPeriod,
       status: 500,
       isSuccess: false,
       displayMessage: "Unknown error",

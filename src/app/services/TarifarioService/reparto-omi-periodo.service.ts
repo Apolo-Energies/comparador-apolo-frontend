@@ -1,16 +1,16 @@
 import axios from "axios";
 import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
-import { RepartosOmiePeriodo } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
+import { OmieDistributionPeriod } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
 const baseUrl = "/repartoperiodoomie";
 
-type RepartoOmiePeriodoCreate = Omit<RepartosOmiePeriodo, "id">;
+type RepartoOmiePeriodoCreate = Omit<OmieDistributionPeriod, "id">;
 // Crear
 export const createRepartoOmiePeriodo = async (
   token: string,
   payload: RepartoOmiePeriodoCreate
-): Promise<ApiResponse<RepartosOmiePeriodo>> => {
+): Promise<ApiResponse<OmieDistributionPeriod>> => {
   try {
     const response = await ApiManager.post(baseUrl, payload, {
       headers: { Authorization: `Bearer ${token}` },
@@ -27,7 +27,7 @@ export const createRepartoOmiePeriodo = async (
     console.error("Create RepartoOmiePeriodo error:", error);
     if (axios.isAxiosError(error)) {
       return {
-        result: {} as RepartosOmiePeriodo,
+        result: {} as OmieDistributionPeriod,
         status: error.response?.status ?? 500,
         isSuccess: false,
         displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
@@ -35,7 +35,7 @@ export const createRepartoOmiePeriodo = async (
       };
     }
     return {
-      result: {} as RepartosOmiePeriodo,
+      result: {} as OmieDistributionPeriod,
       status: 500,
       isSuccess: false,
       displayMessage: "Unknown error",
@@ -48,8 +48,8 @@ export const createRepartoOmiePeriodo = async (
 export const updateRepartoOmiePeriodo = async (
   token: string,
   id: number,
-  payload: RepartosOmiePeriodo
-): Promise<ApiResponse<RepartosOmiePeriodo>> => {
+  payload: OmieDistributionPeriod
+): Promise<ApiResponse<OmieDistributionPeriod>> => {
   try {
     const response = await ApiManager.put(`${baseUrl}/${id}`, payload, {
       headers: { Authorization: `Bearer ${token}` },
@@ -66,7 +66,7 @@ export const updateRepartoOmiePeriodo = async (
     console.error("Update RepartoOmiePeriodo error:", error);
     if (axios.isAxiosError(error)) {
       return {
-        result: {} as RepartosOmiePeriodo,
+        result: {} as OmieDistributionPeriod,
         status: error.response?.status ?? 500,
         isSuccess: false,
         displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
@@ -74,7 +74,7 @@ export const updateRepartoOmiePeriodo = async (
       };
     }
     return {
-      result: {} as RepartosOmiePeriodo,
+      result: {} as OmieDistributionPeriod,
       status: 500,
       isSuccess: false,
       displayMessage: "Unknown error",
