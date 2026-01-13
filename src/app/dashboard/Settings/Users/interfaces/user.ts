@@ -1,11 +1,11 @@
 export interface User {
     id:              string;
-    nombreCompleto:  string;
+    fullName:  string;
     email:           string;
-    estadoActivo:    boolean;
+    isActive:    boolean;
     role:            number;
-    proveedorId:     number;
-    userCommissions?: UserCommission[];
+    providerId:     number;
+    commissions?: UserCommission[];
 }
 
 export interface UserCommission {

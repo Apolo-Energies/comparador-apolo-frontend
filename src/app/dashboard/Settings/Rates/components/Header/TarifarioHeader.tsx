@@ -1,14 +1,13 @@
 import { Download } from "lucide-react";
-import React from "react";
-import { Proveedor } from "../../interfaces/proveedor";
+import { Provider } from "../../interfaces/proveedor";
 import { useAlertStore } from "@/app/store/ui/alert.store";
 import { downloadExcelByProvId } from "@/app/services/FileService/excel.service";
 
 interface Props {
   // hasChanges: boolean;
-  proveedores: Proveedor[];
-  selectedProveedor: Proveedor | null;
-  setSelectedProveedor: (proveedor: Proveedor | null) => void;
+  proveedores: Provider[];
+  selectedProveedor: Provider | null;
+  setSelectedProveedor: (proveedor: Provider | null) => void;
   token?: string
 }
 
@@ -76,7 +75,7 @@ export const TarifarioHeader = ({
           >
             {proveedores.map((proveedor) => (
               <option key={proveedor.id} value={proveedor.id}>
-                {proveedor.nombre}
+                {proveedor.name}
               </option>
             ))}
           </select>

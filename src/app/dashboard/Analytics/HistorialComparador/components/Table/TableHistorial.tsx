@@ -58,7 +58,7 @@ export const TableHistorial = ({ filters }: Props) => {
       textColor: "text-foreground",
       render: (item: HistorialComparador) => (
         <div>
-          {item.user?.nombreCompleto}
+          {item.user?.fullName}
         </div>
       ),
     },

@@ -1,62 +1,63 @@
-export interface Proveedor {
+export interface Provider {
+  id:      number;
+  name:    string;
+  users:   any[];
+  tariffs: Tariff[];
+}
+
+export interface Tariff {
+  id:                number;
+  code:              string;
+  providerId:        number;
+  provider:          null;
+  products:          Product[];
+  omieDistributions: OmieDistribution[];
+  boePowers:         BoePower[];
+}
+
+export interface BoePower {
   id:       number;
-  nombre:   string;
-  tarifas:  Tarifa[];
+  tariffId: number;
+  tariff:   null;
+  periods:  BoePowerPeriod[];
 }
 
-export interface Tarifa {
-  id:           number;
-  codigo:       string;
-  proveedorId:  number;
-  proveedor:    null;
-  productos:    Producto[];
-  repartosOmie: RepartosOmie[];
-  potenciasBoe: PotenciasBoe[];
-}
-
-export interface PotenciasBoe {
-  id:       number;
-  tarifaId: number;
-  tarifa:   null;
-  periodos: PotenciasBoePeriodo[];
-}
-
-export interface PotenciasBoePeriodo {
-  id:            number;
-  periodo:       number;
-  valor:         number | null;
-  potenciaBoeId: number;
-  potenciaBoe:   null;
-}
-export interface ProductoPeriodo {
+export interface BoePowerPeriod {
   id:         number;
-  periodo:    number;
-  valor:      number | null;
-  productoId: number;
-  producto:   null;
+  period:     number;
+  value:      number;
+  boePowerId: number;
+  boePower:   null;
 }
 
-export interface RepartosOmiePeriodo {
-  id:            number;
-  periodo:       number;
-  factor:        number | null;
-  repartoOmieId: number;
-  repartoOmie:   null;
+export interface OmieDistribution {
+  id:         number;
+  periodName: string;
+  tariffId:   number;
+  tariff:     null;
+  periods:    OmieDistributionPeriod[];
 }
 
-export interface Producto {
+export interface OmieDistributionPeriod {
+  id:                 number;
+  period:             number;
+  factor:             number;
+  omieDistributionId: number;
+  omieDistribution:   null;
+}
+
+export interface Product {
   id:       number;
-  nombre:   string;
-  tarifaId: number;
-  tarifa:   null;
-  periodos: ProductoPeriodo[];
+  name:     string;
+  tariffId: number;
+  tariff:   null;
+  periods:  ProductPeriod[];
 }
 
-export interface RepartosOmie {
-  id:            number;
-  periodoNombre: string;
-  tarifaId:      number;
-  tarifa:        null;
-  periodos:      RepartosOmiePeriodo[];
+export interface ProductPeriod {
+  id:        number;
+  period:    number;
+  value:     number;
+  productId: number;
+  product:   null;
 }
-

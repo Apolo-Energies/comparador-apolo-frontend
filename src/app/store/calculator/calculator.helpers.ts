@@ -1,50 +1,50 @@
 import { FacturaResult, Periodo, PotenciaResult, ProductoResult } from "./calculator.types";
-import { useTarifaStore } from "../tarifario/tarifa.store";
+import { useTariffStore } from "../tarifario/tarifa.store";
 import { OcrData } from "@/app/dashboard/Analytics/interfaces/matilData";
 
 const round6 = (n: number) => Math.round(n * 1e6) / 1e6;
 const round3 = (num: number) => Math.round(num * 1000) / 1000;
 
 export const getBaseValue = (tarifa: string, producto: string, periodo: Periodo): number => {
-  const { tarifas } = useTarifaStore.getState();
-  const t = tarifas.find((x) => x.codigo === tarifa);
+  const { tariffs } = useTariffStore.getState();
+  const t = tariffs.find((x) => x.code === tarifa);
   if (!t) {
     return 0;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const prod = t.productos.find((p: any) => p.nombre === producto);
+  const prod = t.products.find((p: any) => p.nombre === producto);
   if (!prod) {
     return 0;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const p = prod.periodos.find((p: any) => p.periodo === periodo);
-  return p?.valor ?? 0;
+  const p = prod.periods.find((p: any) => p.periodo === periodo);
+  return p?.value ?? 0;
 };
 
 export const getRepartoOmie = (tarifa: string, periodo: Periodo): number => {
-  const { tarifas } = useTarifaStore.getState();
-  const t = tarifas.find((x) => x.codigo === tarifa);
+  const { tariffs } = useTariffStore.getState();
+  const t = tariffs.find((x) => x.code === tarifa);
   if (!t) return 0;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const reparto = t.repartosOmie?.find((r: any) => r.periodos.some((p: any) => p.periodo === periodo));
+  const reparto = t.omieDistributions?.find((r: any) => r.periodos.some((p: any) => p.periodo === periodo));
   if (!reparto) return 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const p = reparto.periodos.find((p: any) => p.periodo === periodo);
+  const p = reparto.periods.find((p: any) => p.periodo === periodo);
   return p?.factor ?? 0;
 };
 
 export const getPotenciaBOE = (tarifa: string, periodo: Periodo): number => {
-  const { tarifas } = useTarifaStore.getState();
-  const t = tarifas.find((x) => x.codigo === tarifa);
+  const { tariffs } = useTariffStore.getState();
+  const t = tariffs.find((x) => x.code === tarifa);
   if (!t) return 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const potencia = t.potenciasBoe?.find((r: any) => r.periodos.some((p:any) => p.periodo === periodo));
+  const potencia = t.boePowers?.find((r: any) => r.periodos.some((p:any) => p.periodo === periodo));
   if (!potencia) return 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const p = potencia.periodos.find((p: any) => p.periodo === periodo);
-  return p?.valor ?? 0;
+  const p = potencia.periods.find((p: any) => p.periodo === periodo);
+  return p?.value ?? 0;
 };
 
 export const calcularPrecios = (

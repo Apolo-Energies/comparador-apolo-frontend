@@ -1,13 +1,13 @@
 import axios from "axios";
 import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
-import { Proveedor } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
+import { Provider } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
 export const getProveedores = async (
   token: string
-): Promise<ApiResponse<Proveedor[]>> => {
+): Promise<ApiResponse<Provider[]>> => {
   try {
-    const response = await ApiManager.get("/proveedor", {
+    const response = await ApiManager.get("/provider", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -45,9 +45,9 @@ export const getProveedores = async (
 export const getProveedorById = async (
   id: number,
   token: string
-): Promise<ApiResponse<Proveedor>> => {
+): Promise<ApiResponse<Provider>> => {
   try {
-    const response = await ApiManager.get(`/proveedor/proveedores/${id}`, {
+    const response = await ApiManager.get(`/provider/providers/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -65,7 +65,7 @@ export const getProveedorById = async (
     console.error("Get proveedor by ID error:", error);
     if (axios.isAxiosError(error)) {
       return {
-        result: {} as Proveedor,
+        result: {} as Provider,
         status: error.response?.status ?? 500,
         isSuccess: false,
         displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
@@ -73,7 +73,7 @@ export const getProveedorById = async (
       };
     }
     return {
-      result: {} as Proveedor,
+      result: {} as Provider,
       status: 500,
       isSuccess: false,
       displayMessage: "Unknown error",
@@ -84,9 +84,9 @@ export const getProveedorById = async (
 
 export const getProveedorByUser = async (
   token: string
-): Promise<ApiResponse<Proveedor>> => {
+): Promise<ApiResponse<Provider>> => {
   try {
-    const response = await ApiManager.get('/proveedor/tarifas', {
+    const response = await ApiManager.get('/provider/tariffs', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -104,7 +104,7 @@ export const getProveedorByUser = async (
     console.error("Get proveedor by ID error:", error);
     if (axios.isAxiosError(error)) {
       return {
-        result: {} as Proveedor,
+        result: {} as Provider,
         status: error.response?.status ?? 500,
         isSuccess: false,
         displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
@@ -112,7 +112,7 @@ export const getProveedorByUser = async (
       };
     }
     return {
-      result: {} as Proveedor,
+      result: {} as Provider,
       status: 500,
       isSuccess: false,
       displayMessage: "Unknown error",

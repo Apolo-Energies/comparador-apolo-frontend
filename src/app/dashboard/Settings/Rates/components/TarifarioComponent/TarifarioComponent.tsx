@@ -13,32 +13,37 @@ import {
 import { useSession } from "next-auth/react";
 import { useLoadingStore } from "@/app/store/ui/loading.store";
 import { useReloadStore } from "@/app/store/reloadData/reloadFlag.store";
-import { Proveedor } from "../../interfaces/proveedor";
+import { Provider } from "../../interfaces/proveedor";
 import { TarifaComponent } from "../Tarifa/TarifaComponent";
-import { useTarifaStore } from "@/app/store/tarifario/tarifa.store";
+import { useTariffStore } from "@/app/store/tarifario/tarifa.store";
 
 export const TarifarioComponent = () => {
   const [selectedTab, setSelectedTab] = useState("proveedor");
-  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
-  const { setProveedorActual, setTarifas } = useTarifaStore();
+  const [providers, setProviders] = useState<Provider[]>([]);
+
+  const {
+    currentProvider,
+    setCurrentProvider,
+    tariffs,
+    setTariffs,
+  } = useTariffStore();
 
   const { data: session, status } = useSession();
   const { setLoading } = useLoadingStore();
   const { reloadFlag } = useReloadStore();
 
-  // Cargar lista de proveedores al montar
   useEffect(() => {
-    const fetchProveedores = async () => {
+    const fetchProviders = async () => {
       if (!session?.user.token) return;
 
       setLoading(true);
       try {
         const response = await getProveedores(session.user.token);
         if (response.isSuccess) {
-          setProveedores(response.result);
+          setProviders(response.result);
 
           if (response.result.length > 0) {
-            setProveedorActual(response.result[0]);
+            setCurrentProvider(response.result[0]);
           }
         }
       } finally {
@@ -46,43 +51,37 @@ export const TarifarioComponent = () => {
       }
     };
 
-    if (status === "authenticated") fetchProveedores();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user.token, reloadFlag]);
-
-  const proveedorActual = useTarifaStore((state) => state.proveedorActual);
+    if (status === "authenticated") fetchProviders();
+  }, [session?.user.token, reloadFlag, status, setLoading, setCurrentProvider]);
 
   useEffect(() => {
-    const fetchProveedorData = async () => {
-      if (!proveedorActual || !session?.user.token) return;
+    const fetchProviderData = async () => {
+      if (!currentProvider || !session?.user.token) return;
 
       setLoading(true);
       try {
         const response = await getProveedorById(
-          proveedorActual.id,
+          currentProvider.id,
           session.user.token
         );
         if (response.isSuccess && response.result) {
-          setTarifas(response.result.tarifas || []);
+          setTariffs(response.result.tariffs || []);
         }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProveedorData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [proveedorActual, session?.user.token]);
-
-  const tarifas = useTarifaStore((state) => state.tarifas);
+    fetchProviderData();
+  }, [currentProvider, session?.user.token, setLoading, setTariffs]);
 
   return (
     <div className="min-h-screen bg-body">
       <div className="mx-auto space-y-1">
         <TarifarioHeader
-          proveedores={proveedores}
-          selectedProveedor={proveedorActual}
-          setSelectedProveedor={setProveedorActual}
+          proveedores={providers}
+          selectedProveedor={currentProvider}
+          setSelectedProveedor={setCurrentProvider}
           token={session?.user.token}
         />
 
@@ -91,19 +90,19 @@ export const TarifarioComponent = () => {
           setSelectedTab={setSelectedTab}
         />
 
-        {selectedTab === "proveedor" && proveedorActual && (
+        {selectedTab === "proveedor" && currentProvider && (
           <ProveedorComponent />
         )}
 
-        {selectedTab === "tarifas" && tarifas.length > 0 && (
+        {selectedTab === "tarifas" && tariffs.length > 0 && (
           <TarifaComponent token={session?.user.token} />
         )}
 
-        {selectedTab === "reparto" && tarifas.length > 0 && (
+        {selectedTab === "reparto" && tariffs.length > 0 && (
           <RepartoComponent token={session?.user.token} />
         )}
 
-        {selectedTab === "potencia" && tarifas.length > 0 && (
+        {selectedTab === "potencia" && tariffs.length > 0 && (
           <PotenciaComponent token={session?.user.token} />
         )}
       </div>

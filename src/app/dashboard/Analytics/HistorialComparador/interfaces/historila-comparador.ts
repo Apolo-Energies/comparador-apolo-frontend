@@ -11,9 +11,9 @@ export interface HistorialComparador {
 
 export interface User {
     id?: string;
-    nombreCompleto: string;
+    fullName: string;
     email: string;
-    estadoActivo: boolean;
+    isActive: boolean;
     role?: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     userCommissions?: any[];

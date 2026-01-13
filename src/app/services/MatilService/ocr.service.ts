@@ -1,15 +1,15 @@
 import { ApiManager } from "../ApiManager/ApiManager";
 // import { ApiManagerColaboradores } from "../ApiManager/ApiManagerColaboradores";
 
-export const subirYProcesarDocumento = async (token :string, file: File, nombre: string, tipo: number, selectedUser: string) => {
+export const subirYProcesarDocumento = async (token :string, file: File, name: string, type: number, userId: string) => {
   try {
     const formData = new FormData();
-    formData.append("Archivo", file);
-    formData.append("Nombre", nombre);
-    formData.append("Tipo", tipo.toString());
-    formData.append("UserId", selectedUser);
+    formData.append("File", file);
+    formData.append("Name", name);
+    formData.append("Type", type.toString());
+    formData.append("UserId", userId);
 
-    const response = await ApiManager.post("/archivos/upload-and-process", formData, {
+    const response = await ApiManager.post("/files/upload-and-process", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`

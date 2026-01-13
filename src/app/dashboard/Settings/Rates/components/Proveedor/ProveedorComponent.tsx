@@ -1,8 +1,8 @@
 import React from "react";
-import { useTarifaStore } from "@/app/store/tarifario/tarifa.store";
+import { useTariffStore } from "@/app/store/tarifario/tarifa.store";
 
 export const ProveedorComponent = () => {
-  const { proveedorActual } = useTarifaStore();
+  const { currentProvider } = useTariffStore();
 
   return (
     <div className="space-y-8">
@@ -22,7 +22,7 @@ export const ProveedorComponent = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h4 className="text-2xl md:text-3xl font-bold text-foreground">
-                {proveedorActual?.nombre || "Sin proveedor seleccionado"}
+                {currentProvider?.name || "Sin proveedor seleccionado"}
               </h4>
               <span className="inline-block mt-2 px-3 py-1 text-sm font-medium rounded-lg bg-green-100 text-green-800">
                 Activo
@@ -36,7 +36,7 @@ export const ProveedorComponent = () => {
                 Tarifas registradas
               </div>
               <div className="text-3xl md:text-4xl font-bold text-foreground text-center">
-                {proveedorActual?.tarifas.length || 0}
+                {currentProvider?.tariffs.length || 0}
               </div>
             </div>
 

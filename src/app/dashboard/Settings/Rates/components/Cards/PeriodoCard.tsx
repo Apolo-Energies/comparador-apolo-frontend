@@ -2,13 +2,13 @@ import React from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { formatValue } from "@/utils/tarifario/formatsColors";
 import {
-  PotenciasBoePeriodo,
-  ProductoPeriodo,
-  RepartosOmiePeriodo,
+  BoePowerPeriod,
+  ProductPeriod,
+  OmieDistributionPeriod,
 } from "../../interfaces/proveedor";
 
 interface Props {
-  periodo: RepartosOmiePeriodo | PotenciasBoePeriodo | ProductoPeriodo;
+  periodo: OmieDistributionPeriod | BoePowerPeriod | ProductPeriod;
   cellId: string;
   isEditing: boolean;
   editValue: string;
@@ -35,14 +35,14 @@ export const PeriodoCard = ({
   unit,
 }: Props) => {
   const value =
-    "valor" in periodo
-      ? periodo.valor
+    "value" in periodo
+      ? periodo.value
       : "factor" in periodo
       ? periodo.factor
       : null;
 
   const periodoLabel =
-    periodo.periodo != null ? `P${periodo.periodo}` : "Sin período";
+    periodo.period != null ? `P${periodo.period}` : "Sin período";
 
   // Modo edición
   if (isEditing) {

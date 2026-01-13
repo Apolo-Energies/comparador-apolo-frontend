@@ -4,7 +4,7 @@ import { File } from "../interfaces/pdf";
 export const downloadExcel = async (token: string, data: File) => {
   try {
     // Enviamos los datos al endpoint que genera el PDF
-    const response = await ApiManager.post("/proveedor/excel", data, {
+    const response = await ApiManager.post("/provider/excel", data, {
       responseType: "blob", // importante: recibir archivo
       headers: {
         Authorization: `Bearer ${token}`,
@@ -38,10 +38,10 @@ export const downloadExcel = async (token: string, data: File) => {
 };
 
 
-export const downloadExcelByProvId = async (token: string, proveedorId: number) => {
+export const downloadExcelByProvId = async (token: string, providerId: number) => {
     try {
       // Enviamos los datos al endpoint que genera el PDF
-      const response = await ApiManager.post(`/proveedor/excel/${proveedorId}`, null, {
+      const response = await ApiManager.post(`/provider/excel/${providerId}`, null, {
         responseType: "blob", // importante: recibir archivo
         headers: {
           Authorization: `Bearer ${token}`,

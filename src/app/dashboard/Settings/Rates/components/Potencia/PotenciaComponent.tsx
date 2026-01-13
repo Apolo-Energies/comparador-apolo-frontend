@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { PeriodoCard } from "../Cards/PeriodoCard";
 import { Zap } from "lucide-react";
 import { getPeriodColor } from "@/utils/tarifario/formatsColors";
-import { PotenciasBoe, PotenciasBoePeriodo } from "../../interfaces/proveedor";
+import { BoePower, BoePowerPeriod } from "../../interfaces/proveedor";
 import { TarifaSelector } from "../SelectorTop/TarifaSelector";
 import { useAlertStore } from "@/app/store/ui/alert.store";
 import {
@@ -10,7 +10,7 @@ import {
   deletePotenciaBoePeriodo,
   updatePotenciaBoePeriodo,
 } from "@/app/services/TarifarioService/potencia-boe-periodo.service";
-import { useTarifaStore } from "@/app/store/tarifario/tarifa.store";
+import { useTariffStore } from "@/app/store/tarifario/tarifa.store";
 
 interface Props {
   token?: string;
@@ -22,10 +22,9 @@ export const PotenciaComponent = ({ token }: Props) => {
   const [editValue, setEditValue] = useState<string>("");
 
   const { showAlert } = useAlertStore();
-  const tarifas = useTarifaStore((state) => state.tarifas);
-  const setTarifas = useTarifaStore((state) => state.setTarifas);
+  const tarifas = useTariffStore((state) => state.tariffs);
+  const setTarifas = useTariffStore((state) => state.setTariffs);
 
-  // Editar celda
   const handleEditStart = (cellId: string, value: number) => {
     setEditingCell(cellId);
     setEditValue(isNaN(value) ? "" : value.toString());
@@ -36,40 +35,38 @@ export const PotenciaComponent = ({ token }: Props) => {
     setEditValue("");
   };
 
-  // Guardar cambios
-  const handleEditSave = async (periodo: PotenciasBoePeriodo) => {
+  const handleEditSave = async (period: BoePowerPeriod) => {
     if (!token) {
       showAlert("Sin token", "error");
       return;
     }
 
-    const valor = parseFloat(editValue);
-    if (isNaN(valor)) return;
+    const value = parseFloat(editValue);
+    if (isNaN(value)) return;
 
     try {
-      if (periodo.id === -1) {
-        // Crear
+      if (period.id === -1) {
         const response = await createPotenciaBoePeriodo(token, {
-          potenciaBoeId: periodo.potenciaBoeId,
-          periodo: periodo.periodo,
-          valor,
-          potenciaBoe: null,
+          boePowerId: period.boePowerId,
+          period: period.period,
+          value,
+          boePower: null,
         });
 
         if (response.isSuccess) {
           showAlert("Agregado correctamente", "success");
           setTarifas(
-            tarifas.map((tarifa) => ({
-              ...tarifa,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              potenciasBoe: tarifa.potenciasBoe.map((p: any) =>
-                p.id === periodo.potenciaBoeId
+            tarifas.map((tariff) => ({
+              ...tariff,
+              boePowers: tariff.boePowers.map((p) =>
+                p.id === period.boePowerId
                   ? {
                       ...p,
-                      periodos: [
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        ...p.periodos.filter((pp: any) => pp.periodo !== periodo.periodo),
-                        { ...periodo, id: response.result.id, valor },
+                      periods: [
+                        ...p.periods.filter(
+                          (pp) => pp.period !== period.period
+                        ),
+                        { ...period, id: response.result.id, value },
                       ],
                     }
                   : p
@@ -78,25 +75,22 @@ export const PotenciaComponent = ({ token }: Props) => {
           );
         }
       } else {
-        // Actualizar
-        const response = await updatePotenciaBoePeriodo(token, periodo.id, {
-          ...periodo,
-          valor,
+        const response = await updatePotenciaBoePeriodo(token, period.id, {
+          ...period,
+          value,
         });
 
         if (response.isSuccess) {
           showAlert("Actualizado correctamente", "success");
           setTarifas(
-            tarifas.map((tarifa) => ({
-              ...tarifa,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              potenciasBoe: tarifa.potenciasBoe.map((p: any) =>
-                p.id === periodo.potenciaBoeId
+            tarifas.map((tariff) => ({
+              ...tariff,
+              boePowers: tariff.boePowers.map((p) =>
+                p.id === period.boePowerId
                   ? {
                       ...p,
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      periodos: p.periodos.map((pp:any) =>
-                        pp.id === periodo.id ? { ...pp, valor } : pp
+                      periods: p.periods.map((pp) =>
+                        pp.id === period.id ? { ...pp, value } : pp
                       ),
                     }
                   : p
@@ -114,25 +108,27 @@ export const PotenciaComponent = ({ token }: Props) => {
     setEditValue("");
   };
 
-  // Eliminar periodo
-  const handleDeletePeriodo = async (periodo: PotenciasBoePeriodo) => {
+  const handleDeletePeriodo = async (period: BoePowerPeriod) => {
     if (!token) {
       showAlert("Sin token", "error");
       return;
     }
 
     try {
-      const response = await deletePotenciaBoePeriodo(token, periodo.id);
+      const response = await deletePotenciaBoePeriodo(token, period.id);
       if (response.isSuccess) {
         showAlert("Eliminado correctamente", "success");
         setTarifas(
-          tarifas.map((tarifa) => ({
-            ...tarifa,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            potenciasBoe: tarifa.potenciasBoe.map((p: any) =>
-              p.id === periodo.potenciaBoeId
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ? { ...p, periodos: p.periodos.filter((pp:any) => pp.id !== periodo.id) }
+          tarifas.map((tariff) => ({
+            ...tariff,
+            boePowers: tariff.boePowers.map((p) =>
+              p.id === period.boePowerId
+                ? {
+                    ...p,
+                    periods: p.periods.filter(
+                      (pp) => pp.id !== period.id
+                    ),
+                  }
                 : p
             ),
           }))
@@ -147,32 +143,35 @@ export const PotenciaComponent = ({ token }: Props) => {
     setEditValue("");
   };
 
-  // Filtrar potencias
-  const getFilteredData = (): PotenciasBoe[] => {
-    const allPotencias = tarifas.flatMap((t) => t.potenciasBoe);
-    if (selectedTarifa === "all") return allPotencias;
+  const getFilteredData = (): BoePower[] => {
+    const allPowers = tarifas.flatMap((t) => t.boePowers);
+    if (selectedTarifa === "all") return allPowers;
     if (selectedTarifa === "") return [];
-    return allPotencias.filter((p) => p.tarifaId.toString() === selectedTarifa);
+    return allPowers.filter(
+      (p) => p.tariffId.toString() === selectedTarifa
+    );
   };
 
-  // Preparar periodos
-  const preparePeriodoData = (potencia: PotenciasBoe) => {
-    const periodosMap = new Map(potencia.periodos.map((p) => [p.periodo, p]));
+  const preparePeriodoData = (power: BoePower) => {
+    const periodsMap = new Map(
+      power.periods.map((p) => [p.period, p])
+    );
 
     return Array.from({ length: 6 }, (_, i) => {
       const num = i + 1;
-      const periodo: PotenciasBoePeriodo = periodosMap.get(num) ?? {
-        id: -1,
-        periodo: num,
-        valor: null,
-        potenciaBoeId: potencia.id,
-        potenciaBoe: null,
-      };
+      const period: BoePowerPeriod =
+        periodsMap.get(num) ?? {
+          id: -1,
+          period: num,
+          value: 0,
+          boePowerId: power.id,
+          boePower: null,
+        };
 
       return {
-        periodo,
-        cellId: `potencia-${potencia.id}-${num}`,
-        isEditing: editingCell === `potencia-${potencia.id}-${num}`,
+        period,
+        cellId: `boe-power-${power.id}-${num}`,
+        isEditing: editingCell === `boe-power-${power.id}-${num}`,
       };
     });
   };
@@ -180,20 +179,22 @@ export const PotenciaComponent = ({ token }: Props) => {
   return (
     <div className="space-y-6">
       <TarifaSelector
-        selectedTarifa={selectedTarifa}
-        setSelectedTarifa={setSelectedTarifa}
+        selectedTariff={selectedTarifa}
+        setSelectedTariff={setSelectedTarifa}
         options={tarifas}
         showAll
       />
 
       {selectedTarifa && (
         <div className="space-y-6">
-          {getFilteredData().map((potencia) => {
-            const tarifa = tarifas.find((t) => t.id === potencia.tarifaId);
+          {getFilteredData().map((power) => {
+            const tariff = tarifas.find(
+              (t) => t.id === power.tariffId
+            );
 
             return (
               <div
-                key={potencia.id}
+                key={power.id}
                 className="bg-card rounded-lg border border-border shadow-sm overflow-hidden"
               >
                 <div className="p-6 border-b border-border flex items-center gap-3">
@@ -202,7 +203,7 @@ export const PotenciaComponent = ({ token }: Props) => {
                   </div>
                   <div>
                     <p className="text-lg font-semibold text-foreground">
-                      {tarifa?.codigo ?? "Sin código"}
+                      {tariff?.code ?? "Sin código"}
                     </p>
                   </div>
                 </div>
@@ -212,33 +213,41 @@ export const PotenciaComponent = ({ token }: Props) => {
                     Periodos de Potencia BOE
                   </h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {preparePeriodoData(potencia).map(({ periodo, cellId, isEditing }) => (
-                      <div
-                        key={cellId}
-                        className="text-center p-4 bg-body rounded-lg group hover:bg-card transition-all duration-200 border border-border relative"
-                      >
+                    {preparePeriodoData(power).map(
+                      ({ period, cellId, isEditing }) => (
                         <div
-                          className={`inline-block px-2.5 py-1 text-xs font-bold rounded-lg mb-3 border ${getPeriodColor(
-                            periodo.periodo
-                          )}`}
+                          key={cellId}
+                          className="text-center p-4 bg-body rounded-lg group hover:bg-card transition-all duration-200 border border-border relative"
                         >
-                          P{periodo.periodo}
-                        </div>
+                          <div
+                            className={`inline-block px-2.5 py-1 text-xs font-bold rounded-lg mb-3 border ${getPeriodColor(
+                              period.period
+                            )}`}
+                          >
+                            P{period.period}
+                          </div>
 
-                        <PeriodoCard
-                          periodo={periodo}
-                          cellId={cellId}
-                          isEditing={isEditing}
-                          editValue={editValue}
-                          onEditStart={handleEditStart}
-                          onEditChange={setEditValue}
-                          onEditSave={() => handleEditSave(periodo)}
-                          onEditCancel={handleEditCancel}
-                          onDelete={(p) => handleDeletePeriodo(p as PotenciasBoePeriodo)}
-                          decimals={6}
-                        />
-                      </div>
-                    ))}
+                          <PeriodoCard
+                            periodo={period}
+                            cellId={cellId}
+                            isEditing={isEditing}
+                            editValue={editValue}
+                            onEditStart={handleEditStart}
+                            onEditChange={setEditValue}
+                            onEditSave={() =>
+                              handleEditSave(period)
+                            }
+                            onEditCancel={handleEditCancel}
+                            onDelete={(p) =>
+                              handleDeletePeriodo(
+                                p as BoePowerPeriod
+                              )
+                            }
+                            decimals={6}
+                          />
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               </div>

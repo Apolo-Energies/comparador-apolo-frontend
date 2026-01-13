@@ -18,7 +18,7 @@ export const FormUser = ({ register, errors }: Props) => {
       <div className="grid grid-cols-1 gap-2">
         <Input
           label="Nombre Completo"
-          name="nombreCompleto"
+          name="fullName"
           placeholder="Apolo"
           register={register}
           required

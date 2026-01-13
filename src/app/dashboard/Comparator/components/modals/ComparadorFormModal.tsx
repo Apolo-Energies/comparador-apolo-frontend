@@ -160,7 +160,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       const exportData: File = {
         lineas,
         archivoId: fileId,
-        proveedorId: 1,
+        providerId: 1,
         // usuario: "usuario_ejemplo",
         cups: matilData?.cliente?.cups || "-",
         datos: {

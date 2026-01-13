@@ -11,17 +11,17 @@ import { subirYProcesarDocumento } from "@/app/services/MatilService/ocr.service
 import { getTipoArchivo } from "@/utils/typeFile";
 import { useSession } from "next-auth/react";
 import { getProveedorByUser } from "@/app/services/TarifarioService/proveedor.service";
-import { useTarifaStore } from "@/app/store/tarifario/tarifa.store";
 import { OcrData } from "../../Analytics/interfaces/matilData";
 import { getSelectUsers } from "@/app/services/UserService/user.service";
 import { UserSelect } from "../interfaces/user";
 import { ComboboxSelect } from "@/components/Selects/ComboboxSelect";
+import { useTariffStore } from "@/app/store/tarifario/tarifa.store";
 
 export const Comparador = () => {
   const [matilData, setMatilData] = useState<unknown | null>(null);
   const [fileId, setFileId] = useState<string | null>(null);
 
-  const [usuarios, setUsuarios] = useState<UserSelect[]>([]);
+  const [users, setUsers] = useState<UserSelect[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserSelect["id"] | "">("");
 
   const [file, setFile] = useState<File | string | null>(null);
@@ -30,7 +30,7 @@ export const Comparador = () => {
   const { setLoading } = useLoadingStore();
   const { showAlert } = useAlertStore();
 
-  const { setTarifas, setProveedorActual } = useTarifaStore();
+  const { setTariffs, setCurrentProvider } = useTariffStore();
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -41,8 +41,8 @@ export const Comparador = () => {
         const response = await getProveedorByUser(session.user.token);
 
         if (response.isSuccess && response.result) {
-          setProveedorActual(response.result);
-          setTarifas(response.result.tarifas ?? []);
+          setCurrentProvider(response.result);
+          setTariffs(response.result.tariffs ?? []);
         } else {
           console.error("Error cargando tarifas:", response.errorMessages);
         }
@@ -58,8 +58,8 @@ export const Comparador = () => {
         const response = await getSelectUsers(session.user.token);
 
         if (response.isSuccess && response.result) {
-          console.log(response.result);
-          setUsuarios(mapUsersToSelect(response.result));
+          console.log("respuesta usuarios: ", response.result);
+          setUsers(mapUsersToSelect(response.result));
         } else {
           console.error("Error cargando tarifas:", response.errorMessages);
         }
@@ -110,7 +110,7 @@ export const Comparador = () => {
   const mapUsersToSelect = (data: any[]): UserSelect[] => {
     return data.map((u) => ({
       id: u.id,
-      name: u.nombreCompleto
+      name: u.fullName as string
     }));
   };
 
@@ -123,7 +123,7 @@ export const Comparador = () => {
           session?.user?.role === "Master" &&
           <ComboboxSelect
             value={selectedUser}
-            options={usuarios}
+            options={users}
             placeholder="Seleccionar usuario"
             onChange={(value) => setSelectedUser(value)}
             className="w-full"

@@ -2,7 +2,7 @@ export interface File {
     usuario?:   string;
     archivoId: string;
     cups:      string;
-    proveedorId?: number;
+    providerId?: number;
     datos:     Datos;
     cliente:   Cliente;
     totales:   Totales;

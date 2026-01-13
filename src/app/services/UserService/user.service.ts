@@ -84,7 +84,7 @@ export const registerUser = async (
   try {
 
     const payload = {
-      nombreCompleto: userData.nombreCompleto,
+      fullName: userData.fullName,
       email: userData.email,
       role: userData.role
     };
@@ -214,10 +214,10 @@ export const changeUserRole = async (
 export const updateProveedor = async (
   token: string,
   userId: string,
-  proveedorId: number
+  providerId: number
 ): Promise<ApiResponse<User>> => {
   try {
-    const payload = { proveedorId };
+    const payload = { providerId };
 
     const response = await ApiManager.put(`/user/provider/${userId}`, payload, {
       headers: {

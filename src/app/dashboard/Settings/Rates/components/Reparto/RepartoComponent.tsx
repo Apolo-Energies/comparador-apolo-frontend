@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { PeriodoCard } from "../Cards/PeriodoCard";
 import { TrendingUp } from "lucide-react";
 import { getPeriodColor } from "@/utils/tarifario/formatsColors";
 import {
-  RepartosOmie,
-  RepartosOmiePeriodo,
+  OmieDistribution,
+  OmieDistributionPeriod,
 } from "../../interfaces/proveedor";
 import { TarifaSelector } from "../SelectorTop/TarifaSelector";
 import { useAlertStore } from "@/app/store/ui/alert.store";
@@ -13,21 +13,21 @@ import {
   deleteRepartoOmiePeriodo,
   updateRepartoOmiePeriodo,
 } from "@/app/services/TarifarioService/reparto-omi-periodo.service";
-import { useTarifaStore } from "@/app/store/tarifario/tarifa.store";
+import { useTariffStore } from "@/app/store/tarifario/tarifa.store";
 
 interface Props {
   token?: string;
 }
 
 export const RepartoComponent = ({ token }: Props) => {
-  const [selectedTarifa, setSelectedTarifa] = useState<string>("all");
+  const [selectedTariff, setSelectedTariff] = useState<string>("all");
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>("");
 
   const { showAlert } = useAlertStore();
-  const { tarifas, setTarifas } = useTarifaStore();
+  const tariffs = useTariffStore((state) => state.tariffs);
+  const setTariffs = useTariffStore((state) => state.setTariffs);
 
-  // Editar celda
   const handleEditStart = (cellId: string, value: number): void => {
     setEditingCell(cellId);
     setEditValue(isNaN(value) ? "" : value.toString());
@@ -38,70 +38,65 @@ export const RepartoComponent = ({ token }: Props) => {
     setEditValue("");
   };
 
-  // Guardar cambios
-  const handleEditSave = async (periodo: RepartosOmiePeriodo) => {
+  const handleEditSave = async (period: OmieDistributionPeriod) => {
     if (!token) {
       showAlert("Sin token", "error");
       return;
     }
 
-    const valor = parseFloat(editValue);
-    if (isNaN(valor)) return;
+    const factor = parseFloat(editValue);
+    if (isNaN(factor)) return;
 
     try {
-      if (periodo.id === -1) {
-        // Crear
+      if (period.id === -1) {
         const response = await createRepartoOmiePeriodo(token, {
-          repartoOmieId: periodo.repartoOmieId,
-          periodo: periodo.periodo,
-          factor: valor,
-          repartoOmie: null,
+          omieDistributionId: period.omieDistributionId,
+          period: period.period,
+          factor,
+          omieDistribution: null,
         });
 
         if (response.isSuccess) {
           showAlert("Agregado correctamente", "success");
-          setTarifas(
-            tarifas.map((tarifa) => ({
-              ...tarifa,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              repartosOmie: tarifa.repartosOmie.map((r: any) =>
-                r.id === periodo.repartoOmieId
+          setTariffs(
+            tariffs.map((tariff) => ({
+              ...tariff,
+              omieDistributions: tariff.omieDistributions.map((d) =>
+                d.id === period.omieDistributionId
                   ? {
-                      ...r,
-                      periodos: [
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        ...r.periodos.filter((p: any) => p.periodo !== periodo.periodo),
-                        { ...periodo, id: response.result.id, factor: valor },
+                      ...d,
+                      periods: [
+                        ...d.periods.filter(
+                          (p) => p.period !== period.period
+                        ),
+                        { ...period, id: response.result.id, factor },
                       ],
                     }
-                  : r
+                  : d
               ),
             }))
           );
         }
       } else {
-        // Actualizar
-        const response = await updateRepartoOmiePeriodo(token, periodo.id, {
-          ...periodo,
-          factor: valor,
+        const response = await updateRepartoOmiePeriodo(token, period.id, {
+          ...period,
+          factor,
         });
 
         if (response.isSuccess) {
           showAlert("Actualizado correctamente", "success");
-          setTarifas(
-            tarifas.map((tarifa) => ({
-              ...tarifa,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              repartosOmie: tarifa.repartosOmie.map((r: any) =>
-                r.id === periodo.repartoOmieId
+          setTariffs(
+            tariffs.map((tariff) => ({
+              ...tariff,
+              omieDistributions: tariff.omieDistributions.map((d) =>
+                d.id === period.omieDistributionId
                   ? {
-                      ...r,
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      periodos: r.periodos.map((p: any) =>
-                        p.id === periodo.id ? { ...p, factor: valor } : p
+                      ...d,
+                      periods: d.periods.map((p) =>
+                        p.id === period.id ? { ...p, factor } : p
                       ),
                     }
-                  : r
+                  : d
               ),
             }))
           );
@@ -116,29 +111,28 @@ export const RepartoComponent = ({ token }: Props) => {
     setEditValue("");
   };
 
-  // Eliminar
-  const handleDeletePeriodo = async (periodo: RepartosOmiePeriodo) => {
+  const handleDeletePeriodo = async (period: OmieDistributionPeriod) => {
     if (!token) {
       showAlert("Sin token", "error");
       return;
     }
 
     try {
-      const response = await deleteRepartoOmiePeriodo(token, periodo.id);
+      const response = await deleteRepartoOmiePeriodo(token, period.id);
       if (response.isSuccess) {
         showAlert("Eliminado correctamente", "success");
-        setTarifas(
-          tarifas.map((tarifa) => ({
-            ...tarifa,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            repartosOmie: tarifa.repartosOmie.map((r: any) =>
-              r.id === periodo.repartoOmieId
+        setTariffs(
+          tariffs.map((tariff) => ({
+            ...tariff,
+            omieDistributions: tariff.omieDistributions.map((d) =>
+              d.id === period.omieDistributionId
                 ? {
-                    ...r,
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    periodos: r.periodos.filter((p: any) => p.id !== periodo.id),
+                    ...d,
+                    periods: d.periods.filter(
+                      (p) => p.id !== period.id
+                    ),
                   }
-                : r
+                : d
             ),
           }))
         );
@@ -152,111 +146,119 @@ export const RepartoComponent = ({ token }: Props) => {
     setEditValue("");
   };
 
-  // Filtrar repartos
-  const getFilteredData = (): RepartosOmie[] => {
-    const allRepartos = tarifas.flatMap((t) => t.repartosOmie);
-    if (selectedTarifa === "all") return allRepartos;
-    if (selectedTarifa === "") return [];
-    return allRepartos.filter((r) => r.tarifaId.toString() === selectedTarifa);
+  const getFilteredData = (): OmieDistribution[] => {
+    const allDistributions = tariffs.flatMap(
+      (t) => t.omieDistributions
+    );
+    if (selectedTariff === "all") return allDistributions;
+    if (selectedTariff === "") return [];
+    return allDistributions.filter(
+      (d) => d.tariffId.toString() === selectedTariff
+    );
   };
 
-  // Preparar periodos
-  const preparePeriodoData = (reparto: RepartosOmie) => {
-    const periodosMap = new Map(reparto.periodos.map((p) => [p.periodo, p]));
+  const preparePeriodoData = (distribution: OmieDistribution) => {
+    const periodsMap = new Map(
+      distribution.periods.map((p) => [p.period, p])
+    );
 
     return Array.from({ length: 6 }, (_, i) => {
       const num = i + 1;
-      const periodo: RepartosOmiePeriodo = periodosMap.get(num) ?? {
-        id: -1,
-        periodo: num,
-        factor: null,
-        repartoOmieId: reparto.id,
-        repartoOmie: null,
-      };
+      const period: OmieDistributionPeriod =
+        periodsMap.get(num) ?? {
+          id: -1,
+          period: num,
+          factor: 0,
+          omieDistributionId: distribution.id,
+          omieDistribution: null,
+        };
 
       return {
-        periodo,
-        cellId: `reparto-${reparto.id}-${num}`,
-        isEditing: editingCell === `reparto-${reparto.id}-${num}`,
+        period,
+        cellId: `omie-${distribution.id}-${num}`,
+        isEditing: editingCell === `omie-${distribution.id}-${num}`,
       };
     });
   };
 
-  // Render
   return (
     <div className="space-y-6">
       <TarifaSelector
-        selectedTarifa={selectedTarifa}
-        setSelectedTarifa={setSelectedTarifa}
-        options={tarifas}
+        selectedTariff={selectedTariff}
+        setSelectedTariff={setSelectedTariff}
+        options={tariffs}
         showAll
       />
 
-      {selectedTarifa && (
+      {selectedTariff && (
         <div className="space-y-6">
-          {getFilteredData().map((reparto) => {
-            const periodosRender = preparePeriodoData(reparto);
-
-            return (
-              <div
-                key={reparto.id}
-                className="bg-card border-r rounded-lg border border-border shadow-sm overflow-hidden"
-              >
-                <div className="p-6 border-b border-border">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg">
-                      <TrendingUp className="w-6 h-6 text-sidebar-selected-text" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-foreground">
-                        {tarifas.find((t) => t.id === reparto.tarifaId)?.codigo}
-                      </h3>
-                      <span className="text-sm text-muted-foreground">
-                        {reparto.periodoNombre}
-                      </span>
-                    </div>
+          {getFilteredData().map((distribution) => (
+            <div
+              key={distribution.id}
+              className="bg-card border-r rounded-lg border border-border shadow-sm overflow-hidden"
+            >
+              <div className="p-6 border-b border-border">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg">
+                    <TrendingUp className="w-6 h-6 text-sidebar-selected-text" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      {
+                        tariffs.find(
+                          (t) => t.id === distribution.tariffId
+                        )?.code
+                      }
+                    </h3>
+                    <span className="text-sm text-muted-foreground">
+                      {distribution.periodName}
+                    </span>
                   </div>
                 </div>
+              </div>
 
-                <div className="p-6">
-                  <h4 className="text-sm font-semibold text-muted-foreground mb-4">
-                    Factores de Reparto
-                  </h4>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {periodosRender.map(({ periodo, cellId, isEditing }) => (
+              <div className="p-6">
+                <h4 className="text-sm font-semibold text-muted-foreground mb-4">
+                  Distribution Factors
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  {preparePeriodoData(distribution).map(
+                    ({ period, cellId, isEditing }) => (
                       <div
                         key={cellId}
                         className="text-center p-4 bg-body rounded-lg group hover:bg-card transition-all duration-200 border border-border relative"
                       >
                         <div
                           className={`inline-block px-2.5 py-1 text-xs font-bold rounded-lg mb-3 border ${getPeriodColor(
-                            periodo.periodo
+                            period.period
                           )}`}
                         >
-                          P{periodo.periodo}
+                          P{period.period}
                         </div>
 
                         <PeriodoCard
-                          periodo={periodo}
+                          periodo={period}
                           cellId={cellId}
                           isEditing={isEditing}
                           editValue={editValue}
                           onEditStart={handleEditStart}
                           onEditChange={setEditValue}
-                          onEditSave={() => handleEditSave(periodo)}
+                          onEditSave={() => handleEditSave(period)}
                           onEditCancel={handleEditCancel}
                           onDelete={(p) =>
-                            handleDeletePeriodo(p as RepartosOmiePeriodo)
+                            handleDeletePeriodo(
+                              p as OmieDistributionPeriod
+                            )
                           }
                           decimals={6}
                         />
                       </div>
-                    ))}
-                  </div>
+                    )
+                  )}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
     </div>

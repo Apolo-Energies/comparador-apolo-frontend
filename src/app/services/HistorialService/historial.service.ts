@@ -11,7 +11,7 @@ export const getHistorialComparador = async (
   try {
     const { fullName, email, fecha, cups, page = 1, pageSize = 15 } = filters;
 
-    const response = await ApiManager.get("/historialComparador", {
+    const response = await ApiManager.get("/comparisonhistory", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -61,7 +61,7 @@ export const getSummary = async (
   try {
     const { fechaInicio, fechaFin } = filters;
 
-    const response = await ApiManager.get("/historialComparador/summary", {
+    const response = await ApiManager.get("/comparisonhistory/summary", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -107,7 +107,7 @@ export const getDailySummary = async (
   try {
     const { fechaInicio, fechaFin } = filters;
 
-    const response = await ApiManager.get("/historialComparador/dailysummary", {
+    const response = await ApiManager.get("/comparisonhistory/dailysummary", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -153,7 +153,7 @@ export const getMotnhlySummary = async (
   try {
     const { fechaInicio, fechaFin } = filters;
 
-    const response = await ApiManager.get("/historialComparador/monthlysummary", {
+    const response = await ApiManager.get("/comparisonhistory/monthlysummary", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

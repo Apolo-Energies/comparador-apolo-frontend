@@ -19,7 +19,7 @@ import { SelectOptions } from "@/components/Selects/SelectOptions";
 import { useAlertStore } from "@/app/store/ui/alert.store";
 import { useReloadStore } from "@/app/store/reloadData/reloadFlag.store";
 import { getProveedores } from "@/app/services/TarifarioService/proveedor.service";
-import { Proveedor } from "../../../Rates/interfaces/proveedor";
+import { Provider } from "../../../Rates/interfaces/proveedor";
 import { ArrowUpDownIcon } from '@/incons/ArrowUpDownIcon';
 
 interface Props {
@@ -33,7 +33,7 @@ interface Props {
 export const TableUsers = ({ filters }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [commissionOptions, setCommissionOptions] = useState<Commission[]>([]);
-  const [providersOptions, setProvidersOptions] = useState<Proveedor[]>([]);
+  const [providersOptions, setProvidersOptions] = useState<Provider[]>([]);
   const { data: session /*status*/ } = useSession();
   const { setLoading } = useLoadingStore();
   const { showAlert } = useAlertStore();
@@ -57,7 +57,7 @@ export const TableUsers = ({ filters }: Props) => {
 
         // Traer proveedores
         const providersResponse = await getProveedores(session.user.token);
-        if (commissionsResponse.status === 200)
+        if (providersResponse.status === 200)
           setProvidersOptions(providersResponse.result);
       } catch (error) {
         console.error("Error cargando datos:", error);
@@ -72,7 +72,7 @@ export const TableUsers = ({ filters }: Props) => {
 
   const filteredUsers = useMemo(() => {
     return users?.filter((user) => {
-      const matchesName = user.nombreCompleto
+      const matchesName = user.fullName
         .toLowerCase()
         .includes(filters.nombre.toLowerCase());
       const matchesEmail = user.email
@@ -132,16 +132,15 @@ export const TableUsers = ({ filters }: Props) => {
         user.id === userId
           ? {
             ...user,
-            commissionId: selected.id,
-            commissions: selected.percentage,
-            userCommissions: [
+            commissions: [
               {
-                id: user.userCommissions?.[0]?.id ?? "",
+                id: user.commissions?.[0]?.id ?? "",
                 commissionType: {
                   ...selected,
                   id: selected.id ?? "",
                   name: selected.name ?? "",
                   percentage: selected.percentage ?? 0,
+                  userCommissions: [],
                 },
               },
             ] as UserCommission[],
@@ -161,8 +160,7 @@ export const TableUsers = ({ filters }: Props) => {
         user.id === userId
           ? {
             ...user,
-            proveedorId: selected.id,
-            commissionId: selected.id,
+            providerId: selected.id,
           }
           : user
       )
@@ -210,7 +208,7 @@ export const TableUsers = ({ filters }: Props) => {
         // Actualizamos estado local
         setUsers(
           users.map((u) =>
-            u.id === userId ? { ...u, estadoActivo: isActive } : u
+            u.id === userId ? { ...u, isActive: isActive } : u
           )
         );
       } else {
@@ -224,7 +222,7 @@ export const TableUsers = ({ filters }: Props) => {
 
   const columns: Column<User>[] = [
     {
-      key: "nombreCompleto",
+      key: "fullName",
       label: "Usuario",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
@@ -236,7 +234,7 @@ export const TableUsers = ({ filters }: Props) => {
               .join("")}
           </div> */}
           <div className="ml-4 text-sm font-medium text-accent-foreground">
-            {user.nombreCompleto}
+            {user.fullName}
           </div>
         </div>
       ),
@@ -261,13 +259,13 @@ export const TableUsers = ({ filters }: Props) => {
       ),
     },
     {
-      key: "estadoActivo",
+      key: "isActive",
       label: "Estado",
       align: "center",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
         <SelectOptions
-          value={String(user.estadoActivo)}
+          value={String(user.isActive)}
           options={[
             { id: "true", name: "Activo" },
             { id: "false", name: "Inactivo" },
@@ -285,7 +283,7 @@ export const TableUsers = ({ filters }: Props) => {
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
         <SelectOptions
-          value={user.userCommissions?.[0]?.commissionType?.id ?? ""}
+          value={user.commissions?.[0]?.commissionType?.id ?? ""}
           options={commissionOptions.map((c) => ({
             id: c.id ?? "",
             name: c.name
@@ -295,16 +293,16 @@ export const TableUsers = ({ filters }: Props) => {
       ),
     },
     {
-      key: "providers",
+      key: "provider",
       label: "Proveedor",
       align: "center",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
         <SelectOptions
-          value={user.proveedorId ?? ""}
+          value={user.providerId ?? ""}
           options={providersOptions.map((p) => ({
             id: p.id,
-            name: p.nombre,
+            name: p.name,
           }))}
           onChange={(val) =>
             handleProviderChange(user.id as string, Number(val))
