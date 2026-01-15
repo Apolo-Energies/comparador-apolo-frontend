@@ -48,7 +48,7 @@ export const FormCuentaBancaria = ({ register, errors }: Props) => {
         errors={errors}
       />
 
-      <div className="flex items-start gap-3 bg-info-bg border border-info-border rounded-[12px] px-4 py-4">
+      <div className="flex items-start gap-3 bg-info-bg border border-info-border rounded-xl px-4 py-4">
         <div className="w-3 h-3 mt-1 rounded-full bg-info-dot" />
         <div>
           <p className="font-semibold text-sm text-info-title">

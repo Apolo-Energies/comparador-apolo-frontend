@@ -248,7 +248,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
             name="producto"
             options={options}
             placeholder="Elige una opción"
-            register={register}
+            register={register("producto", { required: true })}
             required
             errors={errors}
           />

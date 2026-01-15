@@ -3,6 +3,8 @@ import {
   FieldErrors,
   FieldValues,
   Path,
+  RegisterOptions,
+  UseFormRegister,
   UseFormRegisterReturn,
 } from "react-hook-form";
 
@@ -11,7 +13,8 @@ interface Props<T extends FieldValues> {
   name: Path<T>;
   type?: string;
   placeholder?: string;
-  register: UseFormRegisterReturn<Path<T>>;
+  register: UseFormRegister<T> | UseFormRegisterReturn<Path<T>>;
+  registerOptions?: RegisterOptions<T, Path<T>>;
   required?: boolean;
   errors?: FieldErrors<T>;
   defaultValue?: string | number;
@@ -24,12 +27,19 @@ export const Input = <T extends FieldValues>({
   type = "text",
   placeholder,
   register,
+  registerOptions,
   required = false,
   errors,
   defaultValue,
   helperText,
 }: Props<T>) => {
   const errorMessage = errors?.[name]?.message as string | undefined;
+
+  // Determine if register is a function (UseFormRegister) or already a return value (UseFormRegisterReturn)
+  const registerProps =
+    typeof register === "function"
+      ? register(name, registerOptions ?? { required: required ? `${label} es requerido` : false })
+      : register;
 
   return (
     <div className="space-y-1">
@@ -44,7 +54,7 @@ export const Input = <T extends FieldValues>({
         id={name}
         type={type}
         placeholder={placeholder}
-        {...register}
+        {...registerProps}
         defaultValue={defaultValue}
         className={`w-full placeholder:text-gray-400 bg-input text-sm rounded border px-3 py-1.5 focus:outline-none focus:ring ${
           errorMessage
