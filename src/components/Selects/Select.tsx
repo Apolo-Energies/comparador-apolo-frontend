@@ -3,7 +3,7 @@ import {
   FieldErrors,
   FieldValues,
   Path,
-  UseFormRegister,
+  UseFormRegisterReturn,
 } from "react-hook-form";
 
 interface Option {
@@ -16,7 +16,7 @@ interface Props<T extends FieldValues> {
   name: Path<T>;
   options: Option[];
   placeholder?: string;
-  register: UseFormRegister<T>;
+  register: UseFormRegisterReturn<Path<T>>;
   required?: boolean;
   errors?: FieldErrors<T>;
   defaultValue?: string | number;
@@ -38,7 +38,7 @@ export const Select = <T extends FieldValues>({
       </label>
       <select
         id={name}
-        {...register(name, { required })}
+        {...register}
         className={`w-full bg-input rounded border px-3 py-1 focus:outline-none focus:ring ${
           errors && errors[name]
             ? "border-red-500 ring-red-500"

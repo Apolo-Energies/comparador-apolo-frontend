@@ -2,6 +2,7 @@ import axios from "axios";
 import { ApiManager } from "../ApiManager/ApiManager";
 import { ApiResponse } from "../interfaces/ApiResponse";
 import { User } from "@/app/dashboard/Settings/Users/interfaces/user";
+import { CreateUserRequest } from "@/app/dashboard/Settings/Users/interfaces/CreateUserRequest";
 
 export const getUsers = async (token: string): Promise<ApiResponse<User[]>> => {
   try {
@@ -77,21 +78,25 @@ export const getSelectUsers = async (token: string): Promise<ApiResponse<User[]>
   }
 };
 
-export const registerUser = async (
-  token: string,
-  userData: User
-): Promise<ApiResponse<User>> => {
+export const registerUser = async (token: string, userData: CreateUserRequest): Promise<ApiResponse<User>> => {
   try {
 
     const payload = {
-      fullName: userData.fullName,
+      personType: Number(userData.personType),
       email: userData.email,
-      role: userData.role
+      name: userData.name,
+      surnames: userData.surnames,
+      phone: userData.phone,
+      legalAddress: userData.legalAddress,
+      notificationAddress: userData.notificationAddress,
+      bankAccount: userData.bankAccount,
+      dni: userData.dni,
+      role: Number(userData.role),
     };
 
     const response = await ApiManager.post("/user", payload, {
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
       withCredentials: false,
     });
@@ -99,7 +104,7 @@ export const registerUser = async (
     return {
       result: response.data.result,
       status: response.status,
-      isSuccess: true,
+      isSuccess: response.data.isSuccess,
       displayMessage: response.data.displayMessage ?? "",
       errorMessages: response.data.errorMessages ?? []
     };

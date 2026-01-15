@@ -3,7 +3,7 @@ import {
   FieldErrors,
   FieldValues,
   Path,
-  UseFormRegister,
+  UseFormRegisterReturn,
 } from "react-hook-form";
 
 interface Props<T extends FieldValues> {
@@ -11,10 +11,11 @@ interface Props<T extends FieldValues> {
   name: Path<T>;
   type?: string;
   placeholder?: string;
-  register: UseFormRegister<T>;
+  register: UseFormRegisterReturn<Path<T>>;
   required?: boolean;
   errors?: FieldErrors<T>;
   defaultValue?: string | number;
+  helperText?: string;
 }
 
 export const Input = <T extends FieldValues>({
@@ -25,27 +26,40 @@ export const Input = <T extends FieldValues>({
   register,
   required = false,
   errors,
-  defaultValue
+  defaultValue,
+  helperText,
 }: Props<T>) => {
+  const errorMessage = errors?.[name]?.message as string | undefined;
+
   return (
     <div className="space-y-1">
-      <label htmlFor={name} className="block text-sm font-medium text-foreground">
+      <label
+        htmlFor={name}
+        className="block text-sm font-medium text-foreground"
+      >
         {label} {required && <span className="text-red-500">*</span>}
       </label>
+
       <input
         id={name}
         type={type}
         placeholder={placeholder}
-        {...register(name, { required })}
+        {...register}
+        defaultValue={defaultValue}
         className={`w-full placeholder:text-gray-400 bg-input text-sm rounded border px-3 py-1.5 focus:outline-none focus:ring ${
-          errors && errors[name]
+          errorMessage
             ? "border-red-500 ring-red-500"
             : "border-border ring-blue-500"
         }`}
-        defaultValue={defaultValue}
       />
-      {errors && errors[name] && (
-        <p className="text-xs text-red-600 mt-1">Este campo es obligatorio</p>
+
+      {/* ERROR tiene prioridad */}
+      {errorMessage ? (
+        <p className="text-xs text-red-600">{errorMessage}</p>
+      ) : (
+        helperText && (
+          <p className="text-xs text-muted-foreground">{helperText}</p>
+        )
       )}
     </div>
   );

@@ -21,6 +21,7 @@ import { useReloadStore } from "@/app/store/reloadData/reloadFlag.store";
 import { getProveedores } from "@/app/services/TarifarioService/proveedor.service";
 import { Provider } from "../../../Rates/interfaces/proveedor";
 import { ArrowUpDownIcon } from '@/incons/ArrowUpDownIcon';
+import { Paginator } from "@/components/ui/Paginator";
 
 interface Props {
   filters: {
@@ -34,6 +35,11 @@ export const TableUsers = ({ filters }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [commissionOptions, setCommissionOptions] = useState<Commission[]>([]);
   const [providersOptions, setProvidersOptions] = useState<Provider[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0)
+  const [pageSize, setPageSize] = useState(10);
+
   const { data: session /*status*/ } = useSession();
   const { setLoading } = useLoadingStore();
   const { showAlert } = useAlertStore();
@@ -227,12 +233,6 @@ export const TableUsers = ({ filters }: Props) => {
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
         <div className="flex items-center">
-          {/* <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
-            {user.nombreCompleto
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
-          </div> */}
           <div className="ml-4 text-sm font-medium text-accent-foreground">
             {user.fullName}
           </div>
@@ -312,5 +312,23 @@ export const TableUsers = ({ filters }: Props) => {
     },
   ];
 
-  return <DataTable data={filteredUsers} columns={columns} rowKey="id" borderTop={false} roundedTopLeft={false} roundedBottomRight={false} />;
+  return (
+    <div className="flex flex-col">
+      <DataTable data={filteredUsers} columns={columns} rowKey="id" borderTop={false} roundedTopLeft={false} roundedBottomRight={false} />
+      <Paginator
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalCount={totalCount}
+        pageSize={pageSize}
+        onPageChange={(page) => setCurrentPage(page)}
+        borderTop={false}
+        roundedTopLeft={false}
+        roundedTopRight={false}
+        onPageSizeChange={(size) => {
+          setPageSize(size);
+          setCurrentPage(1);
+        }}
+      />
+    </div>
+  )
 };
