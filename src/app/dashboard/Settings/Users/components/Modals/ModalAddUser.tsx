@@ -48,7 +48,7 @@ export const ModalUser = ({ open, onClose }: Props) => {
       personType === 0 ? INDIVIDUAL_FIELDS : COMPANY_FIELDS;
 
     const filled = relevantFields.filter((field) => {
-      const value = watchedValues[field];
+      const value = watchedValues[field as keyof typeof watchedValues];
       return typeof value === "string"
         ? value.trim() !== ""
         : value !== undefined && value !== null;
