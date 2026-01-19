@@ -1,21 +1,24 @@
+// ModalUser.tsx
 import { useForm } from "react-hook-form";
 import { Dialog } from "@/components/Dialogs/Dialog";
 import { Progress } from "@/components/ui/Progress";
 import { Button } from "@/components/buttons/button";
 import { ToggleGroup } from "@/components/buttons/ToggleGroup";
-import { FormUser } from "../Formularios/FormUser";
-import { CreateUserRequest } from "../../interfaces/CreateUserRequest";
+import { FormIndividualUser } from "../Formularios/FormIndividualUser";
 import { COMPANY_FIELDS, INDIVIDUAL_FIELDS } from "../../interfaces/Fileds";
 import { useReloadStore } from "@/app/store/reloadData/reloadFlag.store";
 import { useLoadingStore } from "@/app/store/ui/loading.store";
 import { useAlertStore } from "@/app/store/ui/alert.store";
 import { registerUser } from "@/app/services/UserService/user.service";
 import { useSession } from "next-auth/react";
+import { FormUserCompany } from "../Formularios/FormCompanyUser";
+import { CreateUserRequest } from "../../interfaces/CreateUserRequest";
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
+
 
 export const ModalUser = ({ open, onClose }: Props) => {
   const {
@@ -24,7 +27,7 @@ export const ModalUser = ({ open, onClose }: Props) => {
     formState: { errors, isValid },
     watch,
     setValue,
-    reset
+    reset,
   } = useForm<CreateUserRequest>({
     mode: "onChange",
     defaultValues: {
@@ -58,6 +61,7 @@ export const ModalUser = ({ open, onClose }: Props) => {
     const type = value === "Individual" ? 0 : 1;
     setValue("personType", type);
 
+    // Limpieza solo cuando pasas a persona física
     if (type === 0) {
       setValue("cif", "");
       setValue("companyName", "");
@@ -65,28 +69,30 @@ export const ModalUser = ({ open, onClose }: Props) => {
   };
 
   const onSubmitFinal = async (data: CreateUserRequest) => {
-
     try {
       setLoading(true);
+
       const token = session?.user.token;
       if (!token) {
         throw new Error("No se encontró el token de autenticación.");
       }
+
       const response = await registerUser(token, data);
 
-      if (response.status === 200 || response.status === 201) {
-        showAlert("Se registro un usuario. ", "success");
+      if (response.isSuccess || response.status === 201) {
+        showAlert("Se registró un usuario.", "success");
         reset();
+        setValue("personType", personType);
         onClose();
         triggerReload();
       } else {
-        showAlert("Error al registrar. ", "error");
+        showAlert("Error al registrar.", "error");
       }
     } catch (error) {
-      showAlert("Error al inesperado al registrar. ", "error");
-      console.error("Error inesperado:", error);
+      showAlert("Error inesperado al registrar.", "error");
+      console.error(error);
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
@@ -108,7 +114,7 @@ export const ModalUser = ({ open, onClose }: Props) => {
           />
         </div>
 
-        {/* Titulo */}
+        {/* Título */}
         <div className="shrink-0 px-4 pt-4">
           <p className="text-lg font-semibold">Datos del usuario</p>
           <p className="text-sm text-muted-foreground">
@@ -122,11 +128,17 @@ export const ModalUser = ({ open, onClose }: Props) => {
           className="flex flex-col flex-1 min-h-0"
         >
           <div className="flex-1 overflow-y-auto px-4 py-4">
-            <FormUser
-              register={register}
-              errors={errors}
-              personType={personType}
-            />
+            {personType === 0 ? (
+              <FormIndividualUser
+                register={register as any}
+                errors={errors as any}
+              />
+            ) : (
+              <FormUserCompany
+                register={register as any}
+                errors={errors as any}
+              />
+            )}
           </div>
 
           {/* Footer */}

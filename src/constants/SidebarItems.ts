@@ -35,13 +35,13 @@ export const sidebarItems: SidebarSection[] = [
       {
         title: "Contratos",
         icon: ListIcon,
-        roles: ["Master", "SoporteComercial"],
+        roles: ["Master", "Colaborador"],
         url: "https://ee.apoloenergies.es/App/ContratosServicios/Wizard?q=68fHKAqZKDEuSApYdhV5pw%3D%3D",
       },
       {
         title: "Analítica",
         icon: PieIcon,
-        roles: ["Master", "Colaborador"],
+        roles: ["Master"],
         children: [
           {
             title: "Historial",
@@ -78,7 +78,7 @@ export const sidebarItems: SidebarSection[] = [
       {
         title: "Ajustes",
         icon: SettingsIcon,
-        roles: ["Master", "Soporte"],
+        roles: ["Master"],
         children: [
           {
             title: "Usuarios",
@@ -109,8 +109,8 @@ export const sidebarItems: SidebarSection[] = [
       {
         title: "Soporte Comercial",
         icon: SupportIcon,
-        roles: ["Master", "SoporteComercial"],
-        url: "/dashboard/Support",
+        roles: ["Master", "Colaborador"],
+        url: "https://wa.me/623136797",
       },
     ],
   },

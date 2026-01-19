@@ -1,23 +1,24 @@
+// FormUserIndividual.tsx
 import React from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/Inputs/Input";
 import { Select } from "@/components/Selects/Select";
-import { CreateUserRequest } from "../../interfaces/CreateUserRequest";
+import { CreateIndividualUserRequest } from "../../interfaces/CreateUserRequest";
 
 interface Props {
-  register: UseFormRegister<CreateUserRequest>;
-  errors: FieldErrors<CreateUserRequest>;
-  personType: 0 | 1;
+  register: UseFormRegister<CreateIndividualUserRequest>;
+  errors: FieldErrors<CreateIndividualUserRequest>;
 }
 
-export const FormUser = ({ register, errors, personType }: Props) => {
+export const FormIndividualUser = ({ register, errors }: Props) => {
   return (
     <div className="space-y-6">
 
-      {/* EMAIL */}
+      {/* EMAIL - Obligatorio */}
       <Input
         label="Email"
         name="email"
+        required
         register={register("email", {
           required: "El email es obligatorio",
           pattern: {
@@ -28,10 +29,11 @@ export const FormUser = ({ register, errors, personType }: Props) => {
         errors={errors}
       />
 
-      {/* ROL */}
-      <Select<CreateUserRequest>
+      {/* ROL - Obligatorio */}
+      <Select<CreateIndividualUserRequest>
         label="Rol"
         name="role"
+        required
         options={[
           { label: "Master", value: 1 },
           { label: "Colaborador", value: 2 },
@@ -42,10 +44,11 @@ export const FormUser = ({ register, errors, personType }: Props) => {
         errors={errors}
       />
 
-      {/* NOMBRE */}
+      {/* NOMBRE - Obligatorio */}
       <Input
         label="Nombre"
         name="name"
+        required
         register={register("name", {
           required: "El nombre es obligatorio",
           maxLength: { value: 50, message: "Máximo 50 caracteres" },
@@ -53,10 +56,11 @@ export const FormUser = ({ register, errors, personType }: Props) => {
         errors={errors}
       />
 
-      {/* APELLIDOS */}
+      {/* APELLIDOS - Obligatorio */}
       <Input
         label="Apellidos"
         name="surnames"
+        required
         register={register("surnames", {
           required: "Los apellidos son obligatorios",
           maxLength: { value: 50, message: "Máximo 50 caracteres" },
@@ -64,10 +68,11 @@ export const FormUser = ({ register, errors, personType }: Props) => {
         errors={errors}
       />
 
-      {/* DNI */}
+      {/* DNI - Obligatorio */}
       <Input
         label="DNI"
         name="dni"
+        required
         register={register("dni", {
           required: "El DNI es obligatorio",
           pattern: {
@@ -78,37 +83,9 @@ export const FormUser = ({ register, errors, personType }: Props) => {
         errors={errors}
       />
 
-      {/* SOLO COMPANY */}
-      {personType === 1 && (
-        <>
-          <Input
-            label="CIF"
-            name="cif"
-            register={register("cif", {
-              required: "El CIF es obligatorio",
-              pattern: {
-                value: /^[A-Z]\d{7}[A-Z0-9]$/,
-                message: "CIF inválido. Ej: B56263304",
-              },
-            })}
-            errors={errors}
-          />
-
-          <Input
-            label="Razón Social"
-            name="companyName"
-            register={register("companyName", {
-              required: "La razón social es obligatoria",
-              maxLength: { value: 50, message: "Máximo 50 caracteres" },
-            })}
-            errors={errors}
-          />
-        </>
-      )}
-
-      {/* OPCIONALES */}
+      {/* TELÉFONO - Opcional */}
       <Input
-        label="Teléfono"
+        label="Teléfono (opcional)"
         name="phone"
         register={register("phone", {
           validate: (v) =>
@@ -117,8 +94,9 @@ export const FormUser = ({ register, errors, personType }: Props) => {
         errors={errors}
       />
 
+      {/* DOMICILIO LEGAL - Opcional */}
       <Input
-        label="Domicilio Legal"
+        label="Domicilio Legal (opcional)"
         name="legalAddress"
         register={register("legalAddress", {
           validate: (v) => !v || v.length >= 5 || "Mínimo 5 caracteres",
@@ -126,8 +104,9 @@ export const FormUser = ({ register, errors, personType }: Props) => {
         errors={errors}
       />
 
+      {/* DOMICILIO NOTIFICACIONES - Opcional */}
       <Input
-        label="Domicilio Notificaciones"
+        label="Domicilio Notificaciones (opcional)"
         name="notificationAddress"
         register={register("notificationAddress", {
           validate: (v) => !v || v.length >= 5 || "Mínimo 5 caracteres",
@@ -135,12 +114,13 @@ export const FormUser = ({ register, errors, personType }: Props) => {
         errors={errors}
       />
 
+      {/* CUENTA BANCARIA - Opcional */}
       <Input
-        label="Cuenta bancaria"
+        label="Cuenta Bancaria (opcional)"
         name="bankAccount"
         register={register("bankAccount", {
           validate: (v) =>
-            !v || /^ES\d{2}(?:\s?\d{4}){5}$/.test(v) || "IBAN  inválido (Ej: ESXX XXXX XXXX XXXX XXXX XXXX)",
+            !v || /^ES\d{2}(?:\s?\d{4}){5}$/.test(v) || "IBAN inválido (Ej: ESXX XXXX XXXX XXXX XXXX XXXX)",
         })}
         errors={errors}
       />

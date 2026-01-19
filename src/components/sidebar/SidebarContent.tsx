@@ -38,8 +38,8 @@ export const SidebarContent = () => {
 
   return (
     <aside className="w-64 bg-card border-r border-border h-full flex flex-col">
-      <Link href="/dashboard" className="flex justify-center items-center w-full h-[74px] border-b border-border px-2">
-        <div className="relative w-[100%] h-[64%] max-w-xs">
+      <Link href="/dashboard" className="flex justify-center items-center w-full h-18.5 border-b border-border px-2">
+        <div className="relative w-full h-[64%] max-w-xs">
           <Image src={logoSrc} alt="Apolo Energies" fill style={{ objectFit: "contain" }} priority />
         </div>
       </Link>

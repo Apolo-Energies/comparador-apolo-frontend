@@ -38,7 +38,7 @@ export const Header = () => {
 
   const { toggle } = useSidebarStore();
   return (
-    <header className="h-[74px] border-b border-border bg-card backdrop-blur supports-[backdrop-filter]:bg-card">
+    <header className="h-18.5 border-b border-border bg-card backdrop-blur supports-backdrop-filter:bg-card">
       <div className="flex h-16 items-center justify-between px-6">
         <Button
           onClick={toggle}
@@ -60,10 +60,10 @@ export const Header = () => {
           <InfoIcon size={20} className="text-[#12AFF0]" />
           <div>
             <p className="text-sm sm:text-sm md:text-sm font-semibold text-foreground">
-              Welcome to your daily dashboard view. Getting started with WunderUI.
+              Bienvenido al portal de colaboradores de Apolo Energies.
             </p>
             <p className="text-sm sm:text-xs md:text-sm text-muted-foreground">
-              Start building with your own data dashboard and insights with our new design system.
+              Tu panel de control para gestionar clientes, analizar consumos y acceder a insights clave del mercado energético.
             </p>
           </div>
         </div>

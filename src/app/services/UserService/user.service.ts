@@ -80,8 +80,8 @@ export const getSelectUsers = async (token: string): Promise<ApiResponse<User[]>
 
 export const registerUser = async (token: string, userData: CreateUserRequest): Promise<ApiResponse<User>> => {
   try {
-
-    const payload = {
+    // Base payload for both Individual and Company
+    const basePayload = {
       personType: Number(userData.personType),
       email: userData.email,
       name: userData.name,
@@ -93,6 +93,15 @@ export const registerUser = async (token: string, userData: CreateUserRequest): 
       dni: userData.dni,
       role: Number(userData.role),
     };
+
+    // Add company-specific fields if personType is 1 (Company)
+    const payload = userData.personType === 1
+      ? {
+          ...basePayload,
+          cif: userData.cif,
+          companyName: userData.companyName,
+        }
+      : basePayload;
 
     const response = await ApiManager.post("/user", payload, {
       headers: {
