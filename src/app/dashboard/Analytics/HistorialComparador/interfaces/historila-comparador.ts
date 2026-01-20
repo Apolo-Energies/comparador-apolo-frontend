@@ -5,8 +5,8 @@ export interface HistorialComparador {
     archivoId: string;
     archivo: null;
     cups: string;
-    consumoAnual: number;
-    fecha: Date;
+    annualConsumption: number;
+    createdAt: Date;
 }
 
 export interface User {

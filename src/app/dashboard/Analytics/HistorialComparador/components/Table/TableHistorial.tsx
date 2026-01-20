@@ -9,6 +9,7 @@ import { Paginator } from '../../../../../../components/ui/Paginator';
 import { EmailIcon } from "@/incons/EmailIcon";
 import { DateIcon } from "@/incons/DateIcon";
 import { ArrowUpDownIcon } from "@/incons/ArrowUpDownIcon";
+import { formatPowerES } from '@/utils/format-data/format-number';
 
 interface Props {
   filters: HistorialFilters;
@@ -51,7 +52,7 @@ export const TableHistorial = ({ filters }: Props) => {
 
   const columns: Column<HistorialComparador>[] = [
     {
-      key: "usuario",
+      key: "fullName",
       label: "Usuario",
       align: "left",
       headerIcon: <ArrowUpDownIcon />,
@@ -80,14 +81,14 @@ export const TableHistorial = ({ filters }: Props) => {
 
     },
     {
-      key: "consumoAnual",
+      key: "annualConsumption",
       label: "Consumo Anual",
       headerIcon: <ArrowUpDownIcon />,
-      render: (item: HistorialComparador) => item.consumoAnual ?? 0,
+      render: (item: HistorialComparador) => formatPowerES(item.annualConsumption ?? 0),
       align: "left",
     },
     {
-      key: "fecha",
+      key: "createdAt",
       label: "Fecha",
       align: "left",
       headerIcon: <ArrowUpDownIcon />,
@@ -95,7 +96,7 @@ export const TableHistorial = ({ filters }: Props) => {
       render: (item: HistorialComparador) =>
         <div className="flex gap-2">
           <DateIcon />
-          <span>{new Date(item.fecha).toLocaleString()}</span>
+          <span>{new Date(item.createdAt).toLocaleString()}</span>
         </div>
     },
   ];
