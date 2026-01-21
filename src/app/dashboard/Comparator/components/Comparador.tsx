@@ -58,7 +58,6 @@ export const Comparador = () => {
         const response = await getSelectUsers(session.user.token);
 
         if (response.isSuccess && response.result) {
-          console.log("respuesta usuarios: ", response.result);
           setUsers(mapUsersToSelect(response.result));
         } else {
           console.error("Error cargando tarifas:", response.errorMessages);
@@ -113,8 +112,6 @@ export const Comparador = () => {
       name: u.fullName as string
     }));
   };
-
-  console.log("rol de usuario: ", session?.user.role);
 
   return (
     <div className="h-auto flex flex-col items-center">

@@ -1,5 +1,6 @@
-export const getSnapEnergiaByTarifa = (tarifa?: string): number => {
-    console.log("Calculating fee for tarifa:", tarifa);
+export const getSnapEnergiaByTarifa = (
+    tarifa?: string
+): number | undefined => {
     switch (tarifa) {
         case "Fijo Snap Mini":
             return 50;
@@ -8,11 +9,14 @@ export const getSnapEnergiaByTarifa = (tarifa?: string): number => {
         case "Fijo Snap Max":
             return 100;
         default:
-            return 0;
+            return undefined;
     }
 };
 
-export const getIndexEnergiaByProducto = (producto: string): number => {
+
+export const getIndexEnergiaByProducto = (
+    producto?: string
+): number | undefined => {
     switch (producto) {
         case "Index Coste":
             return 0.5;
@@ -21,9 +25,10 @@ export const getIndexEnergiaByProducto = (producto: string): number => {
         case "Index Promo":
             return 0.85;
         default:
-            return 0;
+            return undefined;
     }
 };
+
 
 
 export const SNAP_PRODUCTS = [
@@ -35,3 +40,6 @@ export const SNAP_PRODUCTS = [
 export const isSnapProduct = (producto?: string): boolean =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     SNAP_PRODUCTS.includes(producto as any);
+
+export const normalizeComision = (value?: number): number | undefined =>
+    value === undefined || value === 0 ? undefined : value;

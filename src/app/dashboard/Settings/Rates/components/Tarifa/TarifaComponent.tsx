@@ -205,8 +205,6 @@ export const TarifaComponent = ({ token }: Props) => {
             tariff.products.map((product) => {
               const periodosRender = preparePeriodoData(product);
 
-              console.log("Rendering product:", periodosRender);
-
               return (
                 <div
                   key={product.id}

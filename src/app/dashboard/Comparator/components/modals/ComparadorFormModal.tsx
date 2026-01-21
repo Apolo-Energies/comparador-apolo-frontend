@@ -19,7 +19,7 @@ import { downloadExcel } from "@/app/services/FileService/excel.service";
 import { PRODUCTS_BY_TARIFF } from "@/utils/tarifario/tarifas";
 import { OcrData } from "@/app/dashboard/Analytics/interfaces/matilData";
 import { PeriodPrice } from "../utilComparador/PeriodPrice";
-import { getIndexEnergiaByProducto, getSnapEnergiaByTarifa, isSnapProduct } from "@/utils/commission/commissions";
+import { getIndexEnergiaByProducto, getSnapEnergiaByTarifa, isSnapProduct, normalizeComision } from "@/utils/commission/commissions";
 
 interface Props {
   open: boolean;
@@ -74,9 +74,14 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
 
   const isSnap = isSnapProduct(productoSeleccionado);
 
-  const comisionEnergia = isSnap
-    ? getSnapEnergiaByTarifa(productoSeleccionado)
-    : getIndexEnergiaByProducto(productoSeleccionado) ?? (commission ?? 0) / 100;
+  const comisionEnergia =
+    normalizeComision(
+      isSnapProduct(productoSeleccionado)
+        ? getSnapEnergiaByTarifa(productoSeleccionado)
+        : getIndexEnergiaByProducto(productoSeleccionado)
+    ) ??
+    normalizeComision(commission ? commission / 100 : undefined) ??
+    0;
 
   useEffect(() => {
     if (isSnapTariff) {
@@ -126,8 +131,6 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     try {
       const periodos = resultadoFactura?.periodos || [];
       const { nombreEmpresa, razonSocial } = parseTitular(matilData?.cliente?.titular);
-      console.log("peiodos...", periodos);
-      console.log("matil data: ", matilData?.potencia);
       const lineas = [
         // Energía
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

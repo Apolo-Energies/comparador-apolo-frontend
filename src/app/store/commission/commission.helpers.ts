@@ -2,31 +2,32 @@ import { CalcularComisionParams } from "./commission.types";
 
 
 export const calculateComisionFunction = ({
-    matilData,
-    feeEnergia,
-    comisionEnergia,
-    feePotencia,
-    commissionType
-  }: CalcularComisionParams): number => {
-    if (!matilData?.energia || !matilData?.potencia) return 0;
+  matilData,
+  feeEnergia,
+  comisionEnergia,
+  feePotencia,
+  commissionType
+}: CalcularComisionParams): number => {
+  if (!matilData?.energia || !matilData?.potencia) return 0;
 
-    if (commissionType === "SNAP") {
+  if (commissionType === "SNAP") {
     return comisionEnergia;
   }
 
-    const consumoPeriodo =
-      matilData.energia.reduce((acc, item) => acc + (item?.activa?.kwh ?? 0), 0) ?? 0;
-      
-      const coeficienteEnergia = 10 * consumoPeriodo;
-      const energia = (feeEnergia[0] * comisionEnergia * coeficienteEnergia) / 1000;
-      
-      const potenciaContratada = matilData.potencia.reduce(
-        (acc, item) => acc + (item?.contratada?.kw ?? 0),
-        0
-      );
-      
-      const coeficientePotencia = 0.5;
-      const potencia = feePotencia[0] * coeficientePotencia * potenciaContratada;
-      
-    return energia + potencia;
-  };
+  const consumoPeriodo =
+    matilData.energia.reduce((acc, item) => acc + (item?.activa?.kwh ?? 0), 0) ?? 0;
+
+  const coeficienteEnergia = 10 * consumoPeriodo;
+  
+  const energia = (feeEnergia[0] * comisionEnergia * coeficienteEnergia) / 1000;
+
+  const potenciaContratada = matilData.potencia.reduce(
+    (acc, item) => acc + (item?.contratada?.kw ?? 0),
+    0
+  );
+
+  const coeficientePotencia = 0.5;
+  const potencia = feePotencia[0] * coeficientePotencia * potenciaContratada;
+
+  return energia + potencia;
+};

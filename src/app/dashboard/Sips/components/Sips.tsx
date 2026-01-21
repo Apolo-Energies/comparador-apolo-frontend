@@ -41,7 +41,6 @@ export const Sips = () => {
 
                 const { periods, totalFormatted } = getLast12MonthsPeriodSummary(consumos);
                 const trend = getLast12MonthsTrend(consumos);
-                console.log("trend", trend)
                 setSummary({
                     donutData: periods,
                     donutTotal: totalFormatted,
@@ -71,9 +70,7 @@ export const Sips = () => {
         setSummary(null);
         setMonthlyChart([]);
     };
-
-    console.log("Ps data :", psData)
-
+    
     return (
         <>
             {!psData ? (

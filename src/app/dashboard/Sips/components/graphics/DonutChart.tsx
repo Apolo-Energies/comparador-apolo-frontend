@@ -30,7 +30,6 @@ export const DonutChart = ({ title, trend, value, data = [], className }: Props)
         : trend?.trend === "down"
         ? "bg-red-900/30 text-red-400"
         : "bg-gray-700/30 text-gray-300";
-    console.log("trend", trend)
 
     const styledData = data.map((d, index) => ({
         ...d,

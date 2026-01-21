@@ -53,8 +53,6 @@ export const Statistics = () => {
         fetchData();
     }, [filters, session?.user?.token]);
 
-    console.log("rango selecionado: ", filters)
-
     return (
         <div className="">
             <div className="flex flex-row w-full mb-6 items-center justify-between">

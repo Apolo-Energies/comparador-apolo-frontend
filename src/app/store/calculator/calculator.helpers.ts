@@ -160,18 +160,12 @@ export const calcularFacturaHelper = (
   (matilData.bono_social.importe || 0) - 
   (descuento_electricidad)
 
-  console.log("kwh energia total:", kwhEnergia);
-  console.log("energia total:", totalEnergia);
-  console.log("potencia total:", totalPotencia);
-
   const impuestoElectrico = round6((totalEnergia + totalPotencia + costesComunesConIE)*0.0511269632);
   const subTotal = totalEnergia + totalPotencia + costesComunesConIE + impuestoElectrico + matilData.equipos.importe;
   const iva = subTotal * 0.21;
   const total         = round6(subTotal + iva);
-  console.log("total calculado:", total);
   const ahorroEstudio = round3(matilData.total - total);
-  console.log("total matildata:", matilData.total);
-  console.log("ahorro estudio:", ahorroEstudio);
+  
   const ahorro_porcent = parseFloat(((ahorroEstudio / matilData.total) * 100).toFixed(2));
   const diasFacturados = dias;
   const totalAnio = 10 * kwhEnergia;

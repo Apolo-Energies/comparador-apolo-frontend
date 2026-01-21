@@ -50,7 +50,7 @@ export const getLast12MonthsPeriodSummary = (rows: SipsRowconsumption[]) => {
 };
 
 export const getMonthlyStackedChartData = (rows: SipsRowconsumption[]) => {
-    console.log("rows for trend: ", rows)
+    
     if (!rows || rows.length === 0) return [];
     const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
         "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
