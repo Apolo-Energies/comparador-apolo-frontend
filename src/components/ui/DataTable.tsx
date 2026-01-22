@@ -6,6 +6,7 @@ export interface Column<T> {
   align?: "left" | "center" | "right";
   textColor?: string;
   headerIcon?: React.ReactNode;
+  sticky?: boolean; 
   render?: (row: T) => React.ReactNode;
 }
 
@@ -61,7 +62,7 @@ export function DataTable<T>({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className={`px-6 py-4 text-xs font-medium text-muted-foreground uppercase tracking-wider text-${col.align || "left"}`}
+                  className={`px-6 py-4 text-xs font-medium text-muted-foreground uppercase tracking-wider ${col.sticky ? "sticky right-0 bg-card z-20 shadow-left" : ""} text-${col.align || "left"}`}
                 >
                   <div className={`flex items-center gap-2 justify-${col.align || "left"}`}>
                     <span>{col.label}</span>
@@ -77,7 +78,7 @@ export function DataTable<T>({
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className={`px-6 py-4 whitespace-nowrap text-${col.align || "left"} ${col.textColor || "text-muted-foreground"}`}
+                    className={`px-6 py-4 whitespace-nowrap text-${col.align || "left"} ${col.textColor || "text-muted-foreground"} ${col.sticky ? "sticky right-0 bg-card z-20 shadow-left" : ""}`}
                   >
                     {col.render ? col.render(row) : String(row[col.key as keyof T] ?? "")}
                   </td>

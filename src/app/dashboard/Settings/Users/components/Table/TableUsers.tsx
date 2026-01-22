@@ -2,7 +2,7 @@
 import {
   changeUserRole,
   deactivateUser,
-  getUsers,
+  getUsersByFilters,
   updateProveedor,
 } from "@/app/services/UserService/user.service";
 import React, { useEffect, useMemo, useState } from "react";
@@ -15,20 +15,18 @@ import {
   assignCommission,
   getCommissions,
 } from "@/app/services/ComisionService/comision.service";
-import { SelectOptions } from "@/components/Selects/SelectOptions";
 import { useAlertStore } from "@/app/store/ui/alert.store";
 import { useReloadStore } from "@/app/store/reloadData/reloadFlag.store";
 import { getProveedores } from "@/app/services/TarifarioService/proveedor.service";
 import { Provider } from "../../../Rates/interfaces/proveedor";
 import { ArrowUpDownIcon } from '@/incons/ArrowUpDownIcon';
 import { Paginator } from "@/components/ui/Paginator";
+import { UserActionsMenu } from "../Actions/UserActionsMenu";
+import { getSignatureStatusLabel } from "@/utils/signaturit/utilitySignaturit";
+import { UserFilter } from "../../interfaces/user-filters";
 
 interface Props {
-  filters: {
-    nombre: string;
-    email: string;
-    role: string;
-  };
+  filters: UserFilter;
 }
 
 export const TableUsers = ({ filters }: Props) => {
@@ -53,8 +51,14 @@ export const TableUsers = ({ filters }: Props) => {
           return;
         }
         // Traer usuarios
-        const usersResponse = await getUsers(session.user.token);
-        if (usersResponse.status === 200) setUsers(usersResponse.result);
+        const response = await getUsersByFilters(session.user.token, { ...filters, page: currentPage, pageSize });
+
+        if (response.isSuccess) {
+          setUsers(response.result.items);
+          setCurrentPage(response.result.currentPage);
+          setTotalPages(response.result.totalPages || 1);
+          setTotalCount(response.result.totalCount || 0);
+        }
 
         // Traer comisiones
         const commissionsResponse = await getCommissions(session.user.token);
@@ -74,21 +78,7 @@ export const TableUsers = ({ filters }: Props) => {
 
     fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user.token, reloadFlag]);
-
-  const filteredUsers = useMemo(() => {
-    return users?.filter((user) => {
-      const matchesName = user.fullName
-        .toLowerCase()
-        .includes(filters.nombre.toLowerCase());
-      const matchesEmail = user.email
-        .toLowerCase()
-        .includes(filters.email.toLowerCase());
-      const matchesRole =
-        filters.role === "" || user.role.toString() === filters.role;
-      return matchesName && matchesEmail && matchesRole;
-    });
-  }, [users, filters]);
+  }, [session?.user.token, filters, currentPage, pageSize, reloadFlag]);
 
   const registerComision = async (userId: string, commissionId: string) => {
     try {
@@ -229,7 +219,8 @@ export const TableUsers = ({ filters }: Props) => {
   const columns: Column<User>[] = [
     {
       key: "fullName",
-      label: "Usuario",
+      label: "Razon Social",
+      align: "left",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
         <div className="flex items-center">
@@ -239,57 +230,56 @@ export const TableUsers = ({ filters }: Props) => {
         </div>
       ),
     },
-    { key: "email", headerIcon: <ArrowUpDownIcon />, label: "Email" },
+    { key: "email", headerIcon: <ArrowUpDownIcon />, label: "Usuario" },
     {
       key: "role",
       label: "Rol",
       align: "center",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
-        <SelectOptions
-          value={user.role.toString()}
-          options={[
-            { id: "1", name: "Master" },
-            { id: "2", name: "Colaborador" },
-          ]}
-          onChange={(val) =>
-            updateUserRole(user.id as string, Number(val))
-          }
-        />
+        <span className="text-sm">
+          {user.role === 1 ? "Master" : "Colaborador"}
+        </span>
       ),
     },
     {
       key: "isActive",
-      label: "Estado",
+      label: "Estado Usuario",
       align: "center",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
-        <SelectOptions
-          value={String(user.isActive)}
-          options={[
-            { id: "true", name: "Activo" },
-            { id: "false", name: "Inactivo" },
-          ]}
-          onChange={(val) =>
-            updateUserStatus(user.id as string, val === "true")
-          }
-        />
+        <span
+          className={`text-sm font-medium ${user.isActive
+            ? "text-success"
+            : "text-destructive"
+            }`}
+        >
+          {user.isActive ? "Activo" : "Inactivo"}
+        </span>
       ),
     },
+
+    {
+      key: "contractSignatureStatus",
+      label: "Estado Contrato",
+      align: "center",
+      headerIcon: <ArrowUpDownIcon />,
+      render: (user: User) => (
+        <span className="text-sm font-medium">
+    {getSignatureStatusLabel(user.contractSignatureStatus)}
+  </span>
+      ),
+    },
+
     {
       key: "commissions",
       label: "Comisión",
       align: "center",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
-        <SelectOptions
-          value={user.commissions?.[0]?.commissionType?.id ?? ""}
-          options={commissionOptions.map((c) => ({
-            id: c.id ?? "",
-            name: c.name
-          }))}
-          onChange={(val) => handleCommissionChange(user.id as string, val)}
-        />
+        <span className="text-sm">
+          {user.commissions?.[0]?.commissionType?.name ?? "-"}
+        </span>
       ),
     },
     {
@@ -298,23 +288,39 @@ export const TableUsers = ({ filters }: Props) => {
       align: "center",
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
-        <SelectOptions
-          value={user.providerId ?? ""}
-          options={providersOptions.map((p) => ({
-            id: p.id,
-            name: p.name,
-          }))}
-          onChange={(val) =>
-            handleProviderChange(user.id as string, Number(val))
+        <span className="text-sm">
+          {
+            providersOptions.find(
+              (p) => p.id === user.providerId
+            )?.name ?? "Sin Proveedor"
           }
-        />
+        </span>
       ),
     },
+
+    {
+      key: "actions",
+      label: "",
+      align: "center",
+      sticky: true,
+      render: (user: User) => (
+        <UserActionsMenu
+          user={user}
+          commissionOptions={commissionOptions}
+          providersOptions={providersOptions}
+          onRoleChange={updateUserRole}
+          onStatusChange={updateUserStatus}
+          onCommissionChange={handleCommissionChange}
+          onProviderChange={handleProviderChange}
+        />
+      ),
+    }
+
   ];
 
   return (
     <div className="flex flex-col">
-      <DataTable data={filteredUsers} columns={columns} rowKey="id" borderTop={false} roundedTopLeft={false} roundedBottomRight={false} />
+      <DataTable data={users} columns={columns} rowKey="id" borderTop={false} roundedTopLeft={false} roundedBottomRight={false} />
       <Paginator
         currentPage={currentPage}
         totalPages={totalPages}

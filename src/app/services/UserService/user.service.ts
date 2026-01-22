@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ApiManager } from "../ApiManager/ApiManager";
 import { ApiResponse } from "../interfaces/ApiResponse";
-import { User } from "@/app/dashboard/Settings/Users/interfaces/user";
+import { User, UserPaged } from "@/app/dashboard/Settings/Users/interfaces/user";
 import { CreateUserRequest } from "@/app/dashboard/Settings/Users/interfaces/CreateUserRequest";
 
 export const getUsers = async (token: string): Promise<ApiResponse<User[]>> => {
@@ -40,6 +40,50 @@ export const getUsers = async (token: string): Promise<ApiResponse<User[]>> => {
     };
   }
 };
+
+export const getUsersByFilters = async (
+  token: string,
+  filters: {
+    fullName?: string;
+    email?: string;
+    role?: string;
+    page?: number;
+    pageSize?: number;
+  }
+): Promise<ApiResponse<UserPaged>> => {
+  try {
+    const response = await ApiManager.get("/user/user-filter", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        fullName: filters.fullName,
+        email: filters.email,
+        role: filters.role,
+        page: filters.page ?? 1,
+        pageSize: filters.pageSize ?? 10,
+      },
+      withCredentials: false,
+    });
+
+    return {
+      result: response.data.result,
+      status: response.status,
+      isSuccess: true,
+      displayMessage: response.data.displayMessage ?? "",
+      errorMessages: response.data.errorMessages ?? [],
+    };
+  } catch (error) {
+    return {
+      result: {} as UserPaged,
+      status: 500,
+      isSuccess: false,
+      displayMessage: "Error obteniendo usuarios",
+      errorMessages: [String(error)],
+    };
+  }
+};
+
 
 export const getSelectUsers = async (token: string): Promise<ApiResponse<User[]>> => {
   try {

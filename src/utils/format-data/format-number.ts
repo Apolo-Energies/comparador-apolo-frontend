@@ -19,3 +19,8 @@ export const formatPowerES = (
         maximumFractionDigits: decimals
     }).format(numberValue);
 };
+
+
+export const wattsToKilowatts = (watts: number): number => {
+  return watts / 1000;
+};

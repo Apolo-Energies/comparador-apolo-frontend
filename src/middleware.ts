@@ -11,9 +11,13 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
   const url = req.nextUrl;
 
   if (!session) {
-    url.pathname = "/";
-    return NextResponse.redirect(url);
+    if (url.pathname !== "/") {
+      url.pathname = "/";
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next();
   }
+
 
   const expires = typeof session.accessTokenExpires === "number" ? session.accessTokenExpires : 0;
   if (Date.now() > expires) {
@@ -21,7 +25,11 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
     return NextResponse.redirect(url);
   }
 
-  // session.role is of type unknown, so we need to safely extract it
+  if (url.pathname === "/") {
+    url.pathname = "/dashboard/Comparator";
+    return NextResponse.redirect(url);
+  }
+
   const userRole =
     typeof session.role === "string" ? session.role.toLowerCase() : undefined;
 
@@ -37,19 +45,11 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
       return NextResponse.redirect(url);
     }
   }
-  // const userRole = session.user?.role;
-
-  // Verifica si el rol es válido
-  // const validRoles = ["master", "colaborador"];
-  // if (!validRoles.includes(userRole)) {
-  //   url.pathname = "/";
-  //   return NextResponse.redirect(url);
-  // }
 
   return NextResponse.next();
 }
 
 // Solo aplica middleware a rutas dentro de /dashboard
 export const config = {
-  matcher: ["/dashboard", "/dashboard/:path*"],
+  matcher: ["/", "/dashboard", "/dashboard/:path*"],
 };

@@ -2,9 +2,8 @@ import { Button } from "@/components/buttons/button";
 import { DownloadIcon } from "@/incons/DownloadIcon";
 import { FilterIcon } from "@/incons/FilterIcon";
 import { SipsPS } from "../../interface/sips";
-import { PROVINCIAS_INE } from "@/utils/provincias/ProvinciasDiccionario";
 import { resolveMunicipioINE, resolveProvinciaINE } from "@/utils/provincias/ineResolver";
-import { formatPowerES } from '../../../../../utils/format-data/format-number';
+import { wattsToKilowatts } from '../../../../../utils/format-data/format-number';
 
 interface Props {
     psData: SipsPS;
@@ -81,7 +80,7 @@ export const SipsInfoCard = ({ onClear, psData, onExport, onComparativa }: Props
 
                 <p>
                     <span className="font-semibold">POT Max:</span>{" "}
-                    <span className="text-muted-foreground">{formatPowerES(psData.potenciaMaximaBIEW, 2)} kW</span>
+                    <span className="text-muted-foreground">{wattsToKilowatts(psData.potenciaMaximaBIEW)} kW</span>
                 </p>
 
             </div>

@@ -16,8 +16,9 @@ export interface SipsFullResponse {
 }
 
 const API_URL = "https://sips.gruporenovae.es/api/GetSIPS";
-const API_KEY = "80e984fa-4957-47ec-895b-1fbf321a2d56";
+const API_KEY = "80e984fa-4957-47ec-895b-1fbf321a2d56"; 
 
+// Eliminiar cmabiamos al backend
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const fetchCSV = async <T>(body: any): Promise<T[]> => {
     const response = await axios.post(API_URL, body, {

@@ -1,3 +1,13 @@
+export interface UserPaged {
+    items: User[];
+    currentPage: number;
+    pageSize: number;
+    totalCount: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+}
+
 export interface User {
     id:              string;
     fullName:  string;
@@ -5,6 +15,7 @@ export interface User {
     isActive:    boolean;
     role:            number;
     providerId:     number;
+    contractSignatureStatus: number;
     commissions?: UserCommission[];
 }
 

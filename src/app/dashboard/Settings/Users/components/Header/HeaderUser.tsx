@@ -7,14 +7,12 @@ import { Button } from "@/components/buttons/button";
 import { SearchIcon } from "@/incons/SearchIcon";
 import { FilterIcon } from "@/incons/FilterIcon";
 import { StarIcon } from "@/incons/StartIcon";
+import { UserFilter } from "../../interfaces/user-filters";
 
 interface Props {
-  filters: {
-    nombre: string;
-    email: string;
-    role: string;
-  };
-  setFilters: (filters: { nombre: string; email: string; role: string }) => void;
+  filters: UserFilter;
+  setFilters: (filters: UserFilter) => void;
+  onSearch: (filters?: UserFilter) => void;
 
   borderTop?: boolean;
   borderBottom?: boolean;
@@ -30,7 +28,7 @@ interface Props {
 export const HeaderUser = ({
   filters,
   setFilters,
-
+  onSearch,
   borderTop = true,
   borderBottom = true,
   borderLeft = true,
@@ -66,27 +64,27 @@ export const HeaderUser = ({
         <InputSearch
           type="text"
           placeholder="Buscar por nombre..."
-          value={filters.nombre}
-          onChange={(e) => setFilters({ ...filters, nombre: e })}
+          value={filters.fullName ?? ""}
+          onChange={(e) => setFilters({ ...filters, fullName: e })}
           icon={SearchIcon}
         />
 
         <InputSearch
           type="text"
           placeholder="Buscar por email..."
-          value={filters.email}
+          value={filters.email ?? ""}
           onChange={(e) => setFilters({ ...filters, email: e })}
           icon={SearchIcon}
         />
 
         <SelectSearch
-          value={filters.role}
+          value={filters.role ?? ""}
           onChange={(val) => setFilters({ ...filters, role: val })}
           icon={FilterIcon}
           options={[
             { value: "", label: "Todos los roles" },
-            { value: "1", label: "Master" },
-            { value: "2", label: "Colaborador" },
+            { value: "Master", label: "Master" },
+            { value: "Colaborador", label: "Colaborador" },
           ]}
         />
 
