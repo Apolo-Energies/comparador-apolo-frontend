@@ -3,17 +3,22 @@ import { Button } from '@/components/buttons/button';
 import { InputSearch } from '@/components/Inputs/InputSearch';
 import React, { useState } from 'react';
 import { getSipsData } from '@/app/services/SipsService/sips.service';
-import { SipsPS, SipsRowconsumption } from '../interface/sips';
 import { getLast12MonthsPeriodSummary, getLast12MonthsTrend, getMonthlyStackedChartData } from '@/utils/format-data/summary';
 import { DonutChart } from './graphics/DonutChart';
 import { HorizontalStackedBarChart } from './graphics/HorizontalStackedBarChart';
 import { MonthlyStackedChart } from './graphics/MonthlyStackedChart';
 import { SipsInfoCard } from './cards/SipsInfoCard';
+import { downloadExcelSips } from '@/app/services/FileService/excel.service';
+import { useSession } from 'next-auth/react';
+import { useAlertStore } from '@/app/store/ui/alert.store';
+import { Consumo, PS } from '../interface/sips';
 
 export const Sips = () => {
     const [cups, setCups] = useState('');
-    const [consumos, setConsumos] = useState<SipsRowconsumption[]>([]);
-    const [psData, setPsData] = useState<SipsPS | null>(null);
+    const [consumos, setConsumos] = useState<Consumo[]>([]);
+    const [psData, setPsData] = useState<PS | null>(null);
+    const { showAlert } = useAlertStore();
+    const { data: session } = useSession();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [summary, setSummary] = useState<any>(null);
@@ -33,9 +38,11 @@ export const Sips = () => {
         setLoading(true);
 
         try {
-            const response = await getSipsData(cups);
+            const response = await getSipsData(session?.user?.token || "", cups);
             if (response.isSuccess) {
+                
                 const { ps, consumos } = response.result;
+                
                 setPsData(ps);
                 setConsumos(consumos)
 
@@ -59,9 +66,18 @@ export const Sips = () => {
             setLoading(false);
         }
     };
-    const handleExportar = () => {
-        console.log('Exportar datos:');
-        // Aquí iría la lógica para exportar (CSV, Excel, PDF, etc.)
+    const handleExportar = async () => {
+        const token = session?.user?.token;
+        if (!token) {
+            showAlert("Sin token", "error");
+            return;
+        }
+        try {
+            await downloadExcelSips(token, cups);
+        } catch (error) {
+            showAlert(`${error}`, "error");
+            console.error("Error al descargar el Excel:", error);
+        }
     };
 
     const handleClearSips = () => {
@@ -70,7 +86,7 @@ export const Sips = () => {
         setSummary(null);
         setMonthlyChart([]);
     };
-    
+
     return (
         <>
             {!psData ? (
@@ -103,7 +119,7 @@ export const Sips = () => {
                     psData={psData}
                     onExport={handleExportar}
                     onComparativa={() => console.log("Comparativa")}
-                    onClear={handleClearSips}  
+                    onClear={handleClearSips}
                 />
             )}
 
@@ -119,18 +135,18 @@ export const Sips = () => {
                                     : "0 kWh"
                             }
                             data={summary?.donutData || []}
-                            trend={summary.trend} 
+                            trend={summary.trend}
                         />
 
                         <HorizontalStackedBarChart
                             title="Potencias contratadas"
                             data={[
-                                { label: "P1", values: [(psData?.potenciasContratadasEnWP1 ?? 0) / 1000] },
-                                { label: "P2", values: [(psData?.potenciasContratadasEnWP2 ?? 0) / 1000] },
-                                { label: "P3", values: [(psData?.potenciasContratadasEnWP3 ?? 0) / 1000] },
-                                { label: "P4", values: [(psData?.potenciasContratadasEnWP4 ?? 0) / 1000] },
-                                { label: "P5", values: [(psData?.potenciasContratadasEnWP5 ?? 0) / 1000] },
-                                { label: "P6", values: [(psData?.potenciasContratadasEnWP6 ?? 0) / 1000] },
+                                { label: "P1", values: [(psData?.potenciaContratadaP1 ?? 0) / 1000] },
+                                { label: "P2", values: [(psData?.potenciaContratadaP2 ?? 0) / 1000] },
+                                { label: "P3", values: [(psData?.potenciaContratadaP3 ?? 0) / 1000] },
+                                { label: "P4", values: [(psData?.potenciaContratadaP4 ?? 0) / 1000] },
+                                { label: "P5", values: [(psData?.potenciaContratadaP5 ?? 0) / 1000] },
+                                { label: "P6", values: [(psData?.potenciaContratadaP6 ?? 0) / 1000] },
                             ]}
                         />
 

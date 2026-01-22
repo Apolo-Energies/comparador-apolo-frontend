@@ -1,22 +1,18 @@
 import { Button } from "@/components/buttons/button";
 import { DownloadIcon } from "@/incons/DownloadIcon";
 import { FilterIcon } from "@/incons/FilterIcon";
-import { SipsPS } from "../../interface/sips";
-import { resolveMunicipioINE, resolveProvinciaINE } from "@/utils/provincias/ineResolver";
+import { getTarifaLabel } from "@/utils/tariff/ineResolver";
 import { wattsToKilowatts } from '../../../../../utils/format-data/format-number';
+import { PS } from "../../interface/sips";
 
 interface Props {
-    psData: SipsPS;
+    psData: PS;
     onExport: () => void;
     onComparativa: () => void;
     onClear: () => void;
 }
 
 export const SipsInfoCard = ({ onClear, psData, onExport, onComparativa }: Props) => {
-    // if (!psData) return null;
-
-    const provincia = resolveProvinciaINE(psData.codigoProvinciaPS);
-    const localidad = resolveMunicipioINE(psData.municipioPS);
 
     return (
         <div className="mb-6 bg-card rounded-lg border border-border p-6 relative">
@@ -55,7 +51,7 @@ export const SipsInfoCard = ({ onClear, psData, onExport, onComparativa }: Props
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 mt-4 text-sm">
                 <p>
                     <span className="font-semibold">Provincia:</span>{" "}
-                    <span className="text-muted-foreground">{provincia}</span>
+                    <span className="text-muted-foreground">{psData.codigoProvinciaPS}</span>
                 </p>
 
                 <p>
@@ -65,12 +61,14 @@ export const SipsInfoCard = ({ onClear, psData, onExport, onComparativa }: Props
 
                 <p>
                     <span className="font-semibold">Localidad:</span>{" "}
-                    <span className="text-muted-foreground">{localidad}</span>
+                    <span className="text-muted-foreground">{psData.municipioPS}</span>
                 </p>
 
                 <p>
                     <span className="font-semibold">Tarifa:</span>{" "}
-                    <span className="text-muted-foreground">3.0 TD</span>
+                    <span className="text-muted-foreground">
+                        {getTarifaLabel(psData?.codigoTarifaATREnVigor)}
+                    </span>
                 </p>
 
                 <p>

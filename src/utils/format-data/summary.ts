@@ -1,4 +1,4 @@
-import { SipsRowconsumption } from "@/app/dashboard/Sips/interface/sips";
+import { Consumo } from "@/app/dashboard/Sips/interface/sips";
 
 const formatNumber = (num: number): string =>
     num.toLocaleString("en-US", {
@@ -12,13 +12,13 @@ const toNumberOrNull = (num: number | null | undefined) => {
 };
 
 
-export const getLast12MonthsPeriodSummary = (rows: SipsRowconsumption[]) => {
+export const getLast12MonthsPeriodSummary = (rows: Consumo[]) => {
     if (!rows || rows.length === 0)
         return { periods: [], total: 0, totalFormatted: "0.00" };
 
     // Ordenar por fecha fin de consumo (desc)    
     const sorted = [...rows].sort(
-        (a, b) => new Date(b.fechaFinMesConsumo).getTime() - new Date(a.fechaFinMesConsumo).getTime()
+        (a, b) => new Date(b.fechaFin).getTime() - new Date(a.fechaFin).getTime()
     );
 
     // Ultimos 12 meses
@@ -26,12 +26,12 @@ export const getLast12MonthsPeriodSummary = (rows: SipsRowconsumption[]) => {
 
     // Sumar consumos por periodo
     const periodsValues = [
-        last12.reduce((acc, r) => acc + (r.consumoEnergiaActivaEnWhP1 || 0) / 1000, 0),
-        last12.reduce((acc, r) => acc + (r.consumoEnergiaActivaEnWhP2 || 0) / 1000, 0),
-        last12.reduce((acc, r) => acc + (r.consumoEnergiaActivaEnWhP3 || 0) / 1000, 0),
-        last12.reduce((acc, r) => acc + (r.consumoEnergiaActivaEnWhP4 || 0) / 1000, 0),
-        last12.reduce((acc, r) => acc + (r.consumoEnergiaActivaEnWhP5 || 0) / 1000, 0),
-        last12.reduce((acc, r) => acc + (r.consumoEnergiaActivaEnWhP6 || 0) / 1000, 0),
+        last12.reduce((acc, r) => acc + (r.energiaP1 || 0) / 1000, 0),
+        last12.reduce((acc, r) => acc + (r.energiaP2 || 0) / 1000, 0),
+        last12.reduce((acc, r) => acc + (r.energiaP3 || 0) / 1000, 0),
+        last12.reduce((acc, r) => acc + (r.energiaP4 || 0) / 1000, 0),
+        last12.reduce((acc, r) => acc + (r.energiaP5 || 0) / 1000, 0),
+        last12.reduce((acc, r) => acc + (r.energiaP6 || 0) / 1000, 0),
     ];
 
     const periods = periodsValues.map((value, i) => ({
@@ -49,7 +49,7 @@ export const getLast12MonthsPeriodSummary = (rows: SipsRowconsumption[]) => {
     };
 };
 
-export const getMonthlyStackedChartData = (rows: SipsRowconsumption[]) => {
+export const getMonthlyStackedChartData = (rows: Consumo[]) => {
     
     if (!rows || rows.length === 0) return [];
     const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
@@ -58,29 +58,29 @@ export const getMonthlyStackedChartData = (rows: SipsRowconsumption[]) => {
     // Ordenar por fecha ASC
     const sorted = [...rows].sort(
         (a, b) =>
-            new Date(a.fechaFinMesConsumo).getTime() -
-            new Date(b.fechaFinMesConsumo).getTime()
+            new Date(a.fechaFin).getTime() -
+            new Date(b.fechaFin).getTime()
     );
 
     const last12 = sorted.slice(-12);
 
     return last12.map((item) => {
-        const monthIndex = new Date(item.fechaFinMesConsumo).getMonth();
+        const monthIndex = new Date(item.fechaFin).getMonth();
 
         return {
             month: months[monthIndex],
-            P1: toNumberOrNull(item.consumoEnergiaActivaEnWhP1),
-            P2: toNumberOrNull(item.consumoEnergiaActivaEnWhP2),
-            P3: toNumberOrNull(item.consumoEnergiaActivaEnWhP3),
-            P4: toNumberOrNull(item.consumoEnergiaActivaEnWhP4),
-            P5: toNumberOrNull(item.consumoEnergiaActivaEnWhP5),
-            P6: toNumberOrNull(item.consumoEnergiaActivaEnWhP6),
+            P1: toNumberOrNull(item.energiaP1),
+            P2: toNumberOrNull(item.energiaP2),
+            P3: toNumberOrNull(item.energiaP3),
+            P4: toNumberOrNull(item.energiaP4),
+            P5: toNumberOrNull(item.energiaP5),
+            P6: toNumberOrNull(item.energiaP6),
         };
     });
 };
 
 
-export const getLast12MonthsTrend = (rows: SipsRowconsumption[]) => {
+export const getLast12MonthsTrend = (rows: Consumo[]) => {
     if (!rows || rows.length < 24) {
         return {
             currentTotal: 0,
@@ -91,21 +91,21 @@ export const getLast12MonthsTrend = (rows: SipsRowconsumption[]) => {
     }
 
     const sorted = [...rows].sort(
-        (a, b) => new Date(b.fechaFinMesConsumo).getTime() - new Date(a.fechaFinMesConsumo).getTime()
+        (a, b) => new Date(b.fechaFin).getTime() - new Date(a.fechaFin).getTime()
     );
 
     const last12 = sorted.slice(0, 12);       // últimos 12 meses
     const previous12 = sorted.slice(12, 24);  // los 12 meses previos
 
-    const sumKwh = (list: SipsRowconsumption[]) =>
+    const sumKwh = (list: Consumo[]) =>
         list.reduce((acc, r) =>
             acc +
-            (r.consumoEnergiaActivaEnWhP1 || 0) / 1000 +
-            (r.consumoEnergiaActivaEnWhP2 || 0) / 1000 +
-            (r.consumoEnergiaActivaEnWhP3 || 0) / 1000 +
-            (r.consumoEnergiaActivaEnWhP4 || 0) / 1000 +
-            (r.consumoEnergiaActivaEnWhP5 || 0) / 1000 +
-            (r.consumoEnergiaActivaEnWhP6 || 0) / 1000,
+            (r.energiaP1 || 0) / 1000 +
+            (r.energiaP2 || 0) / 1000 +
+            (r.energiaP3 || 0) / 1000 +
+            (r.energiaP4 || 0) / 1000 +
+            (r.energiaP5 || 0) / 1000 +
+            (r.energiaP6 || 0) / 1000,
             0
         );
 

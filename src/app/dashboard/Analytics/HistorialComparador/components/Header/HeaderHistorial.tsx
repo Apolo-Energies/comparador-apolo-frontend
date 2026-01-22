@@ -47,7 +47,7 @@ export const HeaderHistorial = ({
   };
 
   const exportExcel = async () => {
-    const token = session?.user?.token;
+    const token = session?.user?.token; 
     if (!token) {
       showAlert("Sin token", "error");
       return;

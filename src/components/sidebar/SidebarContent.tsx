@@ -10,6 +10,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { sidebarItems } from "@/constants/SidebarItems";
 import { SidebarItem } from "./SidebarItem";
 import { LogoutIcon } from "@/incons/LogoutIcon";
+import { logout } from "@/actions";
 
 export const SidebarContent = () => {
   const pathname = usePathname();
@@ -106,17 +107,25 @@ export const SidebarContent = () => {
           </Fragment>
         ))}
       </nav>
-      <div
-        onClick={() => { /* lógica de logout */ }}
-        className="mt-auto px-4 py-4 border-t border-border cursor-pointer flex items-center transition-colors duration-150 hover:bg-accent group"
+      <form
+        action={async () => {
+          await logout();
+        }}
+        className="mt-auto"
       >
-        <div className="flex items-center gap-2 ml-6">
-          <LogoutIcon className="w-6 h-6 text-red-500 group-hover:text-foreground" />
-          <span className="text-sm font-medium text-red-500 group-hover:text-foreground">
-            Logout
-          </span>
-        </div>
-      </div>
+        <button
+          type="submit"
+          className="w-full px-4 py-4 border-t border-border cursor-pointer flex items-center transition-colors duration-150 hover:bg-accent group"
+        >
+          <div className="flex items-center gap-2 ml-6">
+            <LogoutIcon className="w-6 h-6 text-red-500 group-hover:text-foreground" />
+            <span className="text-sm font-medium text-red-500 group-hover:text-foreground">
+              Logout
+            </span>
+          </div>
+        </button>
+      </form>
+
 
     </aside>
   );

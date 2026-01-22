@@ -1,9 +1,9 @@
-
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Settings } from "lucide-react";
 import { SelectOptions } from "@/components/Selects/SelectOptions";
 import { User } from "../../interfaces/user";
+import { ModalRestorePassword } from "../Modals/ModalRestorePassword";
 
 interface Props {
     user: User;
@@ -24,7 +24,9 @@ export const UserActionsMenu = ({
     onCommissionChange,
     onProviderChange,
 }: Props) => {
-    const [open, setOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [resetOpen, setResetOpen] = useState(false);
+
     const [coords, setCoords] = useState<{ top: number; right: number } | null>(
         null
     );
@@ -32,7 +34,6 @@ export const UserActionsMenu = ({
     const buttonRef = useRef<HTMLButtonElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // calcular posición real del botón
     const openMenu = () => {
         if (!buttonRef.current) return;
 
@@ -43,12 +44,11 @@ export const UserActionsMenu = ({
             right: window.innerWidth - rect.right,
         });
 
-        setOpen(true);
+        setMenuOpen(true);
     };
 
-    // cerrar al click fuera
     useEffect(() => {
-        if (!open) return;
+        if (!menuOpen) return;
 
         const handler = (e: MouseEvent) => {
             if (
@@ -56,27 +56,30 @@ export const UserActionsMenu = ({
                 !menuRef.current.contains(e.target as Node) &&
                 !buttonRef.current?.contains(e.target as Node)
             ) {
-                setOpen(false);
+                setMenuOpen(false);
             }
         };
 
         document.addEventListener("mousedown", handler);
         return () => document.removeEventListener("mousedown", handler);
-    }, [open]);
+    }, [menuOpen]);
+
+    const handleResetPassword = () => {
+        setMenuOpen(false);
+        setResetOpen(true);
+    };
 
     return (
         <>
-            {/* Botón tuerca */}
             <button
                 ref={buttonRef}
-                onClick={() => (open ? setOpen(false) : openMenu())}
+                onClick={() => (menuOpen ? setMenuOpen(false) : openMenu())}
                 className="p-2 rounded-md hover:bg-muted text-foreground"
             >
                 <Settings size={16} />
             </button>
 
-            {/* MENÚ EN PORTAL */}
-            {open &&
+            {menuOpen &&
                 coords &&
                 createPortal(
                     <div
@@ -130,9 +133,7 @@ export const UserActionsMenu = ({
                                     Comisión
                                 </span>
                                 <SelectOptions
-                                    value={
-                                        user.commissions?.[0]?.commissionType?.id ?? ""
-                                    }
+                                    value={user.commissions?.[0]?.commissionType?.id ?? ""}
                                     options={commissionOptions.map((c) => ({
                                         id: c.id,
                                         name: c.name,
@@ -155,10 +156,7 @@ export const UserActionsMenu = ({
                                         name: p.name,
                                     }))}
                                     onChange={(val) =>
-                                        onProviderChange(
-                                            user.id as string,
-                                            Number(val)
-                                        )
+                                        onProviderChange(user.id as string, Number(val))
                                     }
                                 />
                             </div>
@@ -167,20 +165,21 @@ export const UserActionsMenu = ({
                         {/* Acción final */}
                         <div className="border-t border-border">
                             <button
-                                className="
-                  w-full px-4 py-2 text-left text-sm
-                  text-destructive hover:bg-muted
-                "
-                                onClick={() =>
-                                    console.log("Reset password", user)
-                                }
+                                className="w-full px-4 py-2 text-left text-sm text-destructive hover:bg-muted"
+                                onClick={handleResetPassword}
                             >
-                                Resetear contraseña
+                                Restablecer contraseña
                             </button>
                         </div>
                     </div>,
                     document.body
                 )}
+
+            <ModalRestorePassword
+                open={resetOpen}
+                user={user}
+                onClose={() => setResetOpen(false)}
+            />
         </>
     );
 };

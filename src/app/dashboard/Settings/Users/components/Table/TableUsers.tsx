@@ -266,8 +266,8 @@ export const TableUsers = ({ filters }: Props) => {
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
         <span className="text-sm font-medium">
-    {getSignatureStatusLabel(user.contractSignatureStatus)}
-  </span>
+          {getSignatureStatusLabel(user.contractSignatureStatus)}
+        </span>
       ),
     },
 
@@ -302,18 +302,20 @@ export const TableUsers = ({ filters }: Props) => {
       key: "actions",
       label: "",
       align: "center",
-      sticky: true,
       render: (user: User) => (
-        <UserActionsMenu
-          user={user}
-          commissionOptions={commissionOptions}
-          providersOptions={providersOptions}
-          onRoleChange={updateUserRole}
-          onStatusChange={updateUserStatus}
-          onCommissionChange={handleCommissionChange}
-          onProviderChange={handleProviderChange}
-        />
+        <div className="flex justify-center items-center w-full">
+          <UserActionsMenu
+            user={user}
+            commissionOptions={commissionOptions}
+            providersOptions={providersOptions}
+            onRoleChange={updateUserRole}
+            onStatusChange={updateUserStatus}
+            onCommissionChange={handleCommissionChange}
+            onProviderChange={handleProviderChange}
+          />
+        </div>
       ),
+
     }
 
   ];
