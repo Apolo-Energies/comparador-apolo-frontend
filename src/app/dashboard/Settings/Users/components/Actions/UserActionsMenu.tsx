@@ -26,10 +26,7 @@ export const UserActionsMenu = ({
 }: Props) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [resetOpen, setResetOpen] = useState(false);
-
-    const [coords, setCoords] = useState<{ top: number; right: number } | null>(
-        null
-    );
+    const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
 
     const buttonRef = useRef<HTMLButtonElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -39,9 +36,29 @@ export const UserActionsMenu = ({
 
         const rect = buttonRef.current.getBoundingClientRect();
 
+        const MENU_WIDTH = 384;
+        const MENU_HEIGHT = 260;
+        const GAP = 8;
+
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceRight = window.innerWidth - rect.left;
+
+        const top = spaceBelow < MENU_HEIGHT
+            ? Math.max(
+                rect.top - MENU_HEIGHT - GAP,
+                rect.top - MENU_HEIGHT / 1.8
+            )
+            : rect.bottom + GAP;
+
+
+        const left =
+            spaceRight < MENU_WIDTH
+                ? rect.right - MENU_WIDTH
+                : rect.left;
+
         setCoords({
-            top: rect.bottom + 8,
-            right: window.innerWidth - rect.right,
+            top: Math.max(GAP, top),
+            left: Math.max(GAP, Math.min(left, window.innerWidth - MENU_WIDTH - GAP)),
         });
 
         setMenuOpen(true);
@@ -50,32 +67,29 @@ export const UserActionsMenu = ({
     useEffect(() => {
         if (!menuOpen) return;
 
-        const handler = (e: MouseEvent) => {
-            if (
-                menuRef.current &&
-                !menuRef.current.contains(e.target as Node) &&
-                !buttonRef.current?.contains(e.target as Node)
-            ) {
-                setMenuOpen(false);
-            }
+        const handleResize = () => {
+            openMenu();
         };
 
-        document.addEventListener("mousedown", handler);
-        return () => document.removeEventListener("mousedown", handler);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, [menuOpen]);
 
-    const handleResetPassword = () => {
-        setMenuOpen(false);
-        setResetOpen(true);
-    };
 
     return (
         <>
             <button
                 ref={buttonRef}
-                onClick={() => (menuOpen ? setMenuOpen(false) : openMenu())}
-                className="p-2 rounded-md hover:bg-muted text-foreground"
+                onClick={() => {
+                    if (menuOpen) {
+                        setMenuOpen(false);
+                    } else {
+                        openMenu();
+                    }
+                }}
+                className="p-2 rounded-md hover:bg-muted"
             >
+
                 <Settings size={16} />
             </button>
 
@@ -84,89 +98,54 @@ export const UserActionsMenu = ({
                 createPortal(
                     <div
                         ref={menuRef}
-                        style={{
-                            position: "fixed",
-                            top: coords.top,
-                            right: coords.right,
-                        }}
-                        className="z-9999 w-96 rounded-lg border border-border bg-card shadow-xl"
+                        style={{ top: coords.top, left: coords.left }}
+                        className="fixed z-9999 w-96 rounded-lg border border-border bg-card shadow-xl"
                     >
-                        {/* Grid 2x2 */}
                         <div className="grid grid-cols-2 gap-3 p-3">
-                            {/* Rol */}
-                            <div>
-                                <span className="block text-xs text-muted-foreground mb-1">
-                                    Rol
-                                </span>
-                                <SelectOptions
-                                    value={user.role.toString()}
-                                    options={[
-                                        { id: "1", name: "Master" },
-                                        { id: "2", name: "Colaborador" },
-                                    ]}
-                                    onChange={(val) =>
-                                        onRoleChange(user.id as string, Number(val))
-                                    }
-                                />
-                            </div>
+                            <SelectOptions
+                                value={user.role.toString()}
+                                options={[
+                                    { id: "1", name: "Master" },
+                                    { id: "2", name: "Colaborador" },
+                                ]}
+                                onChange={(v) => onRoleChange(user.id, Number(v))}
+                            />
 
-                            {/* Estado */}
-                            <div>
-                                <span className="block text-xs text-muted-foreground mb-1">
-                                    Estado
-                                </span>
-                                <SelectOptions
-                                    value={String(user.isActive)}
-                                    options={[
-                                        { id: "true", name: "Activo" },
-                                        { id: "false", name: "Inactivo" },
-                                    ]}
-                                    onChange={(val) =>
-                                        onStatusChange(user.id as string, val === "true")
-                                    }
-                                />
-                            </div>
+                            <SelectOptions
+                                value={String(user.isActive)}
+                                options={[
+                                    { id: "true", name: "Activo" },
+                                    { id: "false", name: "Inactivo" },
+                                ]}
+                                onChange={(v) => onStatusChange(user.id, v === "true")}
+                            />
 
-                            {/* Comisión */}
-                            <div>
-                                <span className="block text-xs text-muted-foreground mb-1">
-                                    Comisión
-                                </span>
-                                <SelectOptions
-                                    value={user.commissions?.[0]?.commissionType?.id ?? ""}
-                                    options={commissionOptions.map((c) => ({
-                                        id: c.id,
-                                        name: c.name,
-                                    }))}
-                                    onChange={(val) =>
-                                        onCommissionChange(user.id as string, val)
-                                    }
-                                />
-                            </div>
+                            <SelectOptions
+                                value={user.commissions?.[0]?.commissionType?.id ?? ""}
+                                options={commissionOptions.map((c: any) => ({
+                                    id: c.id,
+                                    name: c.name,
+                                }))}
+                                onChange={(v) => onCommissionChange(user.id, v)}
+                            />
 
-                            {/* Proveedor */}
-                            <div>
-                                <span className="block text-xs text-muted-foreground mb-1">
-                                    Proveedor
-                                </span>
-                                <SelectOptions
-                                    value={user.providerId ?? ""}
-                                    options={providersOptions.map((p) => ({
-                                        id: p.id,
-                                        name: p.name,
-                                    }))}
-                                    onChange={(val) =>
-                                        onProviderChange(user.id as string, Number(val))
-                                    }
-                                />
-                            </div>
+                            <SelectOptions
+                                value={user.providerId ?? ""}
+                                options={providersOptions.map((p: any) => ({
+                                    id: p.id,
+                                    name: p.name,
+                                }))}
+                                onChange={(v) => onProviderChange(user.id, Number(v))}
+                            />
                         </div>
 
-                        {/* Acción final */}
                         <div className="border-t border-border">
                             <button
+                                onClick={() => {
+                                    setMenuOpen(false);
+                                    setResetOpen(true);
+                                }}
                                 className="w-full px-4 py-2 text-left text-sm text-destructive hover:bg-muted"
-                                onClick={handleResetPassword}
                             >
                                 Restablecer contraseña
                             </button>

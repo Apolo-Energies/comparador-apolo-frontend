@@ -41,7 +41,7 @@ export function DataTable<T>({
   bodyBg = "bg-card",
 }: DataTableProps<T>) {
   const wrapperClasses = [
-    "shadow-sm overflow-hidden",
+    "shadow-sm",
     borderTop ? "border-t border-border" : "",
     borderBottom ? "border-b border-border" : "",
     borderLeft ? "border-l border-border" : "",
