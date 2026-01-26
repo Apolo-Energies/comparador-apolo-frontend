@@ -8,48 +8,49 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
     cookieName: '__Secure-authjs.session-token',
   });
 
-  const url = req.nextUrl;
+  const { pathname } = req.nextUrl;
 
   if (!session) {
-    if (url.pathname !== "/") {
-      url.pathname = "/";
-      return NextResponse.redirect(url);
+    if (pathname !== "/") {
+      return NextResponse.redirect(new URL("/", req.url));
     }
     return NextResponse.next();
   }
 
+  const expires =
+    typeof session.accessTokenExpires === "number"
+      ? session.accessTokenExpires
+      : 0;
 
-  const expires = typeof session.accessTokenExpires === "number" ? session.accessTokenExpires : 0;
   if (Date.now() > expires) {
-    url.pathname = "/";
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (url.pathname === "/") {
-    url.pathname = "/dashboard/Comparator";
-    return NextResponse.redirect(url);
+  if (pathname === "/") {
+    return NextResponse.redirect(
+      new URL("/dashboard/Comparator", req.url)
+    );
   }
 
   const userRole =
-    typeof session.role === "string" ? session.role.toLowerCase() : undefined;
+    typeof session.role === "string" ? session.role.toLowerCase() : null;
 
   if (!userRole) {
-    // si no tiene rol valido, también lo enviamos al login
-    url.pathname = "/";
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (userRole === "colaborador") {
-    if (!url.pathname.startsWith("/dashboard/Comparator")) {
-      url.pathname = "/dashboard/Comparator";
-      return NextResponse.redirect(url);
-    }
+  if (
+    userRole === "colaborador" &&
+    !pathname.startsWith("/dashboard/Comparator")
+  ) {
+    return NextResponse.redirect(
+      new URL("/dashboard/Comparator", req.url)
+    );
   }
 
   return NextResponse.next();
 }
 
-// Solo aplica middleware a rutas dentro de /dashboard
 export const config = {
-  matcher: ["/", "/dashboard", "/dashboard/:path*"],
+  matcher: ["/", "/dashboard/:path*"],
 };
