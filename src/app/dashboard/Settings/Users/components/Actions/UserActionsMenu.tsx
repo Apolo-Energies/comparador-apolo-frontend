@@ -13,6 +13,7 @@ interface Props {
     onStatusChange: (userId: string, active: boolean) => void;
     onCommissionChange: (userId: string, commissionId: string) => void;
     onProviderChange: (userId: string, providerId: number) => void;
+    onEnergyExpertChange: (userId: string, isEnergyExpert: boolean) => void;
 }
 
 export const UserActionsMenu = ({
@@ -23,6 +24,7 @@ export const UserActionsMenu = ({
     onStatusChange,
     onCommissionChange,
     onProviderChange,
+    onEnergyExpertChange
 }: Props) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [resetOpen, setResetOpen] = useState(false);
@@ -120,6 +122,16 @@ export const UserActionsMenu = ({
                                 onChange={(v) => onStatusChange(user.id, v === "true")}
                             />
 
+                            {/* 👇 NUEVO: Energy Expert */}
+                            <SelectOptions
+                                value={String(user.isEnergyExpert)}
+                                options={[
+                                    { id: "true", name: "Energy Expert" },
+                                    { id: "false", name: "No Energy Expert" },
+                                ]}
+                                onChange={(v) => onEnergyExpertChange(user.id, v === "true")}
+                            />
+
                             <SelectOptions
                                 value={user.commissions?.[0]?.commissionType?.id ?? ""}
                                 options={commissionOptions.map((c: any) => ({
@@ -138,6 +150,7 @@ export const UserActionsMenu = ({
                                 onChange={(v) => onProviderChange(user.id, Number(v))}
                             />
                         </div>
+
 
                         <div className="border-t border-border">
                             <button

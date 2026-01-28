@@ -1,5 +1,6 @@
 "use client";
 import {
+  changeUserEnergyExpert,
   changeUserRole,
   deactivateUser,
   getUsersByFilters,
@@ -166,6 +167,34 @@ export const TableUsers = ({ filters }: Props) => {
     registerProvider(userId, providerId);
   };
 
+  const updateEnergyExpert = async (userId: string, isEnergyExpert: boolean) => {
+    if (!session?.user.token) return;
+
+    try {
+      const response = await changeUserEnergyExpert(
+        session.user.token,
+        userId,
+        isEnergyExpert
+      );
+
+      if (response.isSuccess) {
+        showAlert("Energy expert actualizado correctamente", "success");
+
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === userId ? { ...u, isEnergyExpert } : u
+          )
+        );
+      } else {
+        showAlert("Error al actualizar Energy expert", "error");
+      }
+    } catch (error) {
+      showAlert("Error al actualizar Energy expert", "error");
+      console.error(error);
+    }
+  };
+
+
   const updateUserRole = async (userId: string, newRole: number) => {
     if (!session?.user.token) return;
 
@@ -230,7 +259,9 @@ export const TableUsers = ({ filters }: Props) => {
         </div>
       ),
     },
+    { key: "identifier", headerIcon: <ArrowUpDownIcon />, label: "SIPS/DNI", },
     { key: "email", headerIcon: <ArrowUpDownIcon />, label: "Usuario" },
+    { key: "phone", headerIcon: <ArrowUpDownIcon />, label: "Teléfono" },
     {
       key: "role",
       label: "Rol",
@@ -272,6 +303,23 @@ export const TableUsers = ({ filters }: Props) => {
     },
 
     {
+      key: "isEnergyExpert",
+      label: "Energy Expert",
+      align: "center",
+      headerIcon: <ArrowUpDownIcon />,
+      render: (user: User) => (
+        <span
+          className={`text-sm font-medium ${user.isEnergyExpert
+            ? "text-success"
+            : "text-destructive"
+            }`}
+        >
+          {user.isEnergyExpert ? "Sí" : "No"}
+        </span>
+      ),
+    },
+
+    {
       key: "commissions",
       label: "Comisión",
       align: "center",
@@ -308,6 +356,7 @@ export const TableUsers = ({ filters }: Props) => {
             user={user}
             commissionOptions={commissionOptions}
             providersOptions={providersOptions}
+            onEnergyExpertChange={updateEnergyExpert}
             onRoleChange={updateUserRole}
             onStatusChange={updateUserStatus}
             onCommissionChange={handleCommissionChange}
