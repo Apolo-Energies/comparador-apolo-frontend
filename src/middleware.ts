@@ -1,3 +1,4 @@
+
 import { getToken } from "next-auth/jwt";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -32,8 +33,8 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
   }
 
   if (userRole === "colaborador") {
-    if (!url.pathname.startsWith("/dashboard/Comparador")) {
-      url.pathname = "/dashboard/Comparador";
+    if (!url.pathname.startsWith("/dashboard/Comparator")) {
+      url.pathname = "/dashboard/Comparator";
       return NextResponse.redirect(url);
     }
   }
@@ -48,8 +49,3 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
 
   return NextResponse.next();
 }
-
-// Solo aplica middleware a rutas dentro de /dashboard
-export const config = {
-  matcher: ["/dashboard", "/dashboard/:path*"],
-};
