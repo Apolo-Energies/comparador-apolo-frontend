@@ -8,77 +8,48 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
     cookieName: '__Secure-authjs.session-token',
   });
 
-  const { pathname } = req.nextUrl;
+  const url = req.nextUrl;
 
   if (!session) {
-    if (pathname !== "/") {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-    return NextResponse.next();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
   }
 
-  const expires =
-    typeof session.accessTokenExpires === "number"
-      ? session.accessTokenExpires
-      : 0;
-
-  if (expires > 0 && Date.now() > expires) {
-    const response = NextResponse.redirect(new URL("/", req.url));
-
-    // Eliminar todas las cookies de NextAuth
-    const cookieNames = [
-      'next-auth.session-token',
-      '__Secure-next-auth.session-token',
-      '__Secure-authjs.session-token',
-      'srf-token',
-      'authjs.session-token',
-      '__Host-next-auth.csrf-token',
-      '__Secure-next-auth.callback-url',
-      '__Host-next-auth.callback-url',
-    ];
-
-    cookieNames.forEach(cookieName => {
-      response.cookies.delete(cookieName);
-      // También intentar eliminar con diferentes opciones
-      response.cookies.set(cookieName, '', {
-        expires: new Date(0),
-        path: '/',
-      });
-    });
-
-    return response;
-  }
-
-
+  const expires = typeof session.accessTokenExpires === "number" ? session.accessTokenExpires : 0;
   if (Date.now() > expires) {
-    return NextResponse.redirect(new URL("/", req.url));
+    url.pathname = "/";
+    return NextResponse.redirect(url);
   }
 
-  if (pathname === "/") {
-    return NextResponse.redirect(
-      new URL("/dashboard/Comparator", req.url)
-    );
-  }
-
+  // session.role is of type unknown, so we need to safely extract it
   const userRole =
-    typeof session.role === "string" ? session.role.toLowerCase() : null;
+    typeof session.role === "string" ? session.role.toLowerCase() : undefined;
 
   if (!userRole) {
-    return NextResponse.redirect(new URL("/", req.url));
+    // si no tiene rol valido, también lo enviamos al login
+    url.pathname = "/";
+    return NextResponse.redirect(url);
   }
 
-  if (
-    userRole === "colaborador" &&
-    !pathname.startsWith("/dashboard/Comparator")
-  ) {
-    return NextResponse.redirect(
-      new URL("/dashboard/Comparator", req.url)
-    );
+  if (userRole === "colaborador") {
+    if (!url.pathname.startsWith("/dashboard/Comparador")) {
+      url.pathname = "/dashboard/Comparador";
+      return NextResponse.redirect(url);
+    }
   }
+  // const userRole = session.user?.role;
+
+  // Verifica si el rol es válido
+  // const validRoles = ["master", "colaborador"];
+  // if (!validRoles.includes(userRole)) {
+  //   url.pathname = "/";
+  //   return NextResponse.redirect(url);
+  // }
 
   return NextResponse.next();
 }
 
+// Solo aplica middleware a rutas dentro de /dashboard
 export const config = {
-  matcher: ["/", "/dashboard/:path*"],
+  matcher: ["/dashboard", "/dashboard/:path*"],
 };
