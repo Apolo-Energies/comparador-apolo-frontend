@@ -49,3 +49,8 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
 
   return NextResponse.next();
 }
+
+// Solo aplica middleware a rutas dentro de /dashboard
+export const config = {
+  matcher: ["/dashboard", "/dashboard/:path*"],
+};
