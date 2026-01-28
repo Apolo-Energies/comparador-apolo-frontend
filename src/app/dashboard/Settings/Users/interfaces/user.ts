@@ -15,6 +15,7 @@ export interface User {
     isActive:    boolean;
     role:            number;
     providerId:     number;
+    isEnergyExpert:  boolean;
     contractSignatureStatus: number;
     commissions?: UserCommission[];
 }
