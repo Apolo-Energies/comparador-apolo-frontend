@@ -3,7 +3,7 @@ import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
 import { OmieDistributionPeriod } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
-const baseUrl = "/repartoperiodoomie";
+const baseUrl = "/omiedistributionperiod";
 
 type RepartoOmiePeriodoCreate = Omit<OmieDistributionPeriod, "id">;
 // Crear
