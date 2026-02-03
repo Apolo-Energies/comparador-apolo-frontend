@@ -3,7 +3,7 @@ import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
 import { BoePowerPeriod } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
-const baseUrl = "/potenciaboeperiodo";
+const baseUrl = "/boepowerperiod";
 
 type PotenciaBoePeriodoCreate = Omit<BoePowerPeriod, "id">;
 // Crear

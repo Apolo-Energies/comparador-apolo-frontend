@@ -3,7 +3,7 @@ import { ApiResponse } from "../interfaces/ApiResponse";
 import { ApiManager } from "../ApiManager/ApiManager";
 import { ProductPeriod } from "@/app/dashboard/Settings/Rates/interfaces/proveedor";
 
-const baseUrl = "/productoperiodo";
+const baseUrl = "/productperiod";
 
 type ProductoPeriodoCreate = Omit<ProductPeriod, "id">;
 // Crear
