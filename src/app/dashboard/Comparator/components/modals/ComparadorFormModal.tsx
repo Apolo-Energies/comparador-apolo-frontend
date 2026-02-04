@@ -68,7 +68,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   const { comision, calcular } = useCommissionStore();
   const calcularStore = useCalculatorStore();
 
-  const isSnapTariff = ["Fijo Snap Mini", "Fijo Snap", "Fijo Snap Max"].includes(
+  const isSnapTariff = ["Fijo Snap Mini", "Fijo Snap", "Fijo Snap Maxi"].includes(
     productoSeleccionado ?? ""
   );
 

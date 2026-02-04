@@ -6,7 +6,7 @@ export const getSnapEnergiaByTarifa = (
             return 50;
         case "Fijo Snap":
             return 75;
-        case "Fijo Snap Max":
+        case "Fijo Snap Maxi":
             return 100;
         default:
             return undefined;
@@ -34,7 +34,7 @@ export const getIndexEnergiaByProducto = (
 export const SNAP_PRODUCTS = [
     "Fijo Snap Mini",
     "Fijo Snap",
-    "Fijo Snap Max",
+    "Fijo Snap Maxi",
 ] as const;
 
 export const isSnapProduct = (producto?: string): boolean =>
