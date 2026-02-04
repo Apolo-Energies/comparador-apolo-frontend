@@ -7,7 +7,7 @@ export const PRODUCTS_BY_TARIFF: Record<string, string[]> = {
     "Fijo Estable",
     "Fijo Snap",
     "Fijo Snap Fresh",
-    "Fijo Snap Max",
+    "Fijo Snap Maxi",
     "Fijo Snap Mini",
     "Passpool",
   ],

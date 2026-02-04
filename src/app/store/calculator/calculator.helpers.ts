@@ -40,7 +40,7 @@ export const getPotenciaBOE = (tarifa: string, periodo: Periodo): number => {
   const t = tariffs.find((x) => x.code === tarifa);
   if (!t) return 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const potencia = t.boePowers?.find((r: any) => r.periods.some((p:any) => p.period === periodo));
+  const potencia = t.boePowers?.find((r: any) => r.periods.some((p: any) => p.period === periodo));
   if (!potencia) return 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const p = potencia.periods.find((p: any) => p.period === periodo);
@@ -56,9 +56,9 @@ export const calcularPrecios = (
 ) => {
 
   const modalidadBase =
-  modalidad === "Index Coste" || modalidad === "Index Promo"
-    ? "Index Base"
-    : modalidad;
+    modalidad === "Index Coste" || modalidad === "Index Promo"
+      ? "Index Base"
+      : modalidad;
 
   const valorTarifa = getBaseValue(tarifa, modalidadBase, periodo);
   const repartoOmie = getRepartoOmie(tarifa, periodo);
@@ -85,6 +85,12 @@ export const calcularPrecios = (
   };
 };
 
+const POTENCIA_FIJA_SNAP: Record<string, number> = {
+  "Fijo Snap Mini": 0.0795,
+  "Fijo Snap": 0.0895,
+  "Fijo Snap Maxi": 0.0995,
+};
+
 export const calcularPotencia = (
   tarifa: string,
   periodo: Periodo,
@@ -92,13 +98,21 @@ export const calcularPotencia = (
   modalidad: string,
 ) => {
   const potenciaBase = getPotenciaBOE(tarifa, periodo);
-  
+
   // if (tarifa === "3.0TD" && periodo === 4 && modalidad === "Index Promo") {
   //   return {
   //     base: 0,
   //     oferta: round6(0.010086441),
   //   };
   // }
+
+  if (modalidad in POTENCIA_FIJA_SNAP) {
+    return {
+      base: round6(potenciaBase),
+      oferta: POTENCIA_FIJA_SNAP[modalidad],
+    };
+  }
+
   const potenciaOferta = modalidad === "Index Promo" ? potenciaBase : potenciaBase + feePotencia / 365;
   return {
     base: round6(potenciaBase),
@@ -116,21 +130,21 @@ export const calcularFacturaHelper = (
   const periodos = PS.map((periodo, idx) => {
     const dias = matilData.periodo_facturacion.numero_dias
     const kwh = matilData.energia[idx]?.activa.kwh ?? 0;
-    const kw  = matilData.potencia[idx]?.contratada?.kw ?? 0;
+    const kw = matilData.potencia[idx]?.contratada?.kw ?? 0;
     const actEu = matilData.energia[idx]?.reactiva.importe ?? 0;
-    const potEu  = matilData.potencia[idx]?.contratada?.importe ?? 0;
+    const potEu = matilData.potencia[idx]?.contratada?.importe ?? 0;
 
     // Si no hay consumo de energía ni potencia, lo omitimos
     if (kwh === 0 && kw === 0) return null;
 
     const precioEnergia = kwh > 0 ? round6(actEu / kwh) : 0;
     const precioPotencia = kw > 0 ? round6(potEu / kw / dias) : 0;
-    const precioEnergiaOferta   = resultados.periodos[idx]?.oferta ?? 0;
-    const precioPotenciaOferta  = resultadosPotencia.periodos[idx]?.ofertaPotencia ?? 0;
+    const precioEnergiaOferta = resultados.periodos[idx]?.oferta ?? 0;
+    const precioPotenciaOferta = resultadosPotencia.periodos[idx]?.ofertaPotencia ?? 0;
 
-    const costeEnergia  = kwh > 0 ? round6(kwh * precioEnergiaOferta) : 0;
-    const costePotencia = kw  > 0 ? round6(kw  * precioPotenciaOferta * dias) : 0;
-    const totalPeriodo  = round6(costeEnergia + costePotencia);
+    const costeEnergia = kwh > 0 ? round6(kwh * precioEnergiaOferta) : 0;
+    const costePotencia = kw > 0 ? round6(kw * precioPotenciaOferta * dias) : 0;
+    const totalPeriodo = round6(costeEnergia + costePotencia);
 
     return { periodo, kwh, kw, precioEnergia, precioEnergiaOferta, precioPotencia, precioPotenciaOferta, costeEnergia, costePotencia, totalPeriodo };
   }).filter(Boolean) as {
@@ -148,24 +162,24 @@ export const calcularFacturaHelper = (
 
   const dias = matilData.periodo_facturacion.numero_dias;
   const descuento_electricidad = matilData.descuentos
-  .reduce((total, d) => total + (d.importe ?? 0), 0);
+    .reduce((total, d) => total + (d.importe ?? 0), 0);
   const otros_servicios = matilData.otros_servicios
-  .reduce((total, s) => total + (s.importe ?? 0), 0);
+    .reduce((total, s) => total + (s.importe ?? 0), 0);
 
   const kwhEnergia = round6(periodos.reduce((acc, p) => acc + p.kwh, 0))
-  const totalEnergia  = round6(periodos.reduce((acc, p) => acc + p.costeEnergia, 0));
+  const totalEnergia = round6(periodos.reduce((acc, p) => acc + p.costeEnergia, 0));
   const totalPotencia = round6(periodos.reduce((acc, p) => acc + p.costePotencia, 0));
-  const costesComunesConIE = (matilData.totales_electricidad.energia.reactiva || 0) + 
-  (matilData.totales_electricidad.potencia.exceso || 0) + 
-  (matilData.bono_social.importe || 0) - 
-  (descuento_electricidad)
+  const costesComunesConIE = (matilData.totales_electricidad.energia.reactiva || 0) +
+    (matilData.totales_electricidad.potencia.exceso || 0) +
+    (matilData.bono_social.importe || 0) -
+    (descuento_electricidad)
 
-  const impuestoElectrico = round6((totalEnergia + totalPotencia + costesComunesConIE)*0.0511269632);
+  const impuestoElectrico = round6((totalEnergia + totalPotencia + costesComunesConIE) * 0.0511269632);
   const subTotal = totalEnergia + totalPotencia + costesComunesConIE + impuestoElectrico + matilData.equipos.importe;
   const iva = subTotal * 0.21;
-  const total         = round6(subTotal + iva);
+  const total = round6(subTotal + iva);
   const ahorroEstudio = round3(matilData.total - total);
-  
+
   const ahorro_porcent = parseFloat(((ahorroEstudio / matilData.total) * 100).toFixed(2));
   const diasFacturados = dias;
   const totalAnio = 10 * kwhEnergia;
@@ -176,7 +190,7 @@ export const calcularFacturaHelper = (
       (otros_servicios / diasFacturados) * 365
     ) * (1 + 0.0511269632 + 0.21)
   );
-  
+
   const ahorroXAnio = Number(ahorroAnio.toFixed(2));
   return { periodos, totalEnergia, totalPotencia, total, ahorroEstudio, ahorro_porcent, ahorroXAnio, subTotal, impuestoElectrico, iva, totalAnio, costesComunesConIE, dias };
 };
