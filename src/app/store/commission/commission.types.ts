@@ -6,6 +6,7 @@ export interface CalcularComisionParams {
     feePotencia: number[];                 // Array de valores de fee de potencia
     productoSeleccionado: string;          // Ej. "Index Base", "Index Coste"
     commissionType: "SNAP" | "VARIABLE";   
+    isPromo?: boolean;
     // getIndexBase: (producto: string) => number; // función que devuelve coeficiente de potencia
 }
 

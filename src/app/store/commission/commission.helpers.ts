@@ -6,7 +6,8 @@ export const calculateComisionFunction = ({
   feeEnergia,
   comisionEnergia,
   feePotencia,
-  commissionType
+  commissionType,
+  isPromo
 }: CalcularComisionParams): number => {
   if (!matilData?.energia || !matilData?.potencia) return 0;
 
@@ -17,16 +18,24 @@ export const calculateComisionFunction = ({
   const consumoPeriodo =
     matilData.energia.reduce((acc, item) => acc + (item?.activa?.kwh ?? 0), 0) ?? 0;
 
-  const coeficienteEnergia = 10 * consumoPeriodo;
-  
-  const energia = (feeEnergia[0] * comisionEnergia * coeficienteEnergia) / 1000;
-
   const potenciaContratada = matilData.potencia.reduce(
     (acc, item) => acc + (item?.contratada?.kw ?? 0),
     0
   );
 
   const coeficientePotencia = 0.5;
+
+  if (isPromo) {
+    const consumoEnergia = (consumoPeriodo) * 3
+    const energia = (consumoEnergia * comisionEnergia);
+    return energia;
+  }
+
+
+  const coeficienteEnergia = 10 * consumoPeriodo;
+  const energia =
+    (feeEnergia[0] * comisionEnergia * coeficienteEnergia) / 1000;
+
   const potencia = feePotencia[0] * coeficientePotencia * potenciaContratada;
 
   return energia + potencia;
