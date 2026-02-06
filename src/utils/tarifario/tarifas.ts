@@ -6,7 +6,7 @@ export const PRODUCTS_BY_TARIFF: Record<string, string[]> = {
     "Fijo Fácil",
     "Fijo Estable",
     "Fijo Snap",
-    "Fijo Snap Fresh",
+    //"Fijo Snap Fresh",
     "Fijo Snap Maxi",
     "Fijo Snap Mini",
     "Passpool",
@@ -19,6 +19,9 @@ export const PRODUCTS_BY_TARIFF: Record<string, string[]> = {
     "Fijo Estable",
     "Fijo Dyn",
     "Passpool",
+    "Promo 3M Lite",
+    "Promo 3M Pro",
+    "Promo 3M Plus",
   ],
   "6.1TD": [
     "Index Base",
@@ -28,5 +31,8 @@ export const PRODUCTS_BY_TARIFF: Record<string, string[]> = {
     "Fijo Estable",
     "Fijo Dyn",
     "Passpool",
+    "Promo 3M Lite",
+    "Promo 3M Pro",
+    "Promo 3M Plus",
   ],
 };
