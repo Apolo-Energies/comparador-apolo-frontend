@@ -18,6 +18,7 @@ export interface User {
     isEnergyExpert:  boolean;
     contractSignatureStatus: number;
     commissions?: UserCommission[];
+    customerId?: string;
 }
 
 export interface UserCommission {
