@@ -15,3 +15,15 @@ export enum PersonType {
     Individual = "Individual",
     Company = "Company",
 }
+
+
+export interface SendContractRequest {
+    customerId: string;
+    subject?: string;
+    message?: string;
+}
+
+export interface SendContractResult {
+    requestId: string;
+    signingUrl: string | null;
+}

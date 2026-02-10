@@ -4,6 +4,7 @@ import { Settings } from "lucide-react";
 import { SelectOptions } from "@/components/Selects/SelectOptions";
 import { User } from "../../interfaces/user";
 import { ModalRestorePassword } from "../Modals/ModalRestorePassword";
+import { ModalSendContract } from "../Modals/ModalSendContract";
 
 interface Props {
     user: User;
@@ -28,6 +29,8 @@ export const UserActionsMenu = ({
 }: Props) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [resetOpen, setResetOpen] = useState(false);
+    const [sendContractOpen, setSendContractOpen] = useState(false);
+
     const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
 
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -76,6 +79,27 @@ export const UserActionsMenu = ({
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, [menuOpen]);
+
+    useEffect(() => {
+        if (!menuOpen) return;
+
+        const onPointerDown = (e: PointerEvent) => {
+            const target = e.target as Node;
+
+            if (menuRef.current?.contains(target)) return;
+
+            if (buttonRef.current?.contains(target)) return;
+
+            setMenuOpen(false);
+        };
+
+        document.addEventListener("pointerdown", onPointerDown, true);
+
+        return () => {
+            document.removeEventListener("pointerdown", onPointerDown, true);
+        };
+    }, [menuOpen]);
+
 
 
     return (
@@ -152,7 +176,16 @@ export const UserActionsMenu = ({
                         </div>
 
 
-                        <div className="border-t border-border">
+                        <div className="border-t border-border grid grid-cols-2">
+                            <button
+                                onClick={() => {
+                                    setMenuOpen(false);
+                                    setSendContractOpen(true);
+                                }}
+                                className="px-3 py-2 text-left text-xs sm:text-sm hover:bg-muted text-primary border-r border-border"
+                            >
+                                Enviar contrato
+                            </button>
                             <button
                                 onClick={() => {
                                     setMenuOpen(false);
@@ -172,6 +205,13 @@ export const UserActionsMenu = ({
                 user={user}
                 onClose={() => setResetOpen(false)}
             />
+
+            <ModalSendContract
+                open={sendContractOpen}
+                user={{ id: user.id, email: user.email, fullName: user.fullName, customerId: user.customerId }}
+                onClose={() => setSendContractOpen(false)}
+            />
+
         </>
     );
 };
