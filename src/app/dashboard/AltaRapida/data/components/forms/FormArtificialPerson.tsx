@@ -22,7 +22,7 @@ export const FormArtificialPerson = ({
 }: Props) => {
     return (
         <div className="grid grid-cols-1 gap-6">
-            <Input
+            {/* <Input
                 label="DNI"
                 name="dni"
                 placeholder="12345678A"
@@ -171,7 +171,7 @@ export const FormArtificialPerson = ({
                 errors={errors}
                 touchedFields={touchedFields}
                 submitCount={submitCount}
-            />
+            /> */}
         </div>
     );
 }

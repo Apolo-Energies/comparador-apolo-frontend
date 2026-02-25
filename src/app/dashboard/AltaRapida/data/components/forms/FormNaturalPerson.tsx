@@ -23,7 +23,7 @@ export const FormNaturalPerson = ({
     return (
         <div className="grid grid-cols-1 gap-6">
 
-            <Input
+            {/* <Input
                 label="DNI"
                 name="dni"
                 placeholder="12345678A"
@@ -141,7 +141,7 @@ export const FormNaturalPerson = ({
                 errors={errors}
                 touchedFields={touchedFields}
                 submitCount={submitCount}
-            />
+            /> */}
 
 
         </div>
