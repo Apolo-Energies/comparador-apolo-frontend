@@ -19,7 +19,7 @@ import { downloadExcel } from "@/app/services/FileService/excel.service";
 import { PRODUCTS_BY_TARIFF } from "@/utils/tarifario/tarifas";
 import { OcrData } from "@/app/dashboard/Analytics/interfaces/matilData";
 import { PeriodPrice } from "../utilComparador/PeriodPrice";
-import { getIndexEnergiaByProducto, getPromo3MEnergyByProduct, getSnapEnergiaByTarifa, isPromo3MProduct, isSnapProduct, normalizeComision } from "@/utils/commission/commissions";
+import { getIndexEnergiaByProducto, getSnapEnergiaByTarifa, isPromo3MProduct, isSnapProduct, normalizeComision } from "@/utils/commission/commissions";
 
 interface Props {
   open: boolean;
@@ -72,9 +72,9 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     productoSeleccionado ?? ""
   );
 
-  const isPromoTariff = ["Promo 3M Lite", "Promo 3M Pro", "Promo 3M Plus"].includes(
-    productoSeleccionado ?? ""
-  );
+  // const isPromoTariff = ["Promo 3M Lite", "Promo 3M Pro", "Promo 3M Plus"].includes(
+  //   productoSeleccionado ?? ""
+  // );
 
   const isSnap = isSnapProduct(productoSeleccionado);
   const isPromo = isPromo3MProduct(productoSeleccionado);
@@ -84,18 +84,18 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     normalizeComision(
       isSnapProduct(productoSeleccionado)
         ? getSnapEnergiaByTarifa(productoSeleccionado)
-        : getPromo3MEnergyByProduct(productoSeleccionado) 
-        ?? getIndexEnergiaByProducto(productoSeleccionado)
+        // : getPromo3MEnergyByProduct(productoSeleccionado) 
+        : getIndexEnergiaByProducto(productoSeleccionado)
     ) ??
     normalizeComision(commission ? commission / 100 : undefined) ??
     0;
 
   useEffect(() => {
-    if (isSnapTariff || isPromoTariff) {
+    if (isSnapTariff) {
       setFeeEnergia([0]);
       setFeePotencia([0]);
     }
-  }, [isSnapTariff, isPromoTariff]);
+  }, [isSnapTariff]);
   useEffect(() => {
     calcular({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -306,10 +306,10 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
               max={50}
               min={0}
               step={1}
-              disabled={isSnapTariff || isPromoTariff}
+              disabled={isSnapTariff }
             />
 
-            {isSnapTariff || isPromoTariff && (
+            {isSnapTariff && (
               <p className="text-xs text-muted-foreground mt-1">
                 Fee de energía fijo por tarifa SNAP o PROMO. No se puede modificar.
               </p>
@@ -358,10 +358,10 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
               max={25}
               min={0}
               step={1}
-              disabled={isSnapTariff || isPromoTariff}
+              disabled={isSnapTariff}
             />
 
-            {isSnapTariff || isPromoTariff && (
+            {isSnapTariff && (
               <p className="text-xs text-muted-foreground mt-1">
                 Fee de potencia fijo por tarifa SNAP o PROMO. No se puede modificar.
               </p>

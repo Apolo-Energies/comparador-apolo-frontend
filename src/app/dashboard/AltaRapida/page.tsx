@@ -1,8 +1,5 @@
+import { ContratsComponent } from "./components/ContratsComponent";
 
 export default function AltaRapidaPage() {
-  return (
-    <div>
-      <h1>Hello Aalta Rapida Page</h1>
-    </div>
-  );
+  return <ContratsComponent />;
 }
