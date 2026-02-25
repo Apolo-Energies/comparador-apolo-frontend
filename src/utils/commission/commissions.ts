@@ -29,20 +29,20 @@ export const getIndexEnergiaByProducto = (
     }
 };
 
-export const getPromo3MEnergyByProduct = (
-    producto?: string
-): number | undefined => {
-    switch (producto) {
-        case "Promo 3M Lite":
-            return 0.005;
-        case "Promo 3M Pro":
-            return 0.01;
-        case "Promo 3M Plus":
-            return 0.015;
-        default:
-            return undefined;
-    }
-};
+// export const getPromo3MEnergyByProduct = (
+//     producto?: string
+// ): number | undefined => {
+//     switch (producto) {
+//         case "Promo 3M Lite":
+//             return 0.005;
+//         case "Promo 3M Pro":
+//             return 0.01;
+//         case "Promo 3M Plus":
+//             return 0.015;
+//         default:
+//             return undefined;
+//     }
+// };
 
 export const SNAP_PRODUCTS = [
     "Fijo Snap Mini",

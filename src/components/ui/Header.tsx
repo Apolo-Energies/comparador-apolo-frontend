@@ -1,7 +1,6 @@
 "use client";
 import { Menu } from "lucide-react";
-import React, { useEffect } from "react";
-import { ModeToggle } from "../buttons/ModeToggle";
+import { useEffect } from "react";
 import { Button } from "../buttons/button";
 import { UserMenu } from "./UserMenu";
 import { useSidebarStore } from "@/app/store/ui/sidebar.store";
@@ -69,6 +68,7 @@ export const Header = () => {
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* <Link href="/dashboard/AltaRapida"> */}
           <Link href="https://ee.apoloenergies.es/App/">
             <Button>
               <StarIcon /> Alta Rapida
@@ -77,7 +77,7 @@ export const Header = () => {
           {/* <ModeToggle /> */}
           <UserMenu />
         </div>
-      </div>
+      </div> 
     </header>
   );
 };

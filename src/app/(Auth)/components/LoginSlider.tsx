@@ -7,16 +7,16 @@ export const LoginSlider = () => {
     const [currentImage, setCurrentImage] = useState(0);
 
     const images = [
-        { src: "/backgrounds/bg-neutral.webp", alt: "Trabajador industrial", text: "Ahorra hasta un 25% en tu factura de la luz" },
-        { src: "/backgrounds/bg-dark.webp", alt: "Trabajador de construcción", text: "Ahorra hasta un 25% en tu factura de la luz" },
-        { src: "/backgrounds/bg-light.webp", alt: "Dueña de restaurante", text: "Ahorra hasta un 25% en tu factura de la luz" },
+        { src: "/backgrounds/image1.webp", alt: "Bombilla", text: "" },
+        { src: "/backgrounds/image2.webp", alt: "Panel Solar", text: "" },
+        { src: "/backgrounds/image3.webp", alt: "Oficina", text: "" },
     ];
 
     const totalImages = images.length;
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentImage((prev) => (prev + 1) % totalImages);
+            setCurrentImage((prev) => (prev + 1) % totalImages); 
         }, 4000);
 
         return () => clearInterval(interval);
@@ -50,7 +50,7 @@ export const LoginSlider = () => {
 
             {/* Indicadores (Barras) */}
             {/* Indicadores (Barras Clickeables) */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 w-[120px]">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 w-30">
                 {images.map((_, index) => (
                     <button
                         key={index}
