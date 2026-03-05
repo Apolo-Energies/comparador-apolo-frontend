@@ -23,12 +23,13 @@ export const calculateComisionFunction = ({
     0
   );
 
-  const coeficientePotencia = 0.5;
+  const coeficientePotencia = 0.55;
 
   if (isPromo) {
     const consumoEnergia = (consumoPeriodo) * 3
-    const energia = (consumoEnergia * comisionEnergia);
-    return energia;
+    const energia = (feeEnergia[0] * consumoEnergia * comisionEnergia) / 1000;
+    const potencia = feePotencia[0] * coeficientePotencia * potenciaContratada;
+    return energia + potencia;
   }
 
 
