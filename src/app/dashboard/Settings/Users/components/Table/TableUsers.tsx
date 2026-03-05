@@ -273,22 +273,6 @@ export const TableUsers = ({ filters }: Props) => {
         </span>
       ),
     },
-    {
-      key: "isActive",
-      label: "Estado Usuario",
-      align: "center",
-      headerIcon: <ArrowUpDownIcon />,
-      render: (user: User) => (
-        <span
-          className={`text-sm font-medium ${user.isActive
-            ? "text-success"
-            : "text-destructive"
-            }`}
-        >
-          {user.isActive ? "Activo" : "Inactivo"}
-        </span>
-      ),
-    },
 
     {
       key: "contractSignatureStatus",
@@ -342,6 +326,23 @@ export const TableUsers = ({ filters }: Props) => {
               (p) => p.id === user.providerId
             )?.name ?? "Sin Proveedor"
           }
+        </span>
+      ),
+    },
+
+    {
+      key: "isActive",
+      label: "Estado Usuario",
+      align: "center",
+      headerIcon: <ArrowUpDownIcon />,
+      render: (user: User) => (
+        <span
+          className={`text-sm font-medium ${user.isActive
+            ? "text-success"
+            : "text-destructive"
+            }`}
+        >
+          {user.isActive ? "Activo" : "Inactivo"}
         </span>
       ),
     },
