@@ -26,8 +26,8 @@ export const calculateComisionFunction = ({
   const coeficientePotencia = 0.55;
 
   if (isPromo) {
-    const consumoEnergia = (consumoPeriodo) * 3
-    const energia = (feeEnergia[0] * consumoEnergia * comisionEnergia) / 1000;
+    const consumoEnergia = (consumoPeriodo/12) * 3
+    const energia = (feeEnergia[0]/100 * consumoEnergia * comisionEnergia);
     const potencia = feePotencia[0] * coeficientePotencia * potenciaContratada;
     return energia + potencia;
   }
