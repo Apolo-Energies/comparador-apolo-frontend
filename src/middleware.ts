@@ -32,7 +32,7 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
     return NextResponse.redirect(url);
   }
 
-  if (userRole === "colaborador") {
+  if (userRole === "colaborador" || "colaborador, referenciador") {
     const allowed = [
       "/dashboard/Comparator",
       "/dashboard/Sips",
