@@ -93,7 +93,7 @@ export const FormSetPassword = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full px-4 py-3 text-base rounded-lg border bg-white dark:bg-gray-800 neutral:bg-gray-100 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200"
+              className="w-full placeholder:text-gray-400 bg-input text-sm rounded border px-4 py-3 focus:outline-none focus:ring"
             />
             <button
               type="button"
@@ -124,7 +124,7 @@ export const FormSetPassword = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full placeholder:text-gray-400 bg-input text-sm rounded border px-4 py-3 focus:outline-none focus:ring"
             />
             <button
               type="button"
@@ -143,7 +143,7 @@ export const FormSetPassword = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 active:bg-blue-800"
+            className="w-full cursor-pointer bg-[#12AFF0] hover:bg-[#0e8ec0] text-gray-950 font-medium py-3 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 active:bg-blue-800"
           >
             {loading ? <RingLoader size={22} color="#ffffff" /> : "Guardar"}
           </button>
