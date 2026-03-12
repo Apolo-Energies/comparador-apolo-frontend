@@ -5,6 +5,7 @@ import { SelectOptions } from "@/components/Selects/SelectOptions";
 import { User } from "../../interfaces/user";
 import { ModalRestorePassword } from "../Modals/ModalRestorePassword";
 import { ModalSendContract } from "../Modals/ModalSendContract";
+import { UserRoleLabel } from "@/utils/user-role/user-role";
 
 interface Props {
     user: User;
@@ -100,7 +101,10 @@ export const UserActionsMenu = ({
         };
     }, [menuOpen]);
 
-
+    const roleOptions = Object.entries(UserRoleLabel).map(([id, name]) => ({
+        id,
+        name
+    }));
 
     return (
         <>
@@ -130,10 +134,7 @@ export const UserActionsMenu = ({
                         <div className="grid grid-cols-2 gap-3 p-3">
                             <SelectOptions
                                 value={user.role.toString()}
-                                options={[
-                                    { id: "1", name: "Master" },
-                                    { id: "2", name: "Colaborador" },
-                                ]}
+                                options={roleOptions}
                                 onChange={(v) => onRoleChange(user.id, Number(v))}
                             />
 

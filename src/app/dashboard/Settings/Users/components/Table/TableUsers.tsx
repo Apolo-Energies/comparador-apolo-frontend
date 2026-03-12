@@ -25,6 +25,8 @@ import { Paginator } from "@/components/ui/Paginator";
 import { UserActionsMenu } from "../Actions/UserActionsMenu";
 import { getSignatureStatusLabel } from "@/utils/signaturit/utilitySignaturit";
 import { UserFilter } from "../../interfaces/user-filters";
+import { UserRoleLabel } from "@/utils/user-role/user-role";
+import { UserRole } from "../../enums/user-role.enum";
 
 interface Props {
   filters: UserFilter;
@@ -269,10 +271,10 @@ export const TableUsers = ({ filters }: Props) => {
       headerIcon: <ArrowUpDownIcon />,
       render: (user: User) => (
         <span className="text-sm">
-          {user.role === 1 ? "Master" : "Colaborador"}
+          {UserRoleLabel[user.role as UserRole]}
         </span>
       ),
-    },
+    }, 
 
     {
       key: "contractSignatureStatus",
