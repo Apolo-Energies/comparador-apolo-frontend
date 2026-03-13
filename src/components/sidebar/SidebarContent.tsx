@@ -37,6 +37,13 @@ export const SidebarContent = () => {
     setOpenMenu((prev) => (prev === title ? null : title));
   };
 
+  const visibleSections = sidebarItems
+  .map((section) => ({
+    ...section,
+    items: section.items.filter((item) => item.roles.includes(userRole)),
+  }))
+  .filter((section) => section.items.length > 0);
+
   return (
     <aside className="w-64 bg-card border-r border-border h-full flex flex-col">
       <Link href="/dashboard" className="flex justify-center items-center w-full h-18.5 border-b border-border px-2">
@@ -46,7 +53,7 @@ export const SidebarContent = () => {
       </Link>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
-        {sidebarItems.map((section, sIndex) => (
+        {visibleSections.map((section, sIndex) => (
           <Fragment key={sIndex}>
             <div className="-mx-3 pb-4 border-b border-border">
               <p className="text-xs font-semibold text-[#99B2C6] tracking-wide mb-2 px-3">

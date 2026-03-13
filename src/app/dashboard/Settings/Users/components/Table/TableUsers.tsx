@@ -27,6 +27,8 @@ import { getSignatureStatusLabel } from "@/utils/signaturit/utilitySignaturit";
 import { UserFilter } from "../../interfaces/user-filters";
 import { UserRoleLabel } from "@/utils/user-role/user-role";
 import { UserRole } from "../../enums/user-role.enum";
+import Link from "next/link";
+import { EyeIcon } from "lucide-react";
 
 interface Props {
   filters: UserFilter;
@@ -355,6 +357,9 @@ export const TableUsers = ({ filters }: Props) => {
       align: "center",
       render: (user: User) => (
         <div className="flex justify-center items-center w-full">
+          <Link className="" href={`/dashboard/Settings/Users/${user.id}`}>
+            <EyeIcon className="w-5 h-5 text-primary hover:text-primary/80 transition-colors" />
+          </Link>
           <UserActionsMenu
             user={user}
             commissionOptions={commissionOptions}

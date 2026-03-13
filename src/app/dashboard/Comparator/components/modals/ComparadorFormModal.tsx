@@ -20,6 +20,7 @@ import { PRODUCTS_BY_TARIFF } from "@/utils/tarifario/tarifas";
 import { OcrData } from "@/app/dashboard/Analytics/interfaces/matilData";
 import { PeriodPrice } from "../utilComparador/PeriodPrice";
 import { getIndexEnergiaByProducto, getSnapEnergiaByTarifa, isPromo3MProduct, isSnapProduct, normalizeComision } from "@/utils/commission/commissions";
+import { useSession } from "next-auth/react";
 
 interface Props {
   open: boolean;
@@ -59,7 +60,10 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   const [feePotencia, setFeePotencia] = useState([0]);
   const [resultadoFactura, setResultadoFactura] = useState<FacturaResult>();
   const { commission } = useCommissionUserStore();
+  const [willCloseContract, setWillCloseContract] = useState(false);
+  const { data: session } = useSession();
 
+  console.log("rol del usuario: ", session?.user?.role);
   const productoSeleccionado = watch("producto");
 
   // const comisionEnergia = commission ? commission / 100 : 0;
@@ -76,11 +80,15 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   //   productoSeleccionado ?? ""
   // );
 
+  const isReferrer =
+    session?.user?.role === "Referenciador" ||
+    session?.user?.role === "Colaborador, Referenciador";
+
   const isSnap = isSnapProduct(productoSeleccionado);
   const isPromo = isPromo3MProduct(productoSeleccionado);
 
 
-  const comisionEnergia =
+  const comisionBase =
     normalizeComision(
       isSnapProduct(productoSeleccionado)
         ? getSnapEnergiaByTarifa(productoSeleccionado)
@@ -89,6 +97,11 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     ) ??
     normalizeComision(commission ? commission / 100 : undefined) ??
     0;
+
+  const comisionEnergia =
+    isReferrer
+      ? (willCloseContract ? comisionBase : 0.3)
+      : comisionBase;
 
   useEffect(() => {
     if (isSnapTariff) {
@@ -273,6 +286,30 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           />
         </div>
 
+        {isReferrer && (
+          <div className="rounded-lg border border-border bg-card p-4">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={willCloseContract}
+                onChange={(e) => setWillCloseContract(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-gray-300"
+              />
+
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-foreground">
+                  ¿Cerrarás este contrato?
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Si no lo marcas, el estudio se calculará con el 30% de tu
+                  comisión base.
+                </p>
+              </div>
+            </label>
+          </div>
+        )}
+
+
         <div className="space-y-2">
           <div className="flex pb-2 items-center">
             <label
@@ -306,7 +343,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
               max={50}
               min={0}
               step={1}
-              disabled={isSnapTariff }
+              disabled={isSnapTariff}
             />
 
             {isSnapTariff && (
