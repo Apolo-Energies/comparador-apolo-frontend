@@ -1,9 +1,9 @@
-// FormUserIndividual.tsx
-import React from "react";
+
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/Inputs/Input";
 import { Select } from "@/components/Selects/Select";
 import { CreateIndividualUserRequest } from "../../interfaces/CreateUserRequest";
+import { UserRoleLabel } from "@/utils/user-role/user-role";
 
 interface Props {
   register: UseFormRegister<CreateIndividualUserRequest>;
@@ -11,6 +11,10 @@ interface Props {
 }
 
 export const FormIndividualUser = ({ register, errors }: Props) => {
+  const roleOptions = Object.entries(UserRoleLabel).map(([value, label]) => ({
+          label,
+          value
+      }));
   return (
     <div className="space-y-6">
 
@@ -23,7 +27,7 @@ export const FormIndividualUser = ({ register, errors }: Props) => {
           required: "El email es obligatorio",
           pattern: {
             value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: "Email inválido",
+            message: "Email inválido", 
           },
         })}
         errors={errors}
@@ -34,10 +38,7 @@ export const FormIndividualUser = ({ register, errors }: Props) => {
         label="Rol"
         name="role"
         required
-        options={[
-          { label: "Master", value: 1 },
-          { label: "Colaborador", value: 2 },
-        ]}
+        options={roleOptions}
         register={register("role", {
           required: "El rol es obligatorio",
         })}

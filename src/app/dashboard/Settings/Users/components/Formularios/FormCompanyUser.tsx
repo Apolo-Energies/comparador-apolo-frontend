@@ -4,6 +4,7 @@ import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/Inputs/Input";
 import { Select } from "@/components/Selects/Select";
 import { CreateCompanyUserRequest } from "../../interfaces/CreateUserRequest";
+import { UserRoleLabel } from "@/utils/user-role/user-role";
 
 interface Props {
     register: UseFormRegister<CreateCompanyUserRequest>;
@@ -11,6 +12,12 @@ interface Props {
 }
 
 export const FormUserCompany = ({ register, errors }: Props) => {
+
+    const roleOptions = Object.entries(UserRoleLabel).map(([value, label]) => ({
+        label,
+        value
+    }));
+
     return (
         <div className="space-y-6">
 
@@ -34,10 +41,7 @@ export const FormUserCompany = ({ register, errors }: Props) => {
                 label="Rol"
                 name="role"
                 required
-                options={[
-                    { label: "Master", value: 1 },
-                    { label: "Colaborador", value: 2 },
-                ]}
+                options={roleOptions}
                 register={register("role", {
                     required: "El rol es obligatorio",
                 })}

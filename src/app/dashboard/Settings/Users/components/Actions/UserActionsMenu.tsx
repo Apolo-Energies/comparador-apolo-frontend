@@ -117,7 +117,7 @@ export const UserActionsMenu = ({
                         openMenu();
                     }
                 }}
-                className="p-2 rounded-md hover:bg-muted"
+                className="p-2 rounded-md hover:bg-muted cursor-pointer"
             >
 
                 <Settings size={16} />

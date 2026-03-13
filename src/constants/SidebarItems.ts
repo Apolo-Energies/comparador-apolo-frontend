@@ -61,13 +61,13 @@ export const sidebarItems: SidebarSection[] = [
         title: "Comparador",
         url: "/dashboard/Comparator",
         icon: ArrowDownBoxIcon,
-        roles: ["Master", "Colaborador", "Colaborador, Referenciador"],
+        roles: ["Master", "Colaborador", "Colaborador, Referenciador", "Tester"],
       },
       {
         title: "Consulta SIPS",
         url: "/dashboard/Sips",
         icon: CompassIcon,
-        roles: ["Master", "Colaborador", "Colaborador, Referenciador"],
+        roles: ["Master", "Colaborador", "Colaborador, Referenciador", "Tester"],
       },
 
     ],
@@ -109,7 +109,7 @@ export const sidebarItems: SidebarSection[] = [
       {
         title: "Soporte Comercial",
         icon: SupportIcon,
-        roles: ["Master", "Colaborador", "Colaborador, Referenciador"],
+        roles: ["Master", "Colaborador"],
         url: "https://wa.me/623136797",
       },
     ],
