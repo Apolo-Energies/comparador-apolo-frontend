@@ -63,7 +63,6 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   const [willCloseContract, setWillCloseContract] = useState(false);
   const { data: session } = useSession();
 
-  console.log("rol del usuario: ", session?.user?.role);
   const productoSeleccionado = watch("producto");
 
   // const comisionEnergia = commission ? commission / 100 : 0;

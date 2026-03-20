@@ -357,9 +357,9 @@ export const TableUsers = ({ filters }: Props) => {
       align: "center",
       render: (user: User) => (
         <div className="flex justify-center items-center w-full">
-          {/* <Link className="" href={`/dashboard/Settings/Users/${user.id}`}>
-            <EyeIcon className="w-5 h-5 text-primary hover:text-primary/80 transition-colors" />
-          </Link> */}
+          <Link className="" href={`/dashboard/Settings/Users/${user.id}`}>
+            <EyeIcon className="w-4.5 h-4.5 hover:text-primary/80 transition-colors cursor-pointer" />
+          </Link>
           <UserActionsMenu
             user={user}
             commissionOptions={commissionOptions}

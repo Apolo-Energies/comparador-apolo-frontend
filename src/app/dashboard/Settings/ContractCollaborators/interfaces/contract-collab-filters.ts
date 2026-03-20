@@ -12,8 +12,8 @@ export interface ContractFilters {
 
 
 export enum PersonType {
-    Individual = "Individual",
-    Company = "Company",
+    Individual = 0,
+    Company = 1,
 }
 
 
