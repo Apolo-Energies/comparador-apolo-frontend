@@ -4,6 +4,8 @@ import { Button } from "../buttons/button";
 import { CircleUserIcon, LogOut, Settings, User } from "lucide-react";
 import { logout } from "@/actions";
 import { Portal } from "./Portal";
+import Link from "next/link";
+import { useSession } from 'next-auth/react';
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
@@ -12,6 +14,7 @@ export const UserMenu = () => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  const { data: session } = useSession();
 
   const updatePosition = () => {
     if (!buttonRef.current) return;
@@ -84,20 +87,22 @@ export const UserMenu = () => {
             className="fixed z-9999 w-48 rounded-md shadow-lg bg-body border border-border"
           >
             <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
-              <li
+              {/* <li
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
               >
                 <Settings className="w-4 h-4" />
                 Configuración
-              </li>
-
-              <li
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-              >
-                <User className="w-4 h-4" />
-                Mi perfil
+              </li> */}
+              <li>
+                <Link
+                  href={`/dashboard/Settings/Users/${session?.user?.id}`}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                >
+                  <User className="w-4 h-4" />
+                  Mi perfil
+                </Link>
               </li>
 
               <form

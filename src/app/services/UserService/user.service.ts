@@ -3,6 +3,7 @@ import { ApiManager } from "../ApiManager/ApiManager";
 import { ApiResponse } from "../interfaces/ApiResponse";
 import { User, UserPaged } from "@/app/dashboard/Settings/Users/interfaces/user";
 import { CreateUserRequest } from "@/app/dashboard/Settings/Users/interfaces/CreateUserRequest";
+import { UpdateUserRequest } from "../interfaces/request/user";
 
 export const getUsers = async (token: string): Promise<ApiResponse<User[]>> => {
   try {
@@ -365,4 +366,91 @@ export const changeUserEnergyExpert = async (
   }
 };
 
+export const getUserById = async (
+  token: string,
+  userId: string
+): Promise<ApiResponse<User>> => {
+  try {
+    const response = await ApiManager.get(`/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: false,
+    });
 
+    return {
+      result: response.data.result,
+      status: response.status,
+      isSuccess: true,
+      displayMessage: response.data.displayMessage ?? "",
+      errorMessages: response.data.errorMessages ?? [],
+    };
+  } catch (error) {
+    console.error("Get user by id error:", error);
+
+    if (axios.isAxiosError(error)) {
+      return {
+        result: {} as User,
+        status: error.response?.status ?? 500,
+        isSuccess: false,
+        displayMessage:
+          error.response?.data?.displayMessage ?? "Unknown error",
+        errorMessages:
+          error.response?.data?.errorMessages ?? [error.message],
+      };
+    }
+
+    return {
+      result: {} as User,
+      status: 500,
+      isSuccess: false,
+      displayMessage: "Unknown error",
+      errorMessages: [String(error)],
+    };
+  }
+};
+
+export const updateUser = async (
+  token: string,
+  userId: string,
+  payload: UpdateUserRequest
+): Promise<ApiResponse<User>> => {
+  try {
+    const response = await ApiManager.put(`/user/${userId}`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: false,
+    });
+
+    return {
+      result: response.data.result,
+      status: response.status,
+      isSuccess: true,
+      displayMessage: response.data.displayMessage ?? "",
+      errorMessages: response.data.errorMessages ?? [],
+    };
+  } catch (error) {
+    console.error("Update user error:", error);
+
+    if (axios.isAxiosError(error)) {
+      return {
+        result: {} as User,
+        status: error.response?.status ?? 500,
+        isSuccess: false,
+        displayMessage:
+          error.response?.data?.displayMessage ?? "Unknown error",
+        errorMessages:
+          error.response?.data?.errorMessages ?? [error.message],
+      };
+    }
+
+    return {
+      result: {} as User,
+      status: 500,
+      isSuccess: false,
+      displayMessage: "Unknown error",
+      errorMessages: [String(error)],
+    };
+  }
+};

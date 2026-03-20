@@ -36,6 +36,7 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
     const allowed = [
       "/dashboard/Comparator",
       "/dashboard/Sips",
+      "/dashboard/Settings/Users"
     ];
 
     const isAllowed = allowed.some((p) => url.pathname.startsWith(p));

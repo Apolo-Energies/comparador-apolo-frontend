@@ -19,6 +19,8 @@ interface Props<T extends FieldValues> {
   errors?: FieldErrors<T>;
   defaultValue?: string | number;
   helperText?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
 }
 
 export const Input = <T extends FieldValues>({
@@ -32,6 +34,8 @@ export const Input = <T extends FieldValues>({
   errors,
   defaultValue,
   helperText,
+  disabled = false,
+  readOnly = false,
 }: Props<T>) => {
   const errorMessage = errors?.[name]?.message as string | undefined;
 
@@ -61,6 +65,8 @@ export const Input = <T extends FieldValues>({
             ? "border-red-500 ring-red-500"
             : "border-border ring-blue-500"
         }`}
+        readOnly={readOnly}
+        disabled={disabled}
       />
 
       {/* ERROR tiene prioridad */}

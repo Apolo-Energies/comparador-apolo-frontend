@@ -1,3 +1,4 @@
+import { UserDataComponent } from './components/userData/UserDataComponent';
 type Props = {
     params: Promise<{
         id: string;
@@ -7,7 +8,5 @@ type Props = {
 export default async function UserDetailPage({ params }: Props) {
     const { id } = await params;
 
-    console.log("id:", id);
-
-    return <p>id de orden: {id}</p>;
+    return <UserDataComponent userId={id} />
 }
