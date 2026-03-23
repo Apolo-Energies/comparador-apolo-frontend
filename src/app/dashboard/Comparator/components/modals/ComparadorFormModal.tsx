@@ -444,7 +444,10 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
               {/* {resultadoFactura?.ahorroXAnio}€ al año */}
               {Math.trunc(Number(resultadoFactura?.ahorroXAnio))}€ al año
             </p>
-            <p className="text-sm text-text-green">
+            <p className={`text-sm ${resultadoFactura?.ahorro_porcent && resultadoFactura.ahorro_porcent > 0
+              ? "text-text-green"
+              : "text-red-500"
+              }`}>
               + {resultadoFactura?.ahorro_porcent}% de ahorro
             </p>
           </div>
