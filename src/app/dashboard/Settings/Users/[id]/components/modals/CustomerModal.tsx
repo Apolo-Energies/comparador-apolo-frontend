@@ -66,8 +66,8 @@ export const CustomerModal = ({
         defaultValues: {
             id: "",
             userId: "",
-            kind: 0,
-            personType: 0 as PersonType,
+            kind: 1,
+            personType: PersonType.Individual,
             firstName: "",
             lastName: "",
             email: "",
@@ -90,8 +90,8 @@ export const CustomerModal = ({
         reset({
             id: user.customer?.id ?? "",
             userId: user.id ?? "",
-            kind: user.customer?.kind ?? 0,
-            personType: (user.customer?.personType ?? 0) as PersonType,
+            kind: user.customer?.kind ?? 1,
+            personType: user.customer?.personType ?? PersonType.Individual,
             firstName: user.customer?.firstName ?? "",
             lastName: user.customer?.lastName ?? "",
             email: user.customer?.email ?? user.email ?? "",
@@ -113,10 +113,10 @@ export const CustomerModal = ({
     const handlePersonTypeChange = (value: "Individual" | "Company") => {
         if (isEditMode) return;
 
-        const nextType = (value === "Individual" ? 0 : 1) as PersonType;
+        const nextType = value === "Individual" ? PersonType.Individual : PersonType.Company;
         setValue("personType", nextType, { shouldValidate: true });
 
-        if (nextType === 0) {
+        if (nextType === PersonType.Individual) {
             setValue("cif", "", { shouldValidate: true });
             setValue("companyName", "", { shouldValidate: true });
         } else {
@@ -139,16 +139,17 @@ export const CustomerModal = ({
                 const response = await createCustomer(token, {
                     kind: data.kind,
                     personType: data.personType,
-                    firstName: data.personType === 0 ? data.firstName : "",
-                    lastName: data.personType === 0 ? data.lastName : "",
+                    firstName: data.personType === PersonType.Individual ? data.firstName : "",
+                    lastName: data.personType === PersonType.Individual ? data.lastName : "",
                     email: data.email,
                     phone: data.phone,
                     legalAddress: data.legalAddress,
                     notificationAddress: data.notificationAddress,
                     bankAccount: data.bankAccount,
-                    dni: data.personType === 0 ? data.dni : "",
-                    cif: data.personType === 1 ? data.cif : "",
-                    companyName: data.personType === 1 ? data.companyName : "",
+                    dni: data.personType === PersonType.Individual ? data.dni : "",
+                    cif: data.personType === PersonType.Company ? data.cif : "",
+                    companyName: data.personType === PersonType.Company ? data.companyName : "",
+                    userId: data.userId ?? user?.id ?? "",
                 });
 
                 if (response.isSuccess) {
@@ -171,16 +172,16 @@ export const CustomerModal = ({
                 userId: data.userId ?? user?.id ?? "",
                 kind: data.kind,
                 personType: data.personType,
-                firstName: data.personType === 0 ? data.firstName : "",
-                lastName: data.personType === 0 ? data.lastName : "",
+                firstName: data.personType === PersonType.Individual ? data.firstName : "",
+                lastName: data.personType === PersonType.Individual ? data.lastName : "",
                 email: data.email,
                 phone: data.phone,
                 legalAddress: data.legalAddress,
                 notificationAddress: data.notificationAddress,
                 bankAccount: data.bankAccount,
-                dni: data.personType === 0 ? data.dni : "",
-                cif: data.personType === 1 ? data.cif : "",
-                companyName: data.personType === 1 ? data.companyName : "",
+                dni: data.personType === PersonType.Individual ? data.dni : "",
+                cif: data.personType === PersonType.Company ? data.cif : "",
+                companyName: data.personType === PersonType.Company ? data.companyName : "",
             });
 
             if (response.isSuccess) {
@@ -223,7 +224,7 @@ export const CustomerModal = ({
                         </p>
 
                         <ToggleGroup
-                            value={personType === 0 ? "Individual" : "Company"}
+                            value={personType === PersonType.Individual ? "Individual" : "Company"}
                             onValueChange={handlePersonTypeChange}
                             options={[
                                 { value: "Individual", label: "Persona Física" },
@@ -241,7 +242,7 @@ export const CustomerModal = ({
 
                 <form onSubmit={handleSubmit(onSubmitForm)} className="flex flex-col">
                     <div className="grid grid-cols-1 gap-4 px-4 py-4 md:grid-cols-2">
-                        {personType === 0 ? (
+                        {personType === PersonType.Individual ? (
                             <>
                                 <Input<CustomerForm>
                                     label="Nombre"
