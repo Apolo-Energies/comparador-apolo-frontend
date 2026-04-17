@@ -11,6 +11,7 @@ export interface CreateCustomerRequest {
     dni?: string;
     cif?: string;
     companyName?: string;
+    userId?: string;
 }
 
 export interface UpdateCustomerRequest {
