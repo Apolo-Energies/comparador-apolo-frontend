@@ -8,6 +8,7 @@ export const REQUIRED_DOCUMENTS_BY_PERSON_TYPE: Record<PersonType, DocumentType[
     DocumentType.AeatCertificate,
     DocumentType.SsCertificate,
     DocumentType.BankStatement,
+    DocumentType.SignedContract,
   ],
   [PersonType.Company]: [
     DocumentType.DniFront,
@@ -16,5 +17,6 @@ export const REQUIRED_DOCUMENTS_BY_PERSON_TYPE: Record<PersonType, DocumentType[
     DocumentType.SsCertificate,
     DocumentType.BankStatement,
     DocumentType.CifCertificate,
+    DocumentType.SignedContract,
   ],
 };

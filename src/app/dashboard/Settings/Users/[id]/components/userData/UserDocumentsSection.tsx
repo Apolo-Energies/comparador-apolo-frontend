@@ -24,6 +24,7 @@ import {
     uploadContractDocument,
     validateContractDocument,
 } from "@/app/services/ContractDocumentService/contract-document.service";
+import { createManualContract } from "@/app/services/ContractService/contract.service";
 
 interface UserDocumentsSectionProps {
     user: User | null;
@@ -185,10 +186,34 @@ export const UserDocumentsSection = ({
             return;
         }
 
-        const contractId = user?.contract?.id;
+        let contractId = user?.contract?.id;
+
         if (!contractId) {
-            showAlert("No se encontró el contrato del usuario.", "error");
-            return;
+            const customerId = user?.customerId;
+            if (!customerId) {
+                showAlert("No se encontró el cliente del usuario.", "error");
+                return;
+            }
+
+            const contractResponse = await createManualContract(token, {
+                customerId,
+                origin: 0,
+            });
+
+            if (!contractResponse.isSuccess) {
+                showAlert(
+                    contractResponse.errorMessages?.[0] ?? "No se pudo crear el contrato.",
+                    "error"
+                );
+                return;
+            }
+
+            contractId = contractResponse.result.id;
+
+            setUser((prev) => {
+                if (!prev) return prev;
+                return { ...prev, contract: contractResponse.result };
+            });
         }
 
         const previousUser = user;
