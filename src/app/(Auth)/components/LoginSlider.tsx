@@ -7,9 +7,9 @@ export const LoginSlider = () => {
     const [currentImage, setCurrentImage] = useState(0);
 
     const images = [
-        { src: "/backgrounds/image1.webp", alt: "Bombilla", text: "" },
-        { src: "/backgrounds/image2.webp", alt: "Panel Solar", text: "" },
-        { src: "/backgrounds/image3.webp", alt: "Oficina", text: "" },
+        // { src: "/backgrounds/image1.webp", alt: "Bombilla", text: "" },
+        // { src: "/backgrounds/image2.webp", alt: "Panel Solar", text: "" },
+        { src: "/backgrounds/login.webp", alt: "Oficina", text: "" },
     ];
 
     const totalImages = images.length;
