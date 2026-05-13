@@ -294,9 +294,7 @@ export const UserDocumentsSection = ({
             {} as Partial<Record<DocumentType, string>>
         );
 
-    const visibleDocuments = (user?.contract?.documents ?? []).filter(
-        (doc) => IS_MASTER || doc.documentType !== DocumentType.SignedContract
-    );
+    const visibleDocuments = user?.contract?.documents ?? [];
 
     return (
         <DocumentList
