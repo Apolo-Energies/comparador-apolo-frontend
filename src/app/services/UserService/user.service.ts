@@ -5,40 +5,34 @@ import { User, UserPaged } from "@/app/dashboard/Settings/Users/interfaces/user"
 import { CreateUserRequest } from "@/app/dashboard/Settings/Users/interfaces/CreateUserRequest";
 import { UpdateUserRequest } from "../interfaces/request/user";
 
+const extractError = (error: unknown): { status: number; message: string } => {
+  if (axios.isAxiosError(error)) {
+    return {
+      status: error.response?.status ?? 500,
+      message: error.response?.data?.error ?? error.message ?? "Unknown error",
+    };
+  }
+  return { status: 500, message: String(error) };
+};
+
 export const getUsers = async (token: string): Promise<ApiResponse<User[]>> => {
   try {
     const response = await ApiManager.get("/user", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       withCredentials: false,
     });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
       isSuccess: true,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? []
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
     console.error("Get users error:", error);
-    if (axios.isAxiosError(error)) {
-      return {
-        result: [],
-        status: error.response?.status ?? 500,
-        isSuccess: false,
-        displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
-        errorMessages: error.response?.data?.errorMessages ?? [error.message]
-      };
-    }
-    return {
-      result: [],
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Unknown error",
-      errorMessages: [String(error)]
-    };
+    const { status, message } = extractError(error);
+    return { result: [], status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };
 
@@ -54,9 +48,7 @@ export const getUsersByFilters = async (
 ): Promise<ApiResponse<UserPaged>> => {
   try {
     const response = await ApiManager.get("/user/user-filter", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       params: {
         fullName: filters.fullName,
         email: filters.email,
@@ -68,64 +60,41 @@ export const getUsersByFilters = async (
     });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
       isSuccess: true,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? [],
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
-    return {
-      result: {} as UserPaged,
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Error obteniendo usuarios",
-      errorMessages: [String(error)],
-    };
+    const { status, message } = extractError(error);
+    return { result: {} as UserPaged, status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };
-
 
 export const getSelectUsers = async (token: string): Promise<ApiResponse<User[]>> => {
   try {
     const response = await ApiManager.get("/user/users", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       withCredentials: false,
     });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
       isSuccess: true,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? []
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
     console.error("Get users error:", error);
-    if (axios.isAxiosError(error)) {
-      return {
-        result: [],
-        status: error.response?.status ?? 500,
-        isSuccess: false,
-        displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
-        errorMessages: error.response?.data?.errorMessages ?? [error.message]
-      };
-    }
-    return {
-      result: [],
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Unknown error",
-      errorMessages: [String(error)]
-    };
+    const { status, message } = extractError(error);
+    return { result: [], status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };
 
 export const registerUser = async (token: string, userData: CreateUserRequest): Promise<ApiResponse<User>> => {
   try {
-    // Base payload for both Individual and Company
     const basePayload = {
       personType: Number(userData.personType),
       email: userData.email,
@@ -139,47 +108,26 @@ export const registerUser = async (token: string, userData: CreateUserRequest): 
       role: Number(userData.role),
     };
 
-    // Add company-specific fields if personType is 1 (Company)
     const payload = userData.personType === 1
-      ? {
-          ...basePayload,
-          cif: userData.cif,
-          companyName: userData.companyName,
-        }
+      ? { ...basePayload, cif: userData.cif, companyName: userData.companyName }
       : basePayload;
 
     const response = await ApiManager.post("/user", payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       withCredentials: false,
     });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
-      isSuccess: response.data.isSuccess,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? []
+      isSuccess: true,
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
     console.error("Register user error:", error);
-    if (axios.isAxiosError(error)) {
-      return {
-        result: {} as User,
-        status: error.response?.status ?? 500,
-        isSuccess: false,
-        displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
-        errorMessages: error.response?.data?.errorMessages ?? [error.message]
-      };
-    }
-    return {
-      result: {} as User,
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Unknown error",
-      errorMessages: [String(error)]
-    };
+    const { status, message } = extractError(error);
+    return { result: {} as User, status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };
 
@@ -189,40 +137,22 @@ export const deactivateUser = async (
   isActive: boolean
 ): Promise<ApiResponse<string>> => {
   try {
-    const payload = { isActive };
-
-    const response = await ApiManager.put(`/user/${userId}/deactivate`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await ApiManager.put(`/user/${userId}/deactivate`, { isActive }, {
+      headers: { Authorization: `Bearer ${token}` },
       withCredentials: false,
     });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
       isSuccess: true,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? []
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
     console.error("Deactivate user error:", error);
-    if (axios.isAxiosError(error)) {
-      return {
-        result: "",
-        status: error.response?.status ?? 500,
-        isSuccess: false,
-        displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
-        errorMessages: error.response?.data?.errorMessages ?? [error.message]
-      };
-    }
-    return {
-      result: "",
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Unknown error",
-      errorMessages: [String(error)]
-    };
+    const { status, message } = extractError(error);
+    return { result: "", status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };
 
@@ -232,43 +162,24 @@ export const changeUserRole = async (
   role: number
 ): Promise<ApiResponse<User>> => {
   try {
-    const payload = { role };
-
-    const response = await ApiManager.put(`/user/${userId}/role`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await ApiManager.put(`/user/${userId}/role`, { role }, {
+      headers: { Authorization: `Bearer ${token}` },
       withCredentials: false,
     });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
       isSuccess: true,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? []
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
     console.error("Change user role error:", error);
-    if (axios.isAxiosError(error)) {
-      return {
-        result: {} as User,
-        status: error.response?.status ?? 500,
-        isSuccess: false,
-        displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
-        errorMessages: error.response?.data?.errorMessages ?? [error.message]
-      };
-    }
-    return {
-      result: {} as User,
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Unknown error",
-      errorMessages: [String(error)]
-    };
+    const { status, message } = extractError(error);
+    return { result: {} as User, status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };
-
 
 export const updateProveedor = async (
   token: string,
@@ -276,40 +187,22 @@ export const updateProveedor = async (
   providerId: number
 ): Promise<ApiResponse<User>> => {
   try {
-    const payload = { providerId };
-
-    const response = await ApiManager.put(`/user/provider/${userId}`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await ApiManager.put(`/user/provider/${userId}`, { providerId }, {
+      headers: { Authorization: `Bearer ${token}` },
       withCredentials: false,
     });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
       isSuccess: true,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? []
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
-    console.error("Change user role error:", error);
-    if (axios.isAxiosError(error)) {
-      return {
-        result: {} as User,
-        status: error.response?.status ?? 500,
-        isSuccess: false,
-        displayMessage: error.response?.data?.displayMessage ?? "Unknown error",
-        errorMessages: error.response?.data?.errorMessages ?? [error.message]
-      };
-    }
-    return {
-      result: {} as User,
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Unknown error",
-      errorMessages: [String(error)]
-    };
+    console.error("Update proveedor error:", error);
+    const { status, message } = extractError(error);
+    return { result: {} as User, status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };
 
@@ -319,50 +212,22 @@ export const changeUserEnergyExpert = async (
   isEnergyExpert: boolean
 ): Promise<ApiResponse<User>> => {
   try {
-    const payload = {
-      isEnergyExpert,
-    };
-
-    const response = await ApiManager.put(
-      `/user/energy-expert/${userId}`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: false,
-      }
-    );
+    const response = await ApiManager.put(`/user/energy-expert/${userId}`, { isEnergyExpert }, {
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: false,
+    });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
       isSuccess: true,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? [],
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
     console.error("Change energy expert error:", error);
-
-    if (axios.isAxiosError(error)) {
-      return {
-        result: {} as User,
-        status: error.response?.status ?? 500,
-        isSuccess: false,
-        displayMessage:
-          error.response?.data?.displayMessage ?? "Unknown error",
-        errorMessages:
-          error.response?.data?.errorMessages ?? [error.message],
-      };
-    }
-
-    return {
-      result: {} as User,
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Unknown error",
-      errorMessages: [String(error)],
-    };
+    const { status, message } = extractError(error);
+    return { result: {} as User, status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };
 
@@ -372,41 +237,45 @@ export const getUserById = async (
 ): Promise<ApiResponse<User>> => {
   try {
     const response = await ApiManager.get(`/user/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       withCredentials: false,
     });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
       isSuccess: true,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? [],
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
     console.error("Get user by id error:", error);
+    const { status, message } = extractError(error);
+    return { result: {} as User, status, isSuccess: false, displayMessage: message, errorMessages: [message] };
+  }
+};
 
-    if (axios.isAxiosError(error)) {
-      return {
-        result: {} as User,
-        status: error.response?.status ?? 500,
-        isSuccess: false,
-        displayMessage:
-          error.response?.data?.displayMessage ?? "Unknown error",
-        errorMessages:
-          error.response?.data?.errorMessages ?? [error.message],
-      };
-    }
+export const deleteUser = async (
+  token: string,
+  userId: string
+): Promise<ApiResponse<null>> => {
+  try {
+    const response = await ApiManager.delete(`/user/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: false,
+    });
 
     return {
-      result: {} as User,
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Unknown error",
-      errorMessages: [String(error)],
+      result: null,
+      status: response.status,
+      isSuccess: true,
+      displayMessage: "",
+      errorMessages: [],
     };
+  } catch (error) {
+    console.error("Delete user error:", error);
+    const { status, message } = extractError(error);
+    return { result: null, status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };
 
@@ -417,40 +286,20 @@ export const updateUser = async (
 ): Promise<ApiResponse<User>> => {
   try {
     const response = await ApiManager.put(`/user/${userId}`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       withCredentials: false,
     });
 
     return {
-      result: response.data.result,
+      result: response.data.result ?? response.data,
       status: response.status,
       isSuccess: true,
-      displayMessage: response.data.displayMessage ?? "",
-      errorMessages: response.data.errorMessages ?? [],
+      displayMessage: "",
+      errorMessages: [],
     };
   } catch (error) {
     console.error("Update user error:", error);
-
-    if (axios.isAxiosError(error)) {
-      return {
-        result: {} as User,
-        status: error.response?.status ?? 500,
-        isSuccess: false,
-        displayMessage:
-          error.response?.data?.displayMessage ?? "Unknown error",
-        errorMessages:
-          error.response?.data?.errorMessages ?? [error.message],
-      };
-    }
-
-    return {
-      result: {} as User,
-      status: 500,
-      isSuccess: false,
-      displayMessage: "Unknown error",
-      errorMessages: [String(error)],
-    };
+    const { status, message } = extractError(error);
+    return { result: {} as User, status, isSuccess: false, displayMessage: message, errorMessages: [message] };
   }
 };

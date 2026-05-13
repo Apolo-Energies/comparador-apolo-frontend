@@ -69,17 +69,13 @@ export const FormIndividualUser = ({ register, errors }: Props) => {
         errors={errors}
       />
 
-      {/* DNI - Obligatorio */}
+      {/* DNI - Opcional */}
       <Input
-        label="DNI"
+        label="DNI (opcional)"
         name="dni"
-        required
         register={register("dni", {
-          required: "El DNI es obligatorio",
-          pattern: {
-            value: /^[0-9]{8}[A-Za-z]$/,
-            message: "Formato inválido. Ej: 12345678A",
-          },
+          validate: (v) =>
+            !v || /^[0-9]{8}[A-Za-z]$/.test(v) || "Formato inválido. Ej: 12345678A",
         })}
         errors={errors}
       />
