@@ -74,7 +74,6 @@ export const UserDocumentsSection = ({
 
             if (response.isSuccess) {
                 showAlert("Documento verificado correctamente.", "success");
-                triggerReload();
             } else {
                 setUser(previousUser);
                 showAlert("No se pudo verificar el documento.", "error");
@@ -128,7 +127,6 @@ export const UserDocumentsSection = ({
 
             if (response.isSuccess) {
                 showAlert("Documento rechazado correctamente.", "success");
-                triggerReload();
             } else {
                 setUser(previousUser);
                 showAlert("No se pudo rechazar el documento.", "error");
@@ -279,8 +277,9 @@ export const UserDocumentsSection = ({
         )
     );
 
-    const requiredDocuments =
-        REQUIRED_DOCUMENTS_BY_PERSON_TYPE[personType] ?? [];
+    const requiredDocuments = (REQUIRED_DOCUMENTS_BY_PERSON_TYPE[personType] ?? []).filter(
+        (dt) => IS_MASTER || dt !== DocumentType.SignedContract
+    );
 
     const availableDocumentTypes = requiredDocuments.filter(
         (documentType: DocumentType) => !existingDocumentTypes.has(documentType)
@@ -295,9 +294,13 @@ export const UserDocumentsSection = ({
             {} as Partial<Record<DocumentType, string>>
         );
 
+    const visibleDocuments = (user?.contract?.documents ?? []).filter(
+        (doc) => IS_MASTER || doc.documentType !== DocumentType.SignedContract
+    );
+
     return (
         <DocumentList
-            documents={user?.contract?.documents ?? []}
+            documents={visibleDocuments}
             IS_MASTER={IS_MASTER}
             rejectingDocId={rejectingDocId}
             rejectObservation={rejectObservation}

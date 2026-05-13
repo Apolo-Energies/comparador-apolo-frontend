@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/buttons/button";
 import { DropzoneUpload } from "./upload/DropzoneUpload";
@@ -58,12 +58,15 @@ export const Comparador = () => {
         const response = await getSelectUsers(session.user.token);
 
         if (response.isSuccess && response.result) {
-          setUsers(mapUsersToSelect(response.result));
+          const list = Array.isArray(response.result)
+            ? response.result
+            : (response.result as any)?.items ?? [];
+          setUsers(mapUsersToSelect(list));
         } else {
-          console.error("Error cargando tarifas:", response.errorMessages);
+          console.error("Error cargando usuarios:", response.errorMessages);
         }
       } catch (err) {
-        console.error("Fallo al obtener tarifas:", err);
+        console.error("Fallo al obtener usuarios:", err);
       }
     };
     fetchUsers();
