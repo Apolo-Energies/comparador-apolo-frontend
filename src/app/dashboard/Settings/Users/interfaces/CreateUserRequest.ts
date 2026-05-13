@@ -5,7 +5,7 @@ export interface CreateIndividualUserRequest {
     role: number;
     name: string;
     surnames: string;
-    dni: string;
+    dni?: string;
     phone?: string;
     legalAddress?: string;
     notificationAddress?: string;
@@ -19,7 +19,7 @@ export interface CreateCompanyUserRequest {
     role: number;
     name: string;
     surnames: string;
-    dni: string;
+    dni?: string;
     cif: string;
     companyName: string;
     phone?: string;

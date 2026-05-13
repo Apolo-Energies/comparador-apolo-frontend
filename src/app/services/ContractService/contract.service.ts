@@ -95,6 +95,58 @@ export const sendContract = async (
     }
 };
 
+export const getContractPreviewBlob = async (token: string): Promise<Blob | null> => {
+    try {
+        const response = await ApiManager.get("/contracts/preview-my", {
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: false,
+            responseType: "blob",
+        });
+        return response.data as Blob;
+    } catch (error) {
+        console.error("Get contract preview error:", error);
+        return null;
+    }
+};
+
+export const requestContract = async (
+    token: string,
+    contractId: string
+): Promise<ApiResponse<null>> => {
+    try {
+        const response = await ApiManager.post(`/contracts/${contractId}/send`, {}, {
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: false,
+        });
+
+        return {
+            result: null,
+            status: response.status,
+            isSuccess: true,
+            displayMessage: "",
+            errorMessages: [],
+        };
+    } catch (error) {
+        console.error("Request contract error:", error);
+        if (axios.isAxiosError(error)) {
+            return {
+                result: null,
+                status: error.response?.status ?? 500,
+                isSuccess: false,
+                displayMessage: error.response?.data?.error ?? error.message,
+                errorMessages: [error.response?.data?.error ?? error.message],
+            };
+        }
+        return {
+            result: null,
+            status: 500,
+            isSuccess: false,
+            displayMessage: "Unknown error",
+            errorMessages: ["An unexpected error occurred"],
+        };
+    }
+};
+
 export const createManualContract = async (
     token: string,
     payload: CreateManualContractRequest

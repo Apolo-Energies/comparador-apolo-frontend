@@ -1,5 +1,3 @@
-// FormUserCompany.tsx
-import React from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/Inputs/Input";
 import { Select } from "@/components/Selects/Select";
@@ -72,17 +70,13 @@ export const FormUserCompany = ({ register, errors }: Props) => {
                 errors={errors}
             />
 
-            {/* DNI - Obligatorio */}
+            {/* DNI - Opcional */}
             <Input
-                label="DNI"
+                label="DNI (opcional)"
                 name="dni"
-                required
                 register={register("dni", {
-                    required: "El DNI es obligatorio",
-                    pattern: {
-                        value: /^[0-9]{8}[A-Za-z]$/,
-                        message: "Formato inválido. Ej: 12345678A",
-                    },
+                    validate: (v) =>
+                        !v || /^[0-9]{8}[A-Za-z]$/.test(v) || "Formato inválido. Ej: 12345678A",
                 })}
                 errors={errors}
             />
