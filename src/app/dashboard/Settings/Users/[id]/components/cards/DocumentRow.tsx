@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/badge/Badge";
 import { Document } from "../../../interfaces/user";
 import { DocumentStatus } from "../../enums/DocumentStatus";
+import { DocumentType } from "../../enums/DocumentType";
 import { StatusConfigItem } from "./DocumentList";
 
 interface DocumentRowProps {
@@ -102,14 +103,16 @@ export const DocumentRow = ({...props}: DocumentRowProps) => {
                             Ver
                         </Button>
 
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive cursor-pointer"
-                            onClick={() => props.handleDelete(props.doc.id)}
-                        >
-                            <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
+                        {(props.IS_MASTER || props.doc.documentType !== DocumentType.SignedContract) && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive cursor-pointer"
+                                onClick={() => props.handleDelete(props.doc.id)}
+                            >
+                                <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                        )}
 
                     </div>
                 </div>
